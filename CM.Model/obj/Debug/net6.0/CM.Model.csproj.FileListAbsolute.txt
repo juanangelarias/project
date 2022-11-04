@@ -1,0 +1,12 @@
+C:\Users\jaaria\Pichingos\CM\CM.Model\bin\Debug\net6.0\CM.Model.deps.json
+C:\Users\jaaria\Pichingos\CM\CM.Model\bin\Debug\net6.0\CM.Model.dll
+C:\Users\jaaria\Pichingos\CM\CM.Model\bin\Debug\net6.0\CM.Model.pdb
+C:\Users\jaaria\Pichingos\CM\CM.Model\obj\Debug\net6.0\CM.Model.csproj.AssemblyReference.cache
+C:\Users\jaaria\Pichingos\CM\CM.Model\obj\Debug\net6.0\CM.Model.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jaaria\Pichingos\CM\CM.Model\obj\Debug\net6.0\CM.Model.AssemblyInfoInputs.cache
+C:\Users\jaaria\Pichingos\CM\CM.Model\obj\Debug\net6.0\CM.Model.AssemblyInfo.cs
+C:\Users\jaaria\Pichingos\CM\CM.Model\obj\Debug\net6.0\CM.Model.csproj.CoreCompileInputs.cache
+C:\Users\jaaria\Pichingos\CM\CM.Model\obj\Debug\net6.0\CM.Model.dll
+C:\Users\jaaria\Pichingos\CM\CM.Model\obj\Debug\net6.0\refint\CM.Model.dll
+C:\Users\jaaria\Pichingos\CM\CM.Model\obj\Debug\net6.0\CM.Model.pdb
+C:\Users\jaaria\Pichingos\CM\CM.Model\obj\Debug\net6.0\ref\CM.Model.dll
