@@ -18,4 +18,8 @@
       <ProjectReference Include="..\CM.Repositories\CM.Repositories.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Services" />
+    </ItemGroup>
+
 </Project>

@@ -175,15 +175,6 @@ where TDto: class, IBaseDto
         return _mapper.Map<TDto>(record);
     }
 
-    /// <summary>
-    /// Updates data from TDto and saves the changes. Can take an existingRecord to update data on before saving.
-    /// If TDto has no relational entities existingRecord can be null and this method will pull the appropriate data.
-    /// Otherwise it is required that the existingRecord contain the relationships being mapped by the TDto.
-    /// </summary>
-    /// <param name="dto"></param>
-    /// <param name="existingRecord"></param>
-    /// <returns></returns>
-
     public virtual async Task<TDto?> UpdateAsync(TDto dto, TEntity? existingRecord = null)
     {
         await using var t = await _db.Database.BeginTransactionAsync();
@@ -233,15 +224,6 @@ where TDto: class, IBaseDto
             throw;
         }
     }
-
-    /// <summary>
-    /// Updates data from TDtos and saves the changes. Can take an existingRecords to update data on before saving.
-    /// If TDtos has no relational entities existingRecords can be null and this method will pull the appropriate data.
-    /// Otherwise it is required that the existingRecords contain the relationships being mapped by the TDtos.
-    /// </summary>
-    /// <param name="dtos"></param>
-    /// <param name="existingRecords"></param>
-    /// <returns></returns>
 
     public virtual async Task<IEnumerable<TDto>> UpdateManyAsync(IEnumerable<TDto> dtos, IEnumerable<TEntity>? existingRecords = null)
     {

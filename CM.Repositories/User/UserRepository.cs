@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CM.Database;
+using CM.Entities;
 using CM.Model.Dto;
 using CM.Model.General;
 using CM.Model.Sorts;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CM.Repositories;
 
-public class UserRepository: BaseRepository<Entities.User, UserDto>, IUserRepository
+public class UserRepository: BaseRepository<User, UserDto>, IUserRepository
 {
     private readonly IMapper _mapper;
     
@@ -82,7 +83,7 @@ public class UserRepository: BaseRepository<Entities.User, UserDto>, IUserReposi
     public async Task<UserDto> GetByIdExpandedAsync(long id)
     {
         var record = await GetQuery()
-            .Include(i => i.Roles)
+            .Include(i => i.UserRoles)
             .FirstOrDefaultAsync(f => f.Id == id);
 
         return _mapper.Map<UserDto>(record);
@@ -102,5 +103,19 @@ public class UserRepository: BaseRepository<Entities.User, UserDto>, IUserReposi
             .FirstOrDefaultAsync(x => x.Email == email);
 
         return _mapper.Map<UserDto>(user);      
+    }
+
+    public async Task<IEnumerable<RoleDto>> GetUserRoles(long userId)
+    {
+        var user = await GetQuery()
+            .Include(i => i.UserRoles)
+            .ThenInclude(t => t.Role)
+            .FirstOrDefaultAsync(r => r.Id == userId);
+
+        var roles = user?.UserRoles
+            .Select(s => s.Role)
+            .ToList();
+
+        return _mapper.Map<List<RoleDto>>(roles);
     }
 }

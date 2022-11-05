@@ -12,7 +12,7 @@ public class BaseEntity
     public long? ModifiedBy { get; set; }
     public DateTime? ModifiedOn { get; set; }
     public byte[] Timestamp { get; set; }
-    
+
     public User? CreatedByUser { get; set; }
     public User? ModifiedByUser { get; set; }
 
@@ -34,5 +34,13 @@ public class BaseEntity
         }
         
         entity.Property(x => x.Timestamp).IsRowVersion();
+
+        entity.HasOne(o => o.CreatedByUser)
+            .WithMany()
+            .HasForeignKey(k => k.CreatedBy);
+
+        entity.HasOne(o => o.ModifiedByUser)
+            .WithMany()
+            .HasForeignKey(k => k.ModifiedBy);
     }
 }

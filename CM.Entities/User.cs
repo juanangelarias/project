@@ -14,53 +14,62 @@ public class User: BaseEntity, IBaseEntity
     public bool EmailConfirmed { get; set; }
     public string PhoneNumber { get; set; }
     public string Token { get; set; }
+    
+    public string FullName => $"{FirstName} {LastName}";
 
-    public List<UserRole> Roles { get; set; }
-    public List<UserRefreshToken> UserRefreshToken { get; set; }
-    public List<UserPassword> UserPasswords { get; set; }
+    public IEnumerable<UserRole> UserRoles { get; set; }
+    public IEnumerable<UserRefreshToken> UserRefreshToken { get; set; }
+    public IEnumerable<UserPassword> UserPasswords { get; set; }
     
     public void OnModelCreating(ModelBuilder m)
     {
-        m.Entity<User>(entity =>
+        Console.WriteLine("User OnModelCreating");
+        m.Entity<User>(e =>
         {
-            MapBaseEntityProperties(entity);
+            MapBaseEntityProperties(e);
 
-            entity
+            e
                 .Property(p => p.UserName)
                 .HasMaxLength(250)
                 .IsRequired();
 
-            entity
+            e
                 .Property(p => p.FirstName)
                 .HasMaxLength(50)
                 .IsRequired();
             
-            entity
+            e
                 .Property(p => p.LastName)
                 .HasMaxLength(50)
                 .IsRequired();
             
-            entity
+            e
                 .Property(p => p.Email)
                 .HasMaxLength(250)
                 .IsRequired();
 
-            entity
+            e
                 .Property(p => p.PhoneNumber)
                 .HasMaxLength(20)
                 .IsRequired();
 
-            entity.Property(x => x.IsEnabled)
+            e.Property(x => x.IsEnabled)
                 .HasDefaultValue(true);
 
-            entity
+            e
                 .HasMany(p => p.UserRefreshToken)
                 .WithOne(f => f.User)
                 .HasForeignKey(f => f.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            entity
+            e
                 .HasMany(x => x.UserPasswords)
+                .WithOne(o => o.User)
+                .HasForeignKey(k => k.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            e
+                .HasMany(x => x.UserRoles)
                 .WithOne(o => o.User)
                 .HasForeignKey(k => k.UserId)
                 .OnDelete(DeleteBehavior.Cascade);

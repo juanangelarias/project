@@ -181,6 +181,7 @@ public class Startup
         services
             // R
             .AddScoped<IRoleRepository, RoleRepository>()
+            
             // U
             .AddScoped<IUserRepository, UserRepository>()
             .AddScoped<IUserRoleRepository, UserRoleRepository>();

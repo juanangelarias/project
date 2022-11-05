@@ -1,0 +1,12 @@
+C:\Users\arias\RiderProjects\CM\CM.Entities\bin\Debug\net6.0\CM.Entities.deps.json
+C:\Users\arias\RiderProjects\CM\CM.Entities\bin\Debug\net6.0\CM.Entities.dll
+C:\Users\arias\RiderProjects\CM\CM.Entities\bin\Debug\net6.0\CM.Entities.pdb
+C:\Users\arias\RiderProjects\CM\CM.Entities\obj\Debug\net6.0\CM.Entities.csproj.AssemblyReference.cache
+C:\Users\arias\RiderProjects\CM\CM.Entities\obj\Debug\net6.0\CM.Entities.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\arias\RiderProjects\CM\CM.Entities\obj\Debug\net6.0\CM.Entities.AssemblyInfoInputs.cache
+C:\Users\arias\RiderProjects\CM\CM.Entities\obj\Debug\net6.0\CM.Entities.AssemblyInfo.cs
+C:\Users\arias\RiderProjects\CM\CM.Entities\obj\Debug\net6.0\CM.Entities.csproj.CoreCompileInputs.cache
+C:\Users\arias\RiderProjects\CM\CM.Entities\obj\Debug\net6.0\CM.Entities.dll
+C:\Users\arias\RiderProjects\CM\CM.Entities\obj\Debug\net6.0\refint\CM.Entities.dll
+C:\Users\arias\RiderProjects\CM\CM.Entities\obj\Debug\net6.0\CM.Entities.pdb
+C:\Users\arias\RiderProjects\CM\CM.Entities\obj\Debug\net6.0\ref\CM.Entities.dll

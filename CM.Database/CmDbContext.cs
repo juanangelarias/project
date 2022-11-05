@@ -1,6 +1,8 @@
-﻿using CM.Database.Helpers;
+﻿using System.Reflection;
+using CM.Database.Helpers;
 using CM.Entities;
 using CM.Entities.Base;
+using CM.Entities.Helpers;
 using CM.Model.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,9 +13,14 @@ public class CmDbContext: DbContext
     private readonly IUserResolverService _userResolverService;
     private readonly IDateConverterService _dateConverterService;
 
+    // R
+    public DbSet<Role> Roles { get; set; }
+    
+    // U
     public DbSet<User> Users { get; set; }
     public DbSet<UserPassword> UserPasswords { get; set; }
     public DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
+    public DbSet<UserRole> UserRoles { get; set; }
 
     public CmDbContext(DbContextOptions<CmDbContext> options, IUserResolverService userResolverService, IDateConverterService dateConverterService) : base(options)
     {
@@ -23,10 +30,8 @@ public class CmDbContext: DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Base call needed for IdentityDbContext inherited Entities.
         base.OnModelCreating(modelBuilder);
-
-        // Find all classes implementing IConfigurableEntity and call it's OnModelCreating
+        
         foreach (var type in EntityTypes.GetEntityTypes<IConfigurableEntity>())
         {
             var instance = (IConfigurableEntity)Activator.CreateInstance(type)!;
@@ -46,10 +51,6 @@ public class CmDbContext: DbContext
                     property.SetValueConverter(_dateConverterService.NullableDateConverter());
             }
         }
-
-        #region Add Temporal Tables for all entities
-
-        #endregion
     }
 
     public override int SaveChanges(bool acceptAllChangesOnSuccess)

@@ -17,6 +17,8 @@ public class UserDto: BaseDto
     [Required]
     [MaxLength(50)]
     public string LastName { get; set; }
+
+    public string FullName { get; set; }
       
     [Required]
     [MaxLength(256)] 

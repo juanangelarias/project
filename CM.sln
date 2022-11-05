@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CM.Model", "CM.Model\CM.Mod
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CM.Repositories", "CM.Repositories\CM.Repositories.csproj", "{644994BA-C9EC-4AFA-9BFE-819761084390}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CM.Features", "CM.Features\CM.Features.csproj", "{5BD758CD-32E7-4A05-9996-70CE279C38F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{644994BA-C9EC-4AFA-9BFE-819761084390}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{644994BA-C9EC-4AFA-9BFE-819761084390}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{644994BA-C9EC-4AFA-9BFE-819761084390}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BD758CD-32E7-4A05-9996-70CE279C38F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BD758CD-32E7-4A05-9996-70CE279C38F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BD758CD-32E7-4A05-9996-70CE279C38F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BD758CD-32E7-4A05-9996-70CE279C38F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

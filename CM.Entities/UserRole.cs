@@ -25,14 +25,6 @@ public class UserRole: BaseEntity, IBaseEntity
             
             e.HasIndex(i => new {i.UserId, i.RoleId})
                 .IsUnique();
-
-            e.HasOne(o => o.User)
-                .WithMany()
-                .HasForeignKey(k => k.UserId);
-
-            e.HasOne(o => o.Role)
-                .WithMany()
-                .HasForeignKey(k => k.RoleId);
         });
     }
 }

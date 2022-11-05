@@ -1666,6 +1666,21 @@
           "bin/placeholder/CM.Entities.dll": {}
         }
       },
+      "CM.Features/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "CM.Common": "1.0.0",
+          "CM.Model": "1.0.0",
+          "CM.Repositories": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/CM.Features.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/CM.Features.dll": {}
+        }
+      },
       "CM.Model/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
@@ -4088,6 +4103,11 @@
       "path": "../CM.Entities/CM.Entities.csproj",
       "msbuildProject": "../CM.Entities/CM.Entities.csproj"
     },
+    "CM.Features/1.0.0": {
+      "type": "project",
+      "path": "../CM.Features/CM.Features.csproj",
+      "msbuildProject": "../CM.Features/CM.Features.csproj"
+    },
     "CM.Model/1.0.0": {
       "type": "project",
       "path": "../CM.Model/CM.Model.csproj",
@@ -4103,6 +4123,7 @@
     "net6.0": [
       "CM.Common >= 1.0.0",
       "CM.Database >= 1.0.0",
+      "CM.Features >= 1.0.0",
       "CM.Repositories >= 1.0.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 6.0.10",
       "Microsoft.EntityFrameworkCore.Design >= 6.0.10",
@@ -4113,27 +4134,28 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\jaaria\\.nuget\\packages\\": {},
+    "C:\\Users\\arias\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jaaria\\Pichingos\\CM\\CM.Api\\CM.Api.csproj",
+      "projectUniqueName": "C:\\Users\\arias\\RiderProjects\\CM\\CM.Api\\CM.Api.csproj",
       "projectName": "CM.Api",
-      "projectPath": "C:\\Users\\jaaria\\Pichingos\\CM\\CM.Api\\CM.Api.csproj",
-      "packagesPath": "C:\\Users\\jaaria\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jaaria\\Pichingos\\CM\\CM.Api\\obj\\",
+      "projectPath": "C:\\Users\\arias\\RiderProjects\\CM\\CM.Api\\CM.Api.csproj",
+      "packagesPath": "C:\\Users\\arias\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\arias\\RiderProjects\\CM\\CM.Api\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet"
       ],
       "configFilePaths": [
-        "C:\\Users\\jaaria\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\arias\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
@@ -4147,14 +4169,17 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "C:\\Users\\jaaria\\Pichingos\\CM\\CM.Common\\CM.Common.csproj": {
-              "projectPath": "C:\\Users\\jaaria\\Pichingos\\CM\\CM.Common\\CM.Common.csproj"
+            "C:\\Users\\arias\\RiderProjects\\CM\\CM.Common\\CM.Common.csproj": {
+              "projectPath": "C:\\Users\\arias\\RiderProjects\\CM\\CM.Common\\CM.Common.csproj"
             },
-            "C:\\Users\\jaaria\\Pichingos\\CM\\CM.Database\\CM.Database.csproj": {
-              "projectPath": "C:\\Users\\jaaria\\Pichingos\\CM\\CM.Database\\CM.Database.csproj"
+            "C:\\Users\\arias\\RiderProjects\\CM\\CM.Database\\CM.Database.csproj": {
+              "projectPath": "C:\\Users\\arias\\RiderProjects\\CM\\CM.Database\\CM.Database.csproj"
             },
-            "C:\\Users\\jaaria\\Pichingos\\CM\\CM.Repositories\\CM.Repositories.csproj": {
-              "projectPath": "C:\\Users\\jaaria\\Pichingos\\CM\\CM.Repositories\\CM.Repositories.csproj"
+            "C:\\Users\\arias\\RiderProjects\\CM\\CM.Features\\CM.Features.csproj": {
+              "projectPath": "C:\\Users\\arias\\RiderProjects\\CM\\CM.Features\\CM.Features.csproj"
+            },
+            "C:\\Users\\arias\\RiderProjects\\CM\\CM.Repositories\\CM.Repositories.csproj": {
+              "projectPath": "C:\\Users\\arias\\RiderProjects\\CM\\CM.Repositories\\CM.Repositories.csproj"
             }
           }
         }
@@ -4215,7 +4240,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.400\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100-rc.1.22431.12\\RuntimeIdentifierGraph.json"
       }
     }
   }

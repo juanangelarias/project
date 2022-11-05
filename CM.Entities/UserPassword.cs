@@ -13,6 +13,19 @@ public class UserPassword: BaseEntity, IBaseEntity
     
     public void OnModelCreating(ModelBuilder m)
     {
-        throw new NotImplementedException();
+        m.Entity<UserPassword>(e =>
+        {
+            MapBaseEntityProperties(e);
+
+            e
+                .Property(p => p.SecurityStamp)
+                .HasMaxLength(500)
+                .IsRequired();
+
+            e
+                .Property(p => p.PasswordHash)
+                .HasMaxLength(500)
+                .IsRequired();
+        });
     }
 }

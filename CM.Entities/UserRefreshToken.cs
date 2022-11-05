@@ -6,7 +6,6 @@ namespace CM.Entities;
 
 public class UserRefreshToken : BaseEntity, IBaseEntity
 {
-    [JsonIgnore] public long Id { get; set; }
     public string Token { get; set; }
     public DateTime Expires { get; set; }
     public DateTime Created { get; set; }
@@ -22,24 +21,13 @@ public class UserRefreshToken : BaseEntity, IBaseEntity
     public long UserId { get; set; }
     public User User { get; set; }
 
-    //FK - CreatedBy/ModifiedBy with User.UserId
-    public User CreatedByUser { get; set; }
-
-    public User ModifiedByUser { get; set; }
-    //End
-
     public void OnModelCreating(ModelBuilder m)
     {
-        m.Entity<UserRefreshToken>(entity =>
+        m.Entity<UserRefreshToken>(e =>
         {
-            MapBaseEntityProperties(entity);
-
-            //FK - CreatedBy/ModifiedBy with User.UserId
-            entity.HasOne(o => o.CreatedByUser)
-                .WithMany().HasForeignKey(m => m.CreatedBy);
-            entity.HasOne(o => o.ModifiedByUser)
-                .WithMany().HasForeignKey(m => m.ModifiedBy);
-            //End
+            MapBaseEntityProperties(e);
+            
+            
         });
     }
 }
