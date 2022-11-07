@@ -20,6 +20,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\CM.Common\CM.Common.csproj" />
+      <ProjectReference Include="..\CM.Core\CM.Core.csproj" />
       <ProjectReference Include="..\CM.Database\CM.Database.csproj" />
       <ProjectReference Include="..\CM.Features\CM.Features.csproj" />
       <ProjectReference Include="..\CM.Repositories\CM.Repositories.csproj" />

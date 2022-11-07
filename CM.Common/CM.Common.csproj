@@ -15,11 +15,6 @@
     <ItemGroup>
       <ProjectReference Include="..\CM.Entities\CM.Entities.csproj" />
       <ProjectReference Include="..\CM.Model\CM.Model.csproj" />
-      <ProjectReference Include="..\CM.Repositories\CM.Repositories.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Services" />
     </ItemGroup>
 
 </Project>

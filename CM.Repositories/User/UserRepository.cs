@@ -89,7 +89,7 @@ public class UserRepository: BaseRepository<User, UserDto>, IUserRepository
         return _mapper.Map<UserDto>(record);
     }
 
-    public async Task<UserDto> GetByUserName(string username)
+    public async Task<UserDto?> GetByUserName(string username)
     {
         var user = await GetQuery()
             .FirstOrDefaultAsync(x => x.UserName == username);

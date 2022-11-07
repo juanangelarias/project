@@ -47,7 +47,4 @@ public class UserResolverService: IUserResolverService
 
     public string GetUserName() => _userName;
     public long? GetUserId() => _userId;
-
-
-
 }

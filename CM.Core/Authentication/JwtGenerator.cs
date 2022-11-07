@@ -7,9 +7,8 @@ using CM.Model.Dto;
 using CM.Repositories;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
-namespace CM.Common.Authentication;
+namespace CM.Core.Authentication;
 
 public class JwtGenerator : IJwtGenerator
 {
@@ -60,7 +59,7 @@ public class JwtGenerator : IJwtGenerator
         return token;
     }
 
-    public ClaimsPrincipal ValidateToken(string token)
+    public ClaimsPrincipal? ValidateToken(string? token)
     {
         if (token == null)
         {

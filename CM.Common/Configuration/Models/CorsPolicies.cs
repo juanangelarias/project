@@ -1,4 +1,4 @@
-﻿namespace CM.Common;
+﻿namespace CM.Common.Configuration.Models;
 
 public class CorsPolicies
 {

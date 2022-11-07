@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\CM.Common\CM.Common.csproj" />
+      <ProjectReference Include="..\CM.Core\CM.Core.csproj" />
       <ProjectReference Include="..\CM.Model\CM.Model.csproj" />
       <ProjectReference Include="..\CM.Repositories\CM.Repositories.csproj" />
     </ItemGroup>

@@ -2,13 +2,9 @@
 
 public class MinimumUserResolverService : IUserResolverService
 {
-    public long? GetIsrId() => null;
-
-    public long? GetRsaId() => null;
-
     public long? GetUserId()
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public string GetUserName()

@@ -6,6 +6,7 @@ namespace CM.Entities;
 public class UserPassword: BaseEntity, IBaseEntity
 {
     public long UserId { get; set; }
+    public DateTime Date { get; set; }
     public string SecurityStamp  { get; set; }
     public string PasswordHash {get;set;}
 

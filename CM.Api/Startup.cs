@@ -1,11 +1,13 @@
 ﻿using System.Text;
 using AutoMapper;
 using AutoMapper.EquivalencyExpression;
-using CM.Common;
 using CM.Common.Configuration.Models;
-using CM.Common.Middleware;
+using CM.Core.Middleware;
+using CM.Core.Services.Encryption;
+using CM.Core.Services.Mail;
 using CM.Database;
 using CM.Database.Mappings;
+using CM.Features;
 using CM.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
@@ -179,10 +181,18 @@ public class Startup
         #region IOC container registrations
 
         services
+            // E
+            .AddScoped<IEncryptionService, EncryptionService>()
+            
+            // M
+            .AddScoped<IMailService, MailService>()
+            
             // R
             .AddScoped<IRoleRepository, RoleRepository>()
             
             // U
+            .AddScoped<IUserFeature, UserFeature>()
+            .AddScoped<IUserPasswordRepository, IUserPasswordRepository>()
             .AddScoped<IUserRepository, UserRepository>()
             .AddScoped<IUserRoleRepository, UserRoleRepository>();
 

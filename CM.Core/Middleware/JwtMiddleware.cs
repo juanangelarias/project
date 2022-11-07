@@ -1,8 +1,8 @@
-﻿using CM.Common.Authentication;
+﻿using CM.Core.Authentication;
 using CM.Repositories;
 using Microsoft.AspNetCore.Http;
 
-namespace CM.Common.Middleware;
+namespace CM.Core.Middleware;
 
 public class JwtMiddleware: IMiddleware
 {
@@ -47,6 +47,7 @@ public class JwtMiddleware: IMiddleware
         }
         catch
         {
+            // ignored
         }
     }
 }
