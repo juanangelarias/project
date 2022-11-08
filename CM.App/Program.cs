@@ -50,7 +50,7 @@ public class Program
             .AddScoped<IPageHistoryStateProvider, PageHistoryStateProvider>()
             
             // U
-            .AddScoped<IUserStateProvider>();
+            .AddScoped<IUserStateProvider, UserStateProvider>();
 
         #endregion
 
@@ -58,7 +58,6 @@ public class Program
             .AddAuthorizationCore()
             .AddBlazoredLocalStorage()
             .AddMudServices();
-        
 
         await builder.Build().RunAsync();
     }

@@ -12,11 +12,11 @@ namespace CM.App.Helper.Services;
 public class UserService: BaseService<UserDto>, IUserService
 {
     private readonly NavigationManager _navigation;
-    private readonly GeneralStateProvider _state;
+    private readonly IGeneralStateProvider _state;
     private readonly HttpClient _client;
     private readonly ISnackbar _snackbar;
 
-    public UserService(NavigationManager navigation, GeneralStateProvider state, HttpClient client, ISnackbar snackbar)
+    public UserService(NavigationManager navigation, IGeneralStateProvider state, HttpClient client, ISnackbar snackbar)
         : base(navigation, state, client, snackbar)
     {
         _navigation = navigation;

@@ -14,12 +14,12 @@ public class BaseService<T>: IBaseService<T>
     where T: BaseDto
 {
     private readonly NavigationManager _navigation;
-    private readonly GeneralStateProvider _state;
+    private readonly IGeneralStateProvider _state;
     private readonly HttpClient _client;
     private readonly ISnackbar _snackbar;
     protected string BaseUrl { get; set; } = "";
 
-    public BaseService(NavigationManager navigation, GeneralStateProvider state, HttpClient client, ISnackbar snackbar)
+    public BaseService(NavigationManager navigation, IGeneralStateProvider state, HttpClient client, ISnackbar snackbar)
     {
         _navigation = navigation;
         _state = state;
