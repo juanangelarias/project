@@ -2,7 +2,7 @@
 
 public class AuthenticationOptions
 {
-    public string Authority { get; set; }
+    public string? Authority { get; set; }
     public bool RequireHttpsMetadata { get; set; }
-    public string ApiName { get; set; }
+    public string? ApiName { get; set; }
 }

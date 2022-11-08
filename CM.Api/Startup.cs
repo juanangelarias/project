@@ -2,12 +2,15 @@
 using AutoMapper;
 using AutoMapper.EquivalencyExpression;
 using CM.Common.Configuration.Models;
+using CM.Core.Authentication;
 using CM.Core.Middleware;
 using CM.Core.Services.Encryption;
 using CM.Core.Services.Mail;
 using CM.Database;
+using CM.Database.Helpers;
 using CM.Database.Mappings;
 using CM.Features;
+using CM.Model.Services;
 using CM.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
@@ -181,8 +184,15 @@ public class Startup
         #region IOC container registrations
 
         services
+            // D
+            .AddScoped<IDateConverterService, DateConverterService>()
+                
             // E
             .AddScoped<IEncryptionService, EncryptionService>()
+            
+            // J
+            .AddScoped<IJwtGenerator, JwtGenerator>()
+            .AddScoped<JwtMiddleware>()
             
             // M
             .AddScoped<IMailService, MailService>()
@@ -192,8 +202,9 @@ public class Startup
             
             // U
             .AddScoped<IUserFeature, UserFeature>()
-            .AddScoped<IUserPasswordRepository, IUserPasswordRepository>()
+            .AddScoped<IUserPasswordRepository, UserPasswordRepository>()
             .AddScoped<IUserRepository, UserRepository>()
+            .AddScoped<IUserResolverService, MinimumUserResolverService>()      // ToDo: Change to UserResolveService once User functionality is ready
             .AddScoped<IUserRoleRepository, UserRoleRepository>();
 
         #endregion

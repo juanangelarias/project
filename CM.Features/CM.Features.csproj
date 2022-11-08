@@ -13,4 +13,8 @@
       <ProjectReference Include="..\CM.Repositories\CM.Repositories.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
+    </ItemGroup>
+
 </Project>

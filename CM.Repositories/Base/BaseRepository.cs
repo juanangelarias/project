@@ -143,7 +143,7 @@ where TDto: class, IBaseDto
         return new PagedResponse<TDto>(mappedResult, queryable.rowCount);
     }
 
-    public (IQueryable<T>? query, int rowCount) GetPaginatedQueryable<T>(QueryParams parameters, IQueryable<T> qry)
+    public (IQueryable<T>? query, int rowCount) GetPaginatedQueryable<T>(QueryParams parameters, IQueryable<T>? qry)
     {
         if (parameters.PageSize < 1)
         {
@@ -155,12 +155,12 @@ where TDto: class, IBaseDto
             return (null, 0);
         }
         
-        var rowCount = qry
-            .Count();
+        var rowCount = (qry?
+            .Count()) ?? 0;
 
         var skip = rowCount <= parameters.PageSize ? 0 : parameters.PageSize * parameters.PageIndex;
 
-        var pagedQuery = qry
+        var pagedQuery = qry?
             .Skip(skip)
             .Take(parameters.PageSize);
 

@@ -8,31 +8,29 @@ public class UserDto: BaseDto
 {
     [Required]
     [MaxLength(256)]
-    public string UserName { get; set; }
+    public string? UserName { get; set; }
     
     [Required]
     [MaxLength(50)]
-    public string FirstName { get; set; }
+    public string? FirstName { get; set; }
     
     [Required]
     [MaxLength(50)]
-    public string LastName { get; set; }
+    public string? LastName { get; set; }
 
-    public string FullName { get; set; }
+    public string? FullName { get; set; }
       
     [Required]
     [MaxLength(256)] 
-    public string Email { get; set; }
+    public string? Email { get; set; }
     public bool EmailConfirmed { get; set; }
-    public string PhoneNumber { get; set; }
-    public string Token { get; set; }
+    
+    [MaxLength(20)]
+    public string? PhoneNumber { get; set; }
+    public string? Token { get; set; }
 
     [Required]
     public bool IsEnabled { get; set; }
-    public long PersonId { get; set; }
 
-    [JsonIgnore]
-    public List<UserRefreshTokenDto> UserRefreshToken { get; set; }
-
-    public List<UserRoleDto> Roles { get; set; }
+    public List<UserRoleDto>? Roles { get; set; }
 }

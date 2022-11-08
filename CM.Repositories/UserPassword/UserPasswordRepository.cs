@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CM.Common.Configuration.Models;
+using CM.Database;
 using CM.Entities;
 using CM.Model.Dto;
 using CM.Repositories.Base;
@@ -12,7 +13,7 @@ public class UserPasswordRepository: BaseRepository<UserPassword, UserPasswordDt
     private readonly IMapper _mapper;
     private readonly PasswordSettings _passwordSettings;
 
-    public UserPasswordRepository(IMapper mapper, DbContext db, PasswordSettings passwordSettings) : base(mapper, db)
+    public UserPasswordRepository(IMapper mapper, CmDbContext db, PasswordSettings passwordSettings) : base(mapper, db)
     {
         _mapper = mapper;
         _passwordSettings = passwordSettings;

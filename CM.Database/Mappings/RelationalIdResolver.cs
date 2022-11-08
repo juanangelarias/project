@@ -4,21 +4,21 @@ using CM.Model.Dto.Base;
 
 namespace CM.Database.Mappings;
 
-public class RelationalIdResolver<T, U, V, W> : IValueResolver<T, V, W>
+public class RelationalIdResolver<T, TU, TV, TW> : IValueResolver<T, TV, TW>
     where T : BaseDto
-    where U : BaseDto
-    where V : BaseEntity
-    where W : BaseEntity
+    where TU : BaseDto
+    where TV : BaseEntity
+    where TW : BaseEntity
 {
-    public W Resolve(T source, V destination, W destinationRelation, ResolutionContext context)
+    public TW Resolve(T source, TV destination, TW destinationRelation, ResolutionContext context)
     {
-        var relation = new object() as W;
+        var relation = new object() as TW;
 
         var type = source.GetType();
 
         //Make sure that source has the correct property and not a field
         var propertyInfo = type.GetProperties()
-            .FirstOrDefault(p => p.PropertyType == typeof(U));
+            .FirstOrDefault(p => p.PropertyType == typeof(TU));
 
         if (propertyInfo == null)
         {
@@ -32,7 +32,7 @@ public class RelationalIdResolver<T, U, V, W> : IValueResolver<T, V, W>
 
         relation = destinationRelation != null
             ? context.Mapper.Map(sourceRelation, destinationRelation)
-            : context.Mapper.Map<W>(sourceRelation);
+            : context.Mapper.Map<TW>(sourceRelation);
 
         return relation;
     }

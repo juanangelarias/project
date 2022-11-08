@@ -1,0 +1,17 @@
+C:\Users\jaaria\Pichingos\CM\CM.Common\bin\Debug\net6.0\CM.Common.deps.json
+C:\Users\jaaria\Pichingos\CM\CM.Common\bin\Debug\net6.0\CM.Common.dll
+C:\Users\jaaria\Pichingos\CM\CM.Common\bin\Debug\net6.0\CM.Common.pdb
+C:\Users\jaaria\Pichingos\CM\CM.Common\bin\Debug\net6.0\CM.Entities.dll
+C:\Users\jaaria\Pichingos\CM\CM.Common\bin\Debug\net6.0\CM.Model.dll
+C:\Users\jaaria\Pichingos\CM\CM.Common\bin\Debug\net6.0\CM.Entities.pdb
+C:\Users\jaaria\Pichingos\CM\CM.Common\bin\Debug\net6.0\CM.Model.pdb
+C:\Users\jaaria\Pichingos\CM\CM.Common\obj\Debug\net6.0\CM.Common.csproj.AssemblyReference.cache
+C:\Users\jaaria\Pichingos\CM\CM.Common\obj\Debug\net6.0\CM.Common.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jaaria\Pichingos\CM\CM.Common\obj\Debug\net6.0\CM.Common.AssemblyInfoInputs.cache
+C:\Users\jaaria\Pichingos\CM\CM.Common\obj\Debug\net6.0\CM.Common.AssemblyInfo.cs
+C:\Users\jaaria\Pichingos\CM\CM.Common\obj\Debug\net6.0\CM.Common.csproj.CoreCompileInputs.cache
+C:\Users\jaaria\Pichingos\CM\CM.Common\obj\Debug\net6.0\CM.Common.csproj.CopyComplete
+C:\Users\jaaria\Pichingos\CM\CM.Common\obj\Debug\net6.0\CM.Common.dll
+C:\Users\jaaria\Pichingos\CM\CM.Common\obj\Debug\net6.0\refint\CM.Common.dll
+C:\Users\jaaria\Pichingos\CM\CM.Common\obj\Debug\net6.0\CM.Common.pdb
+C:\Users\jaaria\Pichingos\CM\CM.Common\obj\Debug\net6.0\ref\CM.Common.dll
