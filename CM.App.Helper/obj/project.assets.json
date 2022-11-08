@@ -1059,27 +1059,28 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\jaaria\\.nuget\\packages\\": {},
+    "C:\\Users\\arias\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jaaria\\Pichingos\\CM\\CM.App.Helper\\CM.App.Helper.csproj",
+      "projectUniqueName": "C:\\Users\\arias\\RiderProjects\\CM\\CM.App.Helper\\CM.App.Helper.csproj",
       "projectName": "CM.App.Helper",
-      "projectPath": "C:\\Users\\jaaria\\Pichingos\\CM\\CM.App.Helper\\CM.App.Helper.csproj",
-      "packagesPath": "C:\\Users\\jaaria\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jaaria\\Pichingos\\CM\\CM.App.Helper\\obj\\",
+      "projectPath": "C:\\Users\\arias\\RiderProjects\\CM\\CM.App.Helper\\CM.App.Helper.csproj",
+      "packagesPath": "C:\\Users\\arias\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\arias\\RiderProjects\\CM\\CM.App.Helper\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet"
       ],
       "configFilePaths": [
-        "C:\\Users\\jaaria\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\arias\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
@@ -1093,8 +1094,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "C:\\Users\\jaaria\\Pichingos\\CM\\CM.Model\\CM.Model.csproj": {
-              "projectPath": "C:\\Users\\jaaria\\Pichingos\\CM\\CM.Model\\CM.Model.csproj"
+            "C:\\Users\\arias\\RiderProjects\\CM\\CM.Model\\CM.Model.csproj": {
+              "projectPath": "C:\\Users\\arias\\RiderProjects\\CM\\CM.Model\\CM.Model.csproj"
             }
           }
         }
@@ -1137,20 +1138,6 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[6.0.10, 6.0.10]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[6.0.10, 6.0.10]"
-          },
-          {
-            "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[6.0.10, 6.0.10]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
