@@ -1,11 +1,9 @@
-﻿using System.Net.Mail;
-using System.Text.Json;
+﻿using System.Text.Json;
 using CM.Common.Configuration.Models;
 using CM.Core.Services.Encryption;
 using CM.Model.Enum;
 using CM.Model.General;
 using MailKit;
-using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 using MimeKit.Text;
@@ -67,13 +65,16 @@ public class MailService: IMailService
     {
         _success = false;
 
-        var secureSocketOptions = _parameters.EnableSsl
+        if (_parameters.SmtpServer == null || _parameters.Port == null)
+            return false;
+        
+        var secureSocketOptions = _parameters.EnableSsl ?? false
             ? SecureSocketOptions.StartTls
             : SecureSocketOptions.None;
         
         using var smtp = new SmtpClient();
         smtp.MessageSent += MessageSent;
-        smtp.Connect(_parameters.SmtpServer, _parameters.Port, secureSocketOptions);
+        smtp.Connect(_parameters.SmtpServer, _parameters.Port ?? 0, secureSocketOptions);
         smtp.Authenticate(_parameters.Username, _parameters.Password);
         smtp.Send(email);
         smtp.Disconnect(true);
@@ -110,7 +111,7 @@ public class MailService: IMailService
     
     #region Templates
 
-    private string? WelcomeTemplate(string email, string fullname, string encryptedText)
+    private string WelcomeTemplate(string email, string fullname, string encryptedText)
     {
         var text = encryptedText.Replace("/", "%2F").Replace("+", "%2B").Replace("=", "%3D");
         var linkUrl = $"{_frontEnd.BaseUrl}{_frontEnd.WelcomeComponent}?token={text}&page=Confirm";
@@ -149,7 +150,7 @@ public class MailService: IMailService
         return body;
     }
 
-    private string? ResetPasswordTemplate(string fullname, string encryptedText)
+    private string ResetPasswordTemplate(string fullname, string encryptedText)
     {
         var text = encryptedText.Replace("/", "%2F").Replace("+", "%2B").Replace("=", "%3D");
         var linkUrl = $"{_frontEnd.BaseUrl}{_frontEnd.ResetPasswordComponent}?token={text}&page=Forgot";
@@ -185,7 +186,7 @@ public class MailService: IMailService
         return body;
     }
 
-    private string? PasswordChangedConfirmationTemplate(string fullname, string encryptedText)
+    private string PasswordChangedConfirmationTemplate(string fullname, string encryptedText)
     {
         var text = encryptedText.Replace("/", "%2F").Replace("+", "%2B").Replace("=", "%3D");
         var linkUrl = $"{_frontEnd.BaseUrl}{_frontEnd.ResetPasswordComponent}?token={text}&page=Forgot";

@@ -4,11 +4,11 @@ public class MinimumUserResolverService : IUserResolverService
 {
     public long? GetUserId()
     {
-        throw new NotImplementedException();
+        return -1;
     }
 
     public string GetUserName()
     {
-        return "EntityFramework Migration";
+        return "System User";
     }
 }

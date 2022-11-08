@@ -3,5 +3,5 @@
 public interface IBaseDto
 {
     public long Id { get; set; }
-    public byte[] Timestamp { get; set; }
+    public byte[]? Timestamp { get; set; }
 }

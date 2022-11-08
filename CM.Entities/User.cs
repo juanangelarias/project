@@ -5,15 +5,14 @@ namespace CM.Entities;
 
 public class User: BaseEntity, IBaseEntity
 {
-    public string UserName { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public bool IsEnabled { get; set; }
-    public long PersonId { get; set; }
-    public string Email { get; set; }
-    public bool EmailConfirmed { get; set; }
-    public string PhoneNumber { get; set; }
-    public string Token { get; set; }
+    public string? UserName { get; set; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+    public bool? IsEnabled { get; set; }
+    public string? Email { get; set; }
+    public bool? EmailConfirmed { get; set; }
+    public string? PhoneNumber { get; set; }
+    public string? Token { get; set; }
     
     public string FullName => $"{FirstName} {LastName}";
 
@@ -55,6 +54,9 @@ public class User: BaseEntity, IBaseEntity
 
             e.Property(x => x.IsEnabled)
                 .HasDefaultValue(true);
+
+            e.Property(x => x.EmailConfirmed)
+                .HasDefaultValue(false);
 
             e
                 .HasMany(p => p.UserRefreshToken)

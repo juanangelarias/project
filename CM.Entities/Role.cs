@@ -5,11 +5,11 @@ namespace CM.Entities;
 
 public class Role: BaseEntity, IBaseEntity
 {
-    public string Code { get; set; }
-    public string Description { get; set; }
-    public string Name { get; set; }
+    public string? Code { get; set; }
+    public string? Description { get; set; }
+    public string? Name { get; set; }
 
-    public List<UserRole> UsersRoles { get; set; }
+    public List<UserRole>? UsersRoles { get; set; }
     
     public void OnModelCreating(ModelBuilder m)
     {

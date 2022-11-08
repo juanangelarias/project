@@ -24,13 +24,13 @@ public class JwtGenerator : IJwtGenerator
     public async Task<string> GetToken(long userId)
     {
         var user = await _userRepository.GetByIdExpandedAsync(userId);
-        var claims = await GetClaims(user);
+        var claims = GetClaims(user);
         var token = CreateToken(claims);
         
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    private async Task<List<Claim>> GetClaims(UserDto user)
+    private List<Claim> GetClaims(UserDto user)
     {
         var claims = new List<Claim>
         {
@@ -47,7 +47,7 @@ public class JwtGenerator : IJwtGenerator
 
     private JwtSecurityToken CreateToken(IEnumerable<Claim> claims)
     {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key ?? ""));
         var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         var expiresInMinutes = Convert.ToInt32(_jwtSettings.AccessTokenValidityInMinutes);
         var token = new JwtSecurityToken(
@@ -67,7 +67,7 @@ public class JwtGenerator : IJwtGenerator
         }
 
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_jwtSettings.Key);
+        var key = Encoding.ASCII.GetBytes(_jwtSettings.Key ?? "");
         try
         {
             var claimsPrincipal = tokenHandler.ValidateToken(token, new TokenValidationParameters
@@ -102,7 +102,7 @@ public class JwtGenerator : IJwtGenerator
         var refreshToken = new UserRefreshTokenDto
         {
             Token = Convert.ToBase64String(randomBytes),
-            Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.RefreshTokenValidityInMinutes),
+            Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.RefreshTokenValidityInMinutes??1440),
             Created = DateTime.UtcNow,
             CreatedByIp = ipAddress,
             Timestamp = BitConverter.GetBytes(DateTime.UtcNow.ToBinary())
