@@ -19,7 +19,7 @@ public class BaseService<T>: IBaseService<T>
     private readonly ISnackbar _snackbar;
     protected string BaseUrl { get; set; } = "";
 
-    public BaseService(NavigationManager navigation, IGeneralStateProvider state, HttpClient client, ISnackbar snackbar)
+    protected BaseService(NavigationManager navigation, IGeneralStateProvider state, HttpClient client, ISnackbar snackbar)
     {
         _navigation = navigation;
         _state = state;

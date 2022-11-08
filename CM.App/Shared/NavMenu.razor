@@ -18,6 +18,10 @@
                     <MudNavLink Href="/members" Disabled="!_isMembersOptionAllowed">Members</MudNavLink>
                     <MudNavLink Href="/countries" Disabled="!_isCountriesOptionAllowed">Countries</MudNavLink>
                 </MudNavGroup>
+                <MudNavGroup Title="Settings" Disabled="!_isSettingsAllowed">
+                    <MudNavLink Href="/conferences" Disabled="!_isConferencesAllowed">Conferences</MudNavLink>
+                    <MudNavLink Href="/products" Disabled="!_isProductsAllowed">Products</MudNavLink>
+                </MudNavGroup>
                 <MudNavGroup Title="Security" Disabled="!_isSecurityAllowed">
                     <MudNavLink Href="/changePassword" Disabled="!_isChangePasswordOptionAllowed">Change Password</MudNavLink>
                     <MudNavLink Href="/users" Disabled="!_isUserOptionAllowed">Users</MudNavLink>
@@ -34,14 +38,17 @@
 @code
 {
     private bool _isInscriptionsOptionAllowed;
+    private bool _isAdministrationAllowed;
     private bool _isClubsOptionAllowed;
     private bool _isMembersOptionAllowed;
     private bool _isCountriesOptionAllowed;
     private bool _isChangePasswordOptionAllowed;
+    private bool _isSettingsAllowed;
+    private bool _isConferencesAllowed;
+    private bool _isProductsAllowed;
+    private bool _isSecurityAllowed;
     private bool _isUserOptionAllowed;
     private bool _isRolesOptionAllowed;
-    private bool _isAdministrationAllowed;
-    private bool _isSecurityAllowed;
     private bool _isAdmin;
 
     protected override void OnInitialized()
@@ -61,6 +68,8 @@
             _isClubsOptionAllowed = true;
             _isMembersOptionAllowed = true;
             _isCountriesOptionAllowed = true;
+            _isConferencesAllowed = true;
+            _isProductsAllowed = true;
             _isChangePasswordOptionAllowed = true;
             _isUserOptionAllowed = true;
             _isRolesOptionAllowed = true;
@@ -72,6 +81,8 @@
             _isClubsOptionAllowed = false;
             _isMembersOptionAllowed = false;
             _isCountriesOptionAllowed = false;
+            _isConferencesAllowed = true;
+            _isProductsAllowed = true;
             _isChangePasswordOptionAllowed = false;
             _isUserOptionAllowed = false;
             _isRolesOptionAllowed = false;
@@ -79,6 +90,7 @@
         }
 
         _isAdministrationAllowed = _isClubsOptionAllowed || _isMembersOptionAllowed || _isCountriesOptionAllowed;
+        _isSettingsAllowed = _isConferencesAllowed || _isProductsAllowed;
         _isSecurityAllowed = _isChangePasswordOptionAllowed || _isUserOptionAllowed || _isRolesOptionAllowed;
     }
 }

@@ -19,5 +19,9 @@
       <ProjectReference Include="..\CM.App.Helper\CM.App.Helper.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\sample-data\weather.json" />
+    </ItemGroup>
+
 
 </Project>

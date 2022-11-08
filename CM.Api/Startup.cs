@@ -57,8 +57,8 @@ public class Startup
         {
             c.SwaggerDoc("v1", new OpenApiInfo
             {
-                Description = "Stine Portal API",
-                Title = "StinePortal.Api",
+                Description = "Conference Manager API",
+                Title = "Conference Manager API",
                 Version = "v1"
             });
 

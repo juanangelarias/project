@@ -10,7 +10,7 @@ namespace CM.App;
 
 public class Program
 {
-    private static readonly Uri BaseAddress = new Uri("https://localhost:7213");
+    private static readonly Uri BaseAddress = new Uri("https://localhost:7213/");
     
     public static async Task Main(string[] args)
     {

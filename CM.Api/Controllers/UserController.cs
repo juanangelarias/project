@@ -1,4 +1,5 @@
 ﻿using CM.Model.Dto;
+using CM.Model.General;
 using CM.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -37,6 +38,20 @@ public class UserController: ControllerBase
         try
         {
             return Ok(await _userRepository.GetByIdExpandedAsync(userId));
+        }
+        catch (Exception exception)
+        {
+            Log.Fatal(exception, "{Message}", exception.Message);
+            return StatusCode(500);
+        }
+    }
+
+    [HttpGet("getPage")]
+    public async Task<ActionResult<PagedResponse<UserDto>>> GetPage([FromQuery] QueryParams parameters)
+    {
+        try
+        {
+            return Ok(await _userRepository.GetAllPagedAsync(parameters, true));
         }
         catch (Exception exception)
         {
