@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using CM.App.Helper.State;
 using CM.Model.Dto;
+using CM.Model.Enum;
 using CM.Model.General;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -125,4 +126,33 @@ public class UserService: BaseService<UserDto>, IUserService
         };
         await GetResponse(request);
     }*/
+
+    public async Task<bool> SendInvitation(long userId)
+    {
+        int tmpl = (int) EmailTemplate.UserInvitation;
+        
+        var result = false;
+        
+        var request = new HttpRequestMessage(
+            HttpMethod.Get,
+            $"{BaseUrl}/{userId}/sendMail/{tmpl}");
+
+        var response = await GetResponse(request);
+        if (response != null)
+        {
+            result = await response.Content.ReadFromJsonAsync<bool>();
+        }
+
+        var msg = result
+            ? "Email sent successfully"
+            : "Email was not sent!";
+
+        var svr = result
+            ? Severity.Info
+            : Severity.Error;
+
+        _snackbar.Add(msg, svr);
+        
+        return result;
+    }
 }

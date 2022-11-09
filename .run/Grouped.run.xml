@@ -1,0 +1,7 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Grouped" type="CompoundRunConfigurationType">
+    <toRun name="CM.Api" type="LaunchSettings" />
+    <toRun name="CM.App: Mudblazor.Template" type="LaunchSettings" />
+    <method v="2" />
+  </configuration>
+</component>

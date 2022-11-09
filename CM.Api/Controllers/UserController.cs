@@ -1,4 +1,6 @@
-﻿using CM.Model.Dto;
+﻿using CM.Features;
+using CM.Model.Dto;
+using CM.Model.Enum;
 using CM.Model.General;
 using CM.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +14,12 @@ namespace CM.Api.Controllers;
 public class UserController: ControllerBase
 {
     private readonly IUserRepository _userRepository;
+    private readonly IUserFeature _userFeature;
 
-    public UserController(IUserRepository userRepository)
+    public UserController(IUserRepository userRepository, IUserFeature userFeature)
     {
         _userRepository = userRepository;
+        _userFeature = userFeature;
     }
 
     [HttpGet]
@@ -52,6 +56,23 @@ public class UserController: ControllerBase
         try
         {
             return Ok(await _userRepository.GetAllPagedAsync(parameters, true));
+        }
+        catch (Exception exception)
+        {
+            Log.Fatal(exception, "{Message}", exception.Message);
+            return StatusCode(500);
+        }
+    }
+
+    [HttpGet("{userId:long}/sendMail/{template:int}")]
+    public async Task<ActionResult<bool>> SendMail([FromRoute] long userId, [FromRoute] int template)
+    {
+        try
+        {
+            var tpl = (EmailTemplate) template;
+            await _userFeature.SendMail(userId, tpl);
+
+            return Ok(true);
         }
         catch (Exception exception)
         {

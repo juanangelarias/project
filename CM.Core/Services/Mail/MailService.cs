@@ -102,9 +102,9 @@ public class MailService: IMailService
     {
         return template switch
         {
-            EmailTemplate.UserInvitation => "Welcome to Stine Portal",
-            EmailTemplate.UserResetPassword => "Forgot Password for Stine Portal",
-            EmailTemplate.PasswordChanged => "Stine Portal Password Successfully changed",
+            EmailTemplate.UserInvitation => "Welcome to Conference Manager Portal",
+            EmailTemplate.UserResetPassword => "Forgot Password for Conference Manager Portal",
+            EmailTemplate.PasswordChanged => "Conference Manager Portal Password Successfully changed",
             _ => ""
         };
     }
@@ -122,7 +122,7 @@ public class MailService: IMailService
                    $"<p>&nbsp;</p>" +
                    $"<p>{fullname},</p>" +
 
-                   $"<p>Welcome to Stine Portal!</p>" +
+                   $"<p>Welcome to Conference Manager Portal!</p>" +
 
                    $"<p style=\"margin-top:25px;\">" +
                    $"    Sign in to your account using the following credentials:" +
@@ -156,12 +156,12 @@ public class MailService: IMailService
         var linkUrl = $"{_frontEnd.BaseUrl}{_frontEnd.ResetPasswordComponent}?token={text}&page=Forgot";
         
         var body = $"<p>" +
-                   $"    <img src=\"https://www.stineseed.com/corntour/images/logos/stine-logo.png\" alt=\"\" width=\"161\" height=\"47\" />" +
+                   $"    <img src=\"{_parameters.LogoUrl}\" alt=\"\" width=\"161\" height=\"47\" />" +
                    $"</p>" +
                    $"<p>&nbsp;</p>" +
                    $"<p>{fullname},</p>" + 
                    $"<p style=\"margin-top: 25px;\">" +
-                   $"    Follow this link to reset your password for Stine Portal." +
+                   $"    Follow this link to reset your password for Conference Manager Portal." +
                    $"</p>" +
                    $"<p style=\"margin-top: 25px;\">" +
                    $"    If you did not request a new password, you can safely delete this email." +
@@ -177,7 +177,7 @@ public class MailService: IMailService
                    $"            <td style=width:10px;>" +
                    $"            </td>" +
                    $"            <td style=\"width:130px; text-align: center;\">" +
-                   $"                Or <a href=\"{_frontEnd.BaseUrl}\">Go to Stine Portal</a>" +
+                   $"                Or <a href=\"{_frontEnd.BaseUrl}\">Go to Conference Manager Portal</a>" +
                    $"            </td>" +
                    $"        </tr>" +
                    $"    </tbody>" +
@@ -192,7 +192,7 @@ public class MailService: IMailService
         var linkUrl = $"{_frontEnd.BaseUrl}{_frontEnd.ResetPasswordComponent}?token={text}&page=Forgot";
         
         var body = $"<p>" +
-                   $"    <img src=\"https://www.stineseed.com/corntour/images/logos/stine-logo.png\" alt=\"\" width=\"161\" height=\"47\" />" +
+                   $"    <img src=\"{_parameters.LogoUrl}\" alt=\"\" width=\"161\" height=\"47\" />" +
                    $"</p>" +
                    $"<p>&nbsp;</p>" +
                    $"<p>{fullname},</p>" + 
@@ -200,7 +200,7 @@ public class MailService: IMailService
                    $"     You have successfully changed your password." +
                    $"</p>" +
                    $"<p style=\"margin-top: 25px;\">" +
-                   $"     If you did not request a new password, follow this link to reset your password for Stine Portal." +
+                   $"     If you did not request a new password, follow this link to reset your password for Conference Manager Portal." +
                    $"</p>" +
                    $"<p>&nbsp;</p>" +
                    $"<table style=\"border-collapse: collapse; width: 350px; height: 50px;\" border=\"0\">" +
@@ -214,7 +214,7 @@ public class MailService: IMailService
                    $"            <td style=width:10px;>" +
                    $"            </td>" +
                    $"            <td style=\"width:130px; text-align: center;\">" +
-                   $"                Or <a href=\"{_frontEnd.BaseUrl}\">Go to Stine Portal</a>" +
+                   $"                Or <a href=\"{_frontEnd.BaseUrl}\">Go to Conference Manager Portal</a>" +
                    $"            </td>" +
                    $"        </tr>" +
                    $"    </tbody>" +

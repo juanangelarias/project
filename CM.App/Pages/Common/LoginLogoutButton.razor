@@ -1,0 +1,34 @@
+﻿@inject NavigationManager _navigation
+@inject IGeneralStateProvider _generalState
+
+<AuthorizedView>
+    <Authorized>
+        <MudButton ButtonType="ButtonType.Submit"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   OnClick="Logout">
+            Logout
+        </MudButton>
+    </Authorized>
+    <NotAuthorized>
+        <MudButton ButtonType="ButtonType.Submit"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   OnClick="Login">
+            Login
+        </MudButton>
+    </NotAuthorized>
+</AuthorizedView>
+
+@code {
+    private void Login()
+    {
+        _navigation.NavigateTo("/login");
+    }
+    
+    private void Logout()
+    {
+        _generalState.Logout();
+        _navigation.NavigateTo("/login");
+    }
+}

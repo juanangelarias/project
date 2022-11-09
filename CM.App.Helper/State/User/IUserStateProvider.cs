@@ -32,4 +32,5 @@ public interface IUserStateProvider
     Task RemoveRole(RoleDto role, string filterAssigned, string filterAvailable);
     UserDto GetNewUser();
     Task SetSelectedUser(long userId);
+    Task SendInvitation(long userId);
 }

@@ -12,4 +12,5 @@ public interface IUserService: IBaseService<UserDto>
     Task AddRoleToUser(UserRoleDto userRole);
     Task RemoveRoleFromUser(long userRoleId);
     //Task SetDefaultConference(long userId, ConferenceDto conference);
+    Task<bool> SendInvitation(long userId);
 }

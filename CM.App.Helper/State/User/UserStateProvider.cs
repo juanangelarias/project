@@ -389,43 +389,35 @@ public class UserStateProvider: BaseStateProvider, IUserStateProvider
 
     public async Task SetSelectedUser(long userId)
     {
-        /*try
+        SelectedUser = userId != 0
+            ? UserList?.FirstOrDefault(f => f.Id == userId)
+            : GetNewUser();
+
+        /*if (SelectedUser?.Id == 0)
         {
-            SelectedUser = userId != 0 
-                ? UserList?.FirstOrDefault(f => f.Id == userId)
-                : GetNewUser();
-
-            if (SelectedUser?.Id == 0)
-            {
-                AssignedRoleList = new List<RoleDto?>();
-            }
-            else
-            {
-                var userRoles = await _userRoleService.GetByUser(userId);
-                AssignedRoleList = userRoles?.Select(s => s.Role).ToList() ?? new List<RoleDto?>();
-            }
-        
-            AvailableRoleList = RoleList?
-                .Where(r => AssignedRoleList.All(a => a?.Id != r.Id))
-                .ToList();
-
-            AvailableRoleTable = new TableData<RoleDto>
-            {
-                Items = AvailableRoleList,
-                TotalItems = AvailableRoleList?.Count ?? 0
-            };
-
-            AssignedRoleTable = new TableData<RoleDto>
-            {
-                Items = AssignedRoleList!,
-                TotalItems = AssignedRoleList.Count
-            };
+            AssignedRoleList = new List<RoleDto?>();
         }
-        catch (Exception exception)
+        else
         {
-            Console.WriteLine(exception);
-            throw;
-        }*/
+            var userRoles = await _userRoleService.GetByUser(userId);
+            AssignedRoleList = userRoles?.Select(s => s.Role).ToList() ?? new List<RoleDto?>();
+        }
+    
+        AvailableRoleList = RoleList?
+            .Where(r => AssignedRoleList.All(a => a?.Id != r.Id))
+            .ToList();
+
+        AvailableRoleTable = new TableData<RoleDto>
+        {
+            Items = AvailableRoleList,
+            TotalItems = AvailableRoleList?.Count ?? 0
+        };
+
+        AssignedRoleTable = new TableData<RoleDto>
+        {
+            Items = AssignedRoleList!,
+            TotalItems = AssignedRoleList.Count
+        };*/
     }
 
     public async Task GetRoles()
@@ -434,5 +426,10 @@ public class UserStateProvider: BaseStateProvider, IUserStateProvider
         {
             RoleList = await _roleService.Get();
         }*/
+    }
+
+    public async Task SendInvitation(long userId)
+    {
+        var result = _userService.SendInvitation(userId);
     }
 }

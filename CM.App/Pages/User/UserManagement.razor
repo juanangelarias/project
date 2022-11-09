@@ -2,6 +2,7 @@
 
 @using Microsoft.AspNetCore.Authorization
 @using CM.Model.Dto
+@using CM.App.Pages.Common
 
 @* @attribute [Authorize(Roles = "ADMIN") *@
 
@@ -29,7 +30,7 @@
         }
     </Authorized>
     <NotAuthorized>
-        <span> You're not authorized for this functionality.</span>
+        <NotAuthorizedComponent Functionality="User Management"/>
     </NotAuthorized>
 </AuthorizeView>
 
