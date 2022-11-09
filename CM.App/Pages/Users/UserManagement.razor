@@ -1,0 +1,71 @@
+﻿@page "/users"
+
+@using Microsoft.AspNetCore.Authorization
+@using CM.Model.Dto
+
+@* @attribute [Authorize(Roles = "ADMIN") *@
+
+@inject IPageHistoryStateProvider PageHistory
+@inject IUserStateProvider UserState
+
+<AuthorizeView>
+    <Authorized>
+        @switch (_component)
+        {
+            case ManagementFunction.EditNew:
+                <UserEdit GoBack="ShowList"
+                          UserState=UserState/>
+                break;
+            case ManagementFunction.UserRoles:
+                <UserRoles GoBack="ShowList"
+                           UserState=UserState/>
+                break;
+            case ManagementFunction.List:
+            default:
+                <UserList OnEdit="EditUser"
+                          OnRoles="UserRoles"
+                          UserState=UserState/>
+                break;
+        }
+    </Authorized>
+    <NotAuthorized>
+        <span> You're not authorized for this functionality.</span>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private ManagementFunction _component;
+
+    protected override async Task OnInitializedAsync()
+    {
+        PageHistory.AddPageToHistory(("/users"));
+        _component = ManagementFunction.List;
+        
+        await base.OnInitializedAsync();
+    }
+
+    private void EditUser()
+    {
+        _component = UserState.SelectedUser != null
+            ? ManagementFunction.EditNew
+            : ManagementFunction.List;
+        
+        StateHasChanged();
+    }
+
+    private void UserRoles()
+    {
+        _component = UserState.SelectedUser != null
+            ? ManagementFunction.UserRoles
+            : ManagementFunction.List;
+        
+        StateHasChanged();
+    }
+
+    private void ShowList()
+    {
+        _component = ManagementFunction.List;
+        
+        StateHasChanged();
+    }
+}
