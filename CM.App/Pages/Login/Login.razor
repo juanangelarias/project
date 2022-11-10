@@ -4,22 +4,22 @@
 
 @layout LoginLayout
 
-@inject IUserService _userService
-@inject IGeneralStateProvider _state
-@inject AuthenticationStateProvider _authentication
-@inject ISnackbar _snackbar
-@inject NavigationManager _navigation
+@inject IUserService UserService
+@inject IGeneralStateProvider State
+@inject AuthenticationStateProvider Authentication
+@inject ISnackbar Snackbar
+@inject NavigationManager Navigation
 
 <MudGrid Justify="Justify.Center">
-    <MudItem xs="6" sm="4" md="3">
+    <MudItem xs="6"> @*sm="4" md="3">*@
         <EditForm Model="@_model"
                   OnValidSubmit="OnValidSubmit"
                   OnInvalidSubmit="OnInvalidSubmit">
             <DataAnnotationsValidator/>
             <MudCard Outlined="true" 
                      Elevation="7">
-                <MudCardHeader Style="justify-content: center;">
-                    <MudImage Src="resources/logo.png" Style="width: 150px; height: 150px;"/>
+                <MudCardHeader Style="justify-content: center; background-color: #0B409C;">
+                    <MudImage Src="resources/logot.png" Style="width: 150px; height: 150px;"/>
                 </MudCardHeader>
                 <MudCardContent>
                     <MudGrid Justify="Justify.Center">
@@ -71,7 +71,7 @@
     private readonly LoginData _model = new();
     private bool _success = true;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         // ToDo: To be removed
 
@@ -83,18 +83,18 @@
 
     private async Task OnValidSubmit(EditContext context)
     {
-        var response = await _userService.Login(_model);
+        var response = await UserService.Login(_model);
         if (response != null && !string.IsNullOrEmpty(response.Token))
         {
-            _state.SetLocalStorage(response);
-            await _authentication.GetAuthenticationStateAsync();
+            State.SetLocalStorage(response);
+            await Authentication.GetAuthenticationStateAsync();
             _success = true;
             StateHasChanged();
-            _navigation.NavigateTo("/");
+            Navigation.NavigateTo("/");
         }
         else
         {
-            _snackbar.Add("Username or password are invalid", Severity.Error);
+            Snackbar.Add("Username or password are invalid", Severity.Error);
             _success = false;
         }
     }
