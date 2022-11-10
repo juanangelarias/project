@@ -8,4 +8,5 @@ public interface IUserFeature
     Task<bool> Login(LoginData login);
     Task<bool> ResetPassword(ResetPassword data);
     Task SendMail(long userId, EmailTemplate template);
+PasswordMailData GetUserFromToken(string token);
 }

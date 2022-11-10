@@ -7,10 +7,11 @@ public interface IUserService: IBaseService<UserDto>
 {
     //Task<List<ConferenceDto>?> GetUserConferences(long userId);
     Task<LoginResponse?> Login(LoginData login);
-    Task<bool?> ResetPassword(string username, string oldPassword, string newPassword);
+    Task<bool?> ResetPassword(ResetPassword data);
     Task<bool?> ResetForgotPassword(string username, string newPassword);
     Task AddRoleToUser(UserRoleDto userRole);
     Task RemoveRoleFromUser(long userRoleId);
     //Task SetDefaultConference(long userId, ConferenceDto conference);
     Task<bool> SendInvitation(long userId);
+    Task<PasswordMailData> GetUserFromToken(string token);
 }

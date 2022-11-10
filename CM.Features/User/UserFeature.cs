@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text.Json;
 using CM.Common.Configuration.Models;
 using CM.Core.Services.Encryption;
 using CM.Core.Services.Mail;
@@ -97,5 +98,13 @@ public class UserFeature : IUserFeature
         };
 
         _mailService.SendTemplate(data);
+    }
+
+    public PasswordMailData GetUserFromToken(string token)
+    {
+        var json = _encryptionService.Decrypt(token);
+        var data = JsonSerializer.Deserialize<PasswordMailData>(json);
+
+        return data;
     }
 }

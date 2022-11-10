@@ -81,12 +81,40 @@ public class UserController: ControllerBase
         }
     }
 
+    [HttpGet("getUserFromToken/{token}")]
+    public async Task<ActionResult<PasswordMailData>> GetUserFromToken(string token)
+    {
+        try
+        {
+            return Ok(_userFeature.GetUserFromToken(token));
+        }
+        catch (Exception exception)
+        {
+            Log.Fatal(exception, "{Message}", exception.Message);
+            return StatusCode(500);
+        }
+    }
+
     [HttpPost]
     public async Task<ActionResult<UserDto>> Create([FromBody] UserDto user)
     {
         try
         {
             return Ok(await _userRepository.CreateAsync(user));
+        }
+        catch (Exception exception)
+        {
+            Log.Fatal(exception, "{Message}", exception.Message);
+            return StatusCode(500);
+        }
+    }
+
+    [HttpPost("resetPassword")]
+    public async Task<ActionResult<bool>> ResetPassword([FromBody] ResetPassword data)
+    {
+        try
+        {
+            return Ok(await _userFeature.ResetPassword(data));
         }
         catch (Exception exception)
         {

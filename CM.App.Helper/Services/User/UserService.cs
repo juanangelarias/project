@@ -57,15 +57,8 @@ public class UserService: BaseService<UserDto>, IUserService
         return null;
     }
 
-    public async Task<bool?> ResetPassword(string username, string oldPassword, string newPassword)
+    public async Task<bool?> ResetPassword(ResetPassword data)
     {
-        var data = new ResetPassword
-        {
-            UserName = username,
-            Password = oldPassword,
-            NewPassword = newPassword
-        };
-        
         var request = new HttpRequestMessage(HttpMethod.Post, $"{BaseUrl}/resetPassword")
         {
             Content = new StringContent(JsonSerializer.Serialize(data), Encoding.UTF8, "application/json")
@@ -129,13 +122,13 @@ public class UserService: BaseService<UserDto>, IUserService
 
     public async Task<bool> SendInvitation(long userId)
     {
-        int tmpl = (int) EmailTemplate.UserInvitation;
+        const int template = (int) EmailTemplate.UserInvitation;
         
         var result = false;
         
         var request = new HttpRequestMessage(
             HttpMethod.Get,
-            $"{BaseUrl}/{userId}/sendMail/{tmpl}");
+            $"{BaseUrl}/{userId}/sendMail/{template}");
 
         var response = await GetResponse(request);
         if (response != null)
@@ -153,6 +146,22 @@ public class UserService: BaseService<UserDto>, IUserService
 
         _snackbar.Add(msg, svr);
         
+        return result;
+    }
+
+    public async Task<PasswordMailData> GetUserFromToken(string token)
+    {
+        PasswordMailData result = null;
+        var request = new HttpRequestMessage(
+            HttpMethod.Get, 
+            $"{BaseUrl}/user/v1/getUserFromToken/{token}");
+
+        var response = await GetResponse(request);
+        if (response != null)
+        {
+            result = await response.Content.ReadFromJsonAsync<PasswordMailData>();
+        }
+
         return result;
     }
 }
