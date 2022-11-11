@@ -29,7 +29,7 @@ public class MailService: IMailService
     {
         var email = new MimeMessage();
         email.From.Add(MailboxAddress.Parse(_parameters.From));
-        email.To.AddRange(emailMessage.To.Select(MailboxAddress.Parse));
+        email.To.AddRange(emailMessage.To?.Select(MailboxAddress.Parse));
         email.Subject = emailMessage.Subject;
         email.Body = emailMessage.IsHtml 
             ? new TextPart(TextFormat.Html) {Text = emailMessage.Body} 
@@ -73,7 +73,7 @@ public class MailService: IMailService
             : SecureSocketOptions.None;
         
         using var smtp = new SmtpClient();
-        smtp.MessageSent += MessageSent;
+        smtp.MessageSent += MessageSent!;
         smtp.Connect(_parameters.SmtpServer, _parameters.Port ?? 0, secureSocketOptions);
         smtp.Authenticate(_parameters.Username, _parameters.Password);
         smtp.Send(email);
@@ -113,8 +113,7 @@ public class MailService: IMailService
 
     private string WelcomeTemplate(string email, string fullname, string encryptedText)
     {
-        var text = encryptedText.Replace("/", "%2F").Replace("+", "%2B").Replace("=", "%3D");
-        var linkUrl = $"{_frontEnd.BaseUrl}{_frontEnd.WelcomeComponent}?token={text}&page=Confirm";
+        var linkUrl = $"{_frontEnd.BaseUrl}/{_frontEnd.WelcomeComponent}?token={encryptedText}";
         
         var body = $"<p>" +
                    $"    <img src=\"{_parameters.LogoUrl}\" alt=\"\" width=\"161\" height=\"47\" />" +

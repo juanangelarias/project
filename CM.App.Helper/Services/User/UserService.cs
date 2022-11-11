@@ -154,7 +154,7 @@ public class UserService: BaseService<UserDto>, IUserService
         PasswordMailData result = null;
         var request = new HttpRequestMessage(
             HttpMethod.Get, 
-            $"{BaseUrl}/user/v1/getUserFromToken/{token}");
+            $"{BaseUrl}/getUserFromToken?token={token}");
 
         var response = await GetResponse(request);
         if (response != null)

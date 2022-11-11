@@ -81,8 +81,8 @@ public class UserController: ControllerBase
         }
     }
 
-    [HttpGet("getUserFromToken/{token}")]
-    public async Task<ActionResult<PasswordMailData>> GetUserFromToken(string token)
+    [HttpGet("getUserFromToken")]
+    public async Task<ActionResult<PasswordMailData>> GetUserFromToken([FromQuery] string token)
     {
         try
         {
