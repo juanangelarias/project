@@ -18,6 +18,7 @@ public class User: BaseEntity, IBaseEntity
 
     public IEnumerable<UserRole> UserRoles { get; set; }
     public IEnumerable<UserRefreshToken> UserRefreshToken { get; set; }
+    public IEnumerable<UserRequestToken> UserRequestTokens { get; set; }
     public IEnumerable<UserPassword> UserPasswords { get; set; }
     
     public void OnModelCreating(ModelBuilder m)
@@ -57,6 +58,12 @@ public class User: BaseEntity, IBaseEntity
 
             e.Property(x => x.EmailConfirmed)
                 .HasDefaultValue(false);
+
+            e
+                .HasMany(p => p.UserRequestTokens)
+                .WithOne(o => o.User)
+                .HasForeignKey(k => k.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             e
                 .HasMany(p => p.UserRefreshToken)

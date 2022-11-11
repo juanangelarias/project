@@ -18,6 +18,7 @@ public class CmDbContext: DbContext
     // U
     public DbSet<User> Users { get; set; }
     public DbSet<UserPassword> UserPasswords { get; set; }
+    public DbSet<UserRequestToken> UserRequestTokens { get; set; }
     public DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
 

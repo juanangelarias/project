@@ -8,14 +8,15 @@ public class PasswordModel
     
     public string Username { get; set; }
     
-    public string Password { get; set; }
-    
     [Required(ErrorMessage = "Password is required.")]
     [DataType(DataType.Password)]
+    [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", 
+        ErrorMessage = "Password should have at least 8 character, one lowercase letter, one uppercase letter, one number and one special character")]
     [StringLength(200)]
     public string NewPassword { get; set; }
     
     [Required(ErrorMessage = "Password is required.")]
     [DataType(DataType.Password)]
+    [Compare(nameof(NewPassword), ErrorMessage = "Passwords do not match")]
     [StringLength(200)]public string Confirm { get; set; }
 }

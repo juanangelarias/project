@@ -86,7 +86,7 @@ public class UserController: ControllerBase
     {
         try
         {
-            return Ok(_userFeature.GetUserFromToken(token));
+            return Ok(await _userFeature.GetUserFromToken(token));
         }
         catch (Exception exception)
         {

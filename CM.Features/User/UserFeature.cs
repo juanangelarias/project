@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Text.Json;
+﻿using System.Text.Json;
 using CM.Common.Configuration.Models;
 using CM.Core.Services.Encryption;
 using CM.Core.Services.Mail;
@@ -14,15 +13,18 @@ public class UserFeature : IUserFeature
 {
     private readonly IUserRepository _userRepository;
     private readonly IUserPasswordRepository _userPasswordRepository;
+    private readonly IUserRequestTokenRepository _userRequestTokenRepository;
     private readonly IEncryptionService _encryptionService;
     private readonly IMailService _mailService;
     private readonly PasswordSettings _passwordSettings;
 
     public UserFeature(IUserRepository userRepository, IUserPasswordRepository userPasswordRepository,
-        IEncryptionService encryptionService, IMailService mailService, PasswordSettings passwordSettings)
+        IUserRequestTokenRepository userRequestTokenRepository, IEncryptionService encryptionService,
+        IMailService mailService, PasswordSettings passwordSettings)
     {
         _userRepository = userRepository;
         _userPasswordRepository = userPasswordRepository;
+        _userRequestTokenRepository = userRequestTokenRepository;
         _encryptionService = encryptionService;
         _mailService = mailService;
         _passwordSettings = passwordSettings;
@@ -43,7 +45,7 @@ public class UserFeature : IUserFeature
         return hashedPassword == userPassword.PasswordHash;
     }
 
-    public async Task<bool> ResetPassword(ResetPassword data)
+    public async Task<bool> ChangePassword(ResetPassword data)
     {
         var user = await _userRepository.GetByUserName(data.UserName);
         if (user == null)
@@ -75,6 +77,26 @@ public class UserFeature : IUserFeature
         return false;
     }
 
+    public async Task<bool> ResetPassword(ResetPassword data)
+    {
+        var user = await _userRepository.GetByUserName(data.UserName);
+        if (user == null)
+            return false;
+
+        var newSecurityStamp = _encryptionService.CreateSalt();
+        var newUserPassword = new UserPasswordDto
+        {
+            UserId = user.Id,
+            Date = DateTime.Now,
+            PasswordHash = _encryptionService.OneWayEncrypt(data.NewPassword, newSecurityStamp),
+            SecurityStamp = newSecurityStamp
+        };
+
+        await _userPasswordRepository.CreateAsync(newUserPassword);
+
+        return true;
+    }
+
     public async Task SendMail(long userId, EmailTemplate template)
     {
         var user = await _userRepository.GetByIdExpandedAsync(userId);
@@ -87,24 +109,49 @@ public class UserFeature : IUserFeature
             _ => 10
         };
 
+        var token = Guid.NewGuid().ToString();
+
+        var requestToken = new UserRequestTokenDto
+        {
+            UserId = userId,
+            Token = token,
+            Emitted = DateTime.Now,
+            Expires = DateTime.Now.AddHours(_passwordSettings.WelcomeTokenExpirationInHours)
+        };
+
+        await _userRequestTokenRepository.CreateAsync(requestToken);
+
         var data = new PasswordMailData
         {
             UserId = userId,
             Email = user.Email,
             Expiration = DateTime.UtcNow.AddMinutes(deltaTime),
             FullName = user.FullName,
-            Token = Guid.NewGuid().ToString(),
+            Token = token,
             Type = template
         };
 
         _mailService.SendTemplate(data);
     }
 
-    public PasswordMailData GetUserFromToken(string token)
+    public async Task<PasswordMailData> GetUserFromToken(string token)
     {
-        var json = _encryptionService.Decrypt(token);
-        var data = JsonSerializer.Deserialize<PasswordMailData>(json);
+        var tokenDef = await _userRequestTokenRepository.GetTokenDefinition(token);
 
+        if (tokenDef == null)
+        {
+            return null;
+        }
+
+        var data = new PasswordMailData
+        {
+            Email = tokenDef.User.UserName,
+            Expiration = tokenDef.Expires,
+            FullName = tokenDef.User.FullName,
+            Token = tokenDef.Token,
+            Type = EmailTemplate.UserInvitation,
+            UserId = tokenDef.User.Id
+        };
         return data;
     }
 }

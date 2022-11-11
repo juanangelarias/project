@@ -12,7 +12,9 @@ public class SqlMappingProfile: AutoMapper.Profile
         
         // U
         CreateMap<User, UserDto>().ReverseMap();
+        CreateMap<UserPassword, UserPasswordDto>().ReverseMap();
         CreateMap<UserRefreshToken, UserRefreshTokenDto>().ReverseMap();
+        CreateMap<UserRequestToken, UserRequestTokenDto>().ReverseMap();
         CreateMap<UserRole, UserRoleDto>().ReverseMap();
     }
 }

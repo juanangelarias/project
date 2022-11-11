@@ -1,4 +1,10 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using CM.App.Pages.Common
+
+@inherits LayoutComponentBase
+
+@inject NavigationManager Navigation
+@inject IGeneralStateProvider State
 
 <MudThemeProvider/>
 <MudDialogProvider/>
@@ -8,12 +14,31 @@
     <MudAppBar Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
         <MudSpacer/>
-        <MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Color="Color.Inherit" Link="https://mudblazor.com/" Target="_blank"/>
-        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/Garderoben/MudBlazor" Target="_blank"/>
+        <MudText Typo="Typo.h4">
+            @_conferenceName
+        </MudText>
+        <MudSpacer/>
+        <LoginLogoutButton></LoginLogoutButton>
+        @if (_showDropDown && State?.User?.FullName != null)
+        {
+            <MudMenu Color="Color.Success"
+                     AnchorOrigin="Origin.BottomCenter">
+                <ActivatorContent>
+                    <MudText Color="Color.Success">
+                        @State?.User?.FullName
+                    </MudText>
+                </ActivatorContent>
+                <ChildContent>
+                    <MudMenuItem OnClick="@(()=> NavigateTo("SetConference"))">Set Conference</MudMenuItem>
+                    <MudMenuItem OnClick="@(()=> NavigateTo("ChangePassword"))">Change Password</MudMenuItem>
+                    <MudMenuItem OnClick="@(()=> NavigateTo("Logout"))">Logout</MudMenuItem>
+                </ChildContent>
+            </MudMenu>
+        }
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
         <MudDrawerHeader>
-            <MudText Typo="Typo.h6">CM.App</MudText>
+            <MudText Typo="Typo.h6">Conference Manager</MudText>
         </MudDrawerHeader>
         <NavMenu/>
     </MudDrawer>
@@ -25,11 +50,56 @@
 </MudLayout>
 
 @code {
-    bool _drawerOpen = true;
+    [CascadingParameter]
+    protected Task<AuthenticationStateProvider> AuthState { get; set; }
+    
+    private bool _drawerOpen = true;
+    private string _conferenceName = string.Empty;
+    private bool _showDropDown = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        // ToDo: Add the default Conference to the GeneralStateProvider
+        _conferenceName = "No Conference is selected";
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        
+        if(firstRender)
+            return;
+
+        _showDropDown = true;
+        StateHasChanged();
+    }
 
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+
+    private void Login()
+    {
+        Navigation.NavigateTo("/login");
+    }
+
+    private void NavigateTo(string option)
+    {
+        var destiny = option switch
+        {
+            "SetConference" => "/user/seDefaultConference",
+            "ChangePassword" => "/user/changePassword",
+            "Logout" => "/logout",
+            _ => null
+            };
+
+        if (string.IsNullOrEmpty(destiny))
+        {
+            Navigation.NavigateTo(destiny);
+        }
     }
 
 }

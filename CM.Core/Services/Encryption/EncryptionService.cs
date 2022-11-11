@@ -37,7 +37,10 @@ public class EncryptionService: IEncryptionService
             array = memoryStream.ToArray();
         }
 
-        return ReplaceSpecialCharacters(Convert.ToBase64String(array));
+        var hashed = Convert.ToBase64String(array);
+        var replacedHashed = ReplaceSpecialCharacters(hashed);
+        
+        return replacedHashed;
     }
 
     public string Decrypt(string hashed, string? salt = null)

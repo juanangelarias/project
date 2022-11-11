@@ -204,6 +204,7 @@ public class Startup
             .AddScoped<IUserFeature, UserFeature>()
             .AddScoped<IUserPasswordRepository, UserPasswordRepository>()
             .AddScoped<IUserRepository, UserRepository>()
+            .AddScoped<IUserRequestTokenRepository, UserRequestTokenRepository>()
             .AddScoped<IUserResolverService, MinimumUserResolverService>()      // ToDo: Change to UserResolveService once User functionality is ready
             .AddScoped<IUserRoleRepository, UserRoleRepository>();
 

@@ -40,16 +40,7 @@ public class MailService: IMailService
 
     public bool SendTemplate(PasswordMailData data)
     {
-        var json = JsonSerializer.Serialize(new PasswordMailToken
-        {
-            UserId = data.UserId,
-            Expiration = data.Expiration,
-            Token = data.Token
-        });
-        
-        var encryptedText = _encryptionService.Encrypt(json);
-        
-        var body = GetTemplate(data.Type, data.Email, data.FullName, encryptedText);
+        var body = GetTemplate(data.Type, data.Email, data.FullName, data.Token);
         var subject = GetSubject(data.Type);
 
         var email = new MimeMessage(); 
@@ -111,9 +102,9 @@ public class MailService: IMailService
     
     #region Templates
 
-    private string WelcomeTemplate(string email, string fullname, string encryptedText)
+    private string WelcomeTemplate(string email, string fullname, string token)
     {
-        var linkUrl = $"{_frontEnd.BaseUrl}/{_frontEnd.WelcomeComponent}?token={encryptedText}";
+        var linkUrl = $"{_frontEnd.BaseUrl}/{_frontEnd.WelcomeComponent}?token={token}";
         
         var body = $"<p>" +
                    $"    <img src=\"{_parameters.LogoUrl}\" alt=\"\" width=\"161\" height=\"47\" />" +
@@ -149,9 +140,9 @@ public class MailService: IMailService
         return body;
     }
 
-    private string ResetPasswordTemplate(string fullname, string encryptedText)
+    private string ResetPasswordTemplate(string fullname, string token)
     {
-        var text = encryptedText.Replace("/", "%2F").Replace("+", "%2B").Replace("=", "%3D");
+        var text = token.Replace("/", "%2F").Replace("+", "%2B").Replace("=", "%3D");
         var linkUrl = $"{_frontEnd.BaseUrl}{_frontEnd.ResetPasswordComponent}?token={text}&page=Forgot";
         
         var body = $"<p>" +
@@ -185,10 +176,9 @@ public class MailService: IMailService
         return body;
     }
 
-    private string PasswordChangedConfirmationTemplate(string fullname, string encryptedText)
+    private string PasswordChangedConfirmationTemplate(string fullname, string token)
     {
-        var text = encryptedText.Replace("/", "%2F").Replace("+", "%2B").Replace("=", "%3D");
-        var linkUrl = $"{_frontEnd.BaseUrl}{_frontEnd.ResetPasswordComponent}?token={text}&page=Forgot";
+        var linkUrl = $"{_frontEnd.BaseUrl}{_frontEnd.ResetPasswordComponent}?token={token}&page=Forgot";
         
         var body = $"<p>" +
                    $"    <img src=\"{_parameters.LogoUrl}\" alt=\"\" width=\"161\" height=\"47\" />" +
