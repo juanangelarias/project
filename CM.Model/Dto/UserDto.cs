@@ -33,4 +33,6 @@ public class UserDto: BaseDto
     public bool IsEnabled { get; set; }
 
     public List<UserRoleDto>? Roles { get; set; }
+
+    public DateTime Expires { get; set; }
 }

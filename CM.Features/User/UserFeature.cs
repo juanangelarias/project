@@ -46,14 +46,20 @@ public class UserFeature : IUserFeature
         if (userPassword == null)
             return null;
 
-        var hashedPassword = _encryptionService.Encrypt(login.Password!, userPassword.SecurityStamp!);
+        var hashedPassword = _encryptionService.OneWayEncrypt(login.Password!, userPassword.SecurityStamp!);
 
         if (hashedPassword == userPassword.PasswordHash)
         {
+            user = await _userRepository.GetByIdExpandedAsync(user.Id);
+
+            var token = await _jwtGenerator.GetToken(user.Id);
+            user.Expires = token.Expires;
+            user.Token = token.Value;
+                
             return new LoginResponse
             {
-                User = await _userRepository.GetByIdExpandedAsync(user.Id),
-                Token = await _jwtGenerator.GetToken(user.Id),
+                User = user,
+                Token = token.Value
             };
         }
 

@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using CM.Common.Configuration.Models;
 using CM.Model.Dto;
+using CM.Model.General;
 using CM.Repositories;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -21,13 +22,21 @@ public class JwtGenerator : IJwtGenerator
         _jwtSettings = jwtSettings.Value;
     }
 
-    public async Task<string> GetToken(long userId)
+    public async Task<Token> GetToken(long userId)
     {
         var user = await _userRepository.GetByIdExpandedAsync(userId);
         var claims = GetClaims(user);
-        var token = CreateToken(claims);
-        
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        var expiresInMinutes = Convert.ToInt32(_jwtSettings.AccessTokenValidityInMinutes);
+        var expires = DateTime.UtcNow.AddMinutes(expiresInMinutes);
+        var token = CreateToken(claims, expires);
+
+        var result = new Token
+        {
+            Value = new JwtSecurityTokenHandler().WriteToken(token),
+            Expires = expires
+        };
+
+        return result;
     }
 
     private List<Claim> GetClaims(UserDto user)
@@ -39,23 +48,25 @@ public class JwtGenerator : IJwtGenerator
             new("Id", Convert.ToString(user.Id)),
             new("UserName", user.UserName)
         };
-        
-        claims.AddRange(user.Roles.Select(role => new Claim(ClaimTypes.Role, role.Role.Name)));
+
+        if (user.Roles != null && user.Roles.Any())
+        {
+            claims.AddRange(user.Roles.Select(role => new Claim(ClaimTypes.Role, role.Role.Name)));
+        }
 
         return claims;
     }
 
-    private JwtSecurityToken CreateToken(IEnumerable<Claim> claims)
+    private JwtSecurityToken CreateToken(IEnumerable<Claim> claims, DateTime expires)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key ?? ""));
         var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var expiresInMinutes = Convert.ToInt32(_jwtSettings.AccessTokenValidityInMinutes);
         var token = new JwtSecurityToken(
             issuer: _jwtSettings.Issuer,
             audience: _jwtSettings.Audience,
             claims: claims,
             signingCredentials: signingCredentials,
-            expires: DateTime.UtcNow.AddMinutes(expiresInMinutes));
+            expires: expires);
         return token;
     }
 

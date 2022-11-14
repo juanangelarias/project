@@ -45,7 +45,7 @@
                                Variant="Variant.Filled"
                                Color="Color.Primary"
                                Class="ml-auto">
-                        Register
+                        Submit
                     </MudButton>
                 </MudCardActions>
             </MudCard>
@@ -87,9 +87,12 @@
         if (response != null && !string.IsNullOrEmpty(response.Token))
         {
             State.SetLocalStorage(response);
-            await Authentication.GetAuthenticationStateAsync();
+
+            var customAuthStateProvider = (ApiAuthenticationStateProvider) Authentication;
+            await customAuthStateProvider.UpdateAuthenticationState(response.User);
+
             _success = true;
-            StateHasChanged();
+                
             Navigation.NavigateTo("/");
         }
         else

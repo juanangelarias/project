@@ -48,13 +48,12 @@ public class UserService: BaseService<UserDto>, IUserService
             Content = new StringContent(JsonSerializer.Serialize(login), Encoding.UTF8, "application/json")
         };
         var response = await GetResponse(request);
-        if (response != null)
-        {
-            var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
-            return result;
-        }
-
-        return null;
+        
+        if (response == null) 
+            return null;
+        
+        var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+        return result;
     }
 
     public async Task<bool?> ResetPassword(ResetPassword data)

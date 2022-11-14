@@ -1,8 +1,9 @@
-﻿using System.Net.Http.Headers;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using System.Text;
 using System.Text.Json;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
+using CM.Model.Dto;
 
 namespace CM.App.Helper.State;
 
@@ -10,6 +11,7 @@ public class ApiAuthenticationStateProvider: AuthenticationStateProvider
 {
     private readonly HttpClient _client;
     private readonly ILocalStorageService _localStorage;
+    private readonly ClaimsPrincipal _anonymous = new(new ClaimsIdentity());
 
     public ApiAuthenticationStateProvider(HttpClient client, ILocalStorageService localStorage)
     {
@@ -19,21 +21,63 @@ public class ApiAuthenticationStateProvider: AuthenticationStateProvider
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        var token = await _localStorage.GetItemAsync<string>("Token");
-        var expires = await _localStorage.GetItemAsync<DateTime>("Expires");
+        try
+        {
+            var userSession = await ReadEncryptedItemAsync<UserDto>("User");
+            if (userSession == null)
+                return await Task.FromResult(new AuthenticationState(_anonymous));
 
-        if (string.IsNullOrWhiteSpace(token) || expires < DateTime.UtcNow)
-            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+            var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, userSession.FullName),
+                new Claim(ClaimTypes.Role, "Admin")
+            }, "JwtAuth"));
 
-        var identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
-        var user = new ClaimsPrincipal(identity);
-        var state = new AuthenticationState(user);
+            return await Task.FromResult(new AuthenticationState(claimsPrincipal));
+        }
+        catch
+        {
+            return await Task.FromResult(new AuthenticationState(_anonymous));
+        }
+    }
+
+    public async Task UpdateAuthenticationState(UserDto? user)
+    {
+        ClaimsPrincipal claimsPrincipal;
+
+        if (user != null)
+        {
+            claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
+            {
+                new(ClaimTypes.Name, user.FullName),
+                new(ClaimTypes.Role, "Admin")
+            }));
+
+            await SaveItemEncryptedAsync("User", user);
+        }
+        else
+        {
+            claimsPrincipal = _anonymous;
+            await _localStorage.RemoveItemAsync("User");
+        }
         
-        NotifyAuthenticationStateChanged(Task.FromResult(state));
+        NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(claimsPrincipal)));
+    }
 
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+    public async Task<string> GetToken()
+    {
+        var result = string.Empty;
 
-        return state;
+        try
+        {
+            var user = await ReadEncryptedItemAsync<UserDto>("User");
+            if (user != null || DateTime.Now < user.Expires)
+                result = user.Token;
+        }
+        catch
+        { }
+
+        return result;
     }
     
     public void MarkUserAsAuthenticated(string email)
@@ -101,5 +145,23 @@ public class ApiAuthenticationStateProvider: AuthenticationStateProvider
         }
 
         return Convert.FromBase64String(base64);
+    }
+    
+    private async Task SaveItemEncryptedAsync<T>(string key, T item)
+    {
+        var itemJson = JsonSerializer.Serialize(item);
+        var itemJsonBytes = Encoding.UTF8.GetBytes(itemJson);
+        var base64Json = Convert.ToBase64String(itemJsonBytes);
+        await _localStorage.SetItemAsStringAsync(key, base64Json);
+    }
+    
+    private async Task<T> ReadEncryptedItemAsync<T>(string key)
+    {
+        var base64Json = await _localStorage.GetItemAsync<string>(key);
+        var itemJsonBytes = Convert.FromBase64String(base64Json);
+        var itemJson = Encoding.UTF8.GetString(itemJsonBytes);
+        var item = JsonSerializer.Deserialize<T>(itemJson);
+
+        return item;
     }
 }
