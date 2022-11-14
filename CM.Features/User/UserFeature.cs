@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using CM.Common.Configuration.Models;
+using CM.Core.Authentication;
 using CM.Core.Services.Encryption;
 using CM.Core.Services.Mail;
 using CM.Model.Dto;
@@ -15,34 +16,48 @@ public class UserFeature : IUserFeature
     private readonly IUserPasswordRepository _userPasswordRepository;
     private readonly IUserRequestTokenRepository _userRequestTokenRepository;
     private readonly IEncryptionService _encryptionService;
+    private readonly IJwtGenerator _jwtGenerator;
     private readonly IMailService _mailService;
     private readonly PasswordSettings _passwordSettings;
 
     public UserFeature(IUserRepository userRepository, IUserPasswordRepository userPasswordRepository,
         IUserRequestTokenRepository userRequestTokenRepository, IEncryptionService encryptionService,
-        IMailService mailService, PasswordSettings passwordSettings)
+        IJwtGenerator jwtGenerator, IMailService mailService, PasswordSettings passwordSettings)
     {
         _userRepository = userRepository;
         _userPasswordRepository = userPasswordRepository;
         _userRequestTokenRepository = userRequestTokenRepository;
         _encryptionService = encryptionService;
+        _jwtGenerator = jwtGenerator;
         _mailService = mailService;
         _passwordSettings = passwordSettings;
     }
 
-    public async Task<bool> Login(LoginData login)
+    public async Task<LoginResponse?> Login(LoginData login)
     {
+        if (login.UserName == null)
+            return null;
+        
         var user = await _userRepository.GetByUserName(login.UserName);
         if (user == null)
-            return false;
+            return null;
 
         var userPassword = await _userPasswordRepository.GetCurrentPassword(user.Id);
         if (userPassword == null)
-            return false;
+            return null;
 
-        var hashedPassword = _encryptionService.Encrypt(login.Password, userPassword.SecurityStamp);
+        var hashedPassword = _encryptionService.Encrypt(login.Password!, userPassword.SecurityStamp!);
 
-        return hashedPassword == userPassword.PasswordHash;
+        if (hashedPassword == userPassword.PasswordHash)
+        {
+            return new LoginResponse
+            {
+                User = await _userRepository.GetByIdExpandedAsync(user.Id),
+                Token = await _jwtGenerator.GetToken(user.Id),
+            };
+        }
+
+        return null;
     }
 
     public async Task<bool> ChangePassword(ResetPassword data)

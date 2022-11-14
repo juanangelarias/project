@@ -1,13 +1,18 @@
-﻿using System.Text.Json;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using System.Text.Json;
 using Blazored.LocalStorage;
 using CM.Model.Dto;
 using CM.Model.General;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CM.App.Helper.State;
 
 public class GeneralStateProvider : IGeneralStateProvider
 {
+    private const string JwtKey = "IGggo82wXEi0SYyQTGU7LgLocal";
+    
     private readonly ISyncLocalStorageService _localStorage;
     private readonly AuthenticationStateProvider _authentication;
 
@@ -16,7 +21,6 @@ public class GeneralStateProvider : IGeneralStateProvider
     //private ConferenceDto? _conference;
     private UserDto? _user;
     //private List<RoleDto>? _roles;
-    
 
     public DateTime? Expires
     {
@@ -86,7 +90,6 @@ public class GeneralStateProvider : IGeneralStateProvider
     
     public void SetLocalStorage(LoginResponse data)
     {
-        _localStorage.SetItem("Expires", data.Expires);
         _localStorage.SetItem("Token", data.Token);
         //_localStorage?.SetItem("Conference", JsonSerializer.Serialize(data.Conference));
         _localStorage.SetItem("User", JsonSerializer.Serialize(data.User));
@@ -104,16 +107,8 @@ public class GeneralStateProvider : IGeneralStateProvider
     
     private void SetData()
     {
-        _expires = _localStorage.ContainKey("Expires")
-            ? _localStorage.GetItem<DateTime?>("Expires")
-            : null;
-
         _token = _localStorage.ContainKey("Token")
             ? _localStorage.GetItem<string>("Token")
-            : null;
-
-        _user = _localStorage.ContainKey("User")
-            ? JsonSerializer.Deserialize<UserDto>(_localStorage.GetItem<string>("User"))
             : null;
 
         /*_roles = _localStorage.ContainKey("Roles")
@@ -125,6 +120,25 @@ public class GeneralStateProvider : IGeneralStateProvider
             : null;*/
 
         NotifyChanges();
+    }
+
+    private void ReadToken(string token)
+    {
+        Token = token;
+        
+        var key = Encoding.ASCII.GetBytes(JwtKey);
+        var handler = new JwtSecurityTokenHandler();
+        var validations = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+        var claims = handler.ValidateToken(token, validations, out var tokenSecure);
+        
+        //User =
+        //return claims.Identity.Name;
     }
     
     private void NotifyChanges() => OnChanges?.Invoke();

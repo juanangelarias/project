@@ -109,6 +109,20 @@ public class UserController: ControllerBase
         }
     }
 
+    [HttpPost("login")]
+    public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginData data)
+    {
+        try
+        {
+            return Ok(await _userFeature.Login(data));
+        }
+        catch (Exception exception)
+        {
+            Log.Fatal(exception, "{Message}", exception.Message);
+            return StatusCode(500);
+        }
+    }
+
     [HttpPost("resetPassword")]
     public async Task<ActionResult<bool>> ResetPassword([FromBody] ResetPassword data)
     {

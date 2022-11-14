@@ -4,7 +4,7 @@ using CM.Common.Configuration.Models;
 
 namespace CM.Core.Services.Encryption;
 
-public class EncryptionService: IEncryptionService
+public class EncryptionService : IEncryptionService
 {
     private readonly Keys _keys;
 
@@ -12,8 +12,54 @@ public class EncryptionService: IEncryptionService
     {
         _keys = keys;
     }
+
+    public string Encrypt(string clearText, string? encryptionKey = null)
+    {
+        encryptionKey ??= _keys.Encryption;
+        
+        var clearBytes = Encoding.Unicode.GetBytes(clearText);
+        using var encryptor = Aes.Create();
+        var rand = new Random();
+            
+        var iv = new byte[15];
+        rand.NextBytes(iv);
+        var pdb = new Rfc2898DeriveBytes(encryptionKey, iv);
+        encryptor.Key = pdb.GetBytes(32);
+        encryptor.IV = pdb.GetBytes(16);
+        using var ms = new MemoryStream();
+        using (var cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+        {
+            cs.Write(clearBytes, 0, clearBytes.Length);
+            cs.Close();
+        }
+        clearText = Convert.ToBase64String(iv) + Convert.ToBase64String(ms.ToArray());
+
+        return clearText;
+    }
     
-    public string Encrypt(string text, string? salt = null)
+    public string Decrypt(string cipherText, string? encryptionKey = null)
+    {
+        encryptionKey ??= _keys.Encryption;
+        
+        var iv = Convert.FromBase64String(cipherText.Substring(0, 20));
+        cipherText = cipherText.Substring(20).Replace(" ", "+");
+        var cipherBytes = Convert.FromBase64String(cipherText);
+        using var encryptor = Aes.Create();
+        var pdb = new Rfc2898DeriveBytes(encryptionKey, iv);
+        encryptor.Key = pdb.GetBytes(32);
+        encryptor.IV = pdb.GetBytes(16);
+        using var ms = new MemoryStream();
+        using (var cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write))
+        {
+            cs.Write(cipherBytes, 0, cipherBytes.Length);
+            cs.Close();
+        }
+        cipherText = Encoding.Unicode.GetString(ms.ToArray());
+
+        return cipherText;
+    }
+
+    /*public string Encrypt(string text, string? salt = null)
     {
         salt ??= _keys.Encryption;
         
@@ -62,12 +108,12 @@ public class EncryptionService: IEncryptionService
         using StreamReader streamReader = new(cryptoStream);
         
         return streamReader.ReadToEnd();
-    }
+    }*/
 
     public string OneWayEncrypt(string text, string? key = null)
     {
         key ??= _keys.Encryption;
-        
+
         var hasher = SHA256.Create();
 
         var textWithSaltBytes = Encoding.UTF8.GetBytes(string.Concat(text, key));
@@ -92,10 +138,11 @@ public class EncryptionService: IEncryptionService
 
         return salt;
     }
-    private string ReplaceSpecialCharacters(string input)
+
+    /*private string ReplaceSpecialCharacters(string input)
     {
         var output = input;
-        
+
         output = output.Replace("%", "%25");
         output = output.Replace(" ", "%20");
         output = output.Replace("!", "%21");
@@ -146,5 +193,5 @@ public class EncryptionService: IEncryptionService
         output = output.Replace("%25", "%");
 
         return output;
-    }
+    }*/
 }

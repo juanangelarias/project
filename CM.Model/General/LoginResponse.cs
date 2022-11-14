@@ -8,5 +8,4 @@ public class LoginResponse
     //public ConferenceDto Conference { get; set; } = new();
     //public List<RoleDto> Roles { get; set; } = new();
     public string Token { get; set; } = "";
-    public DateTime Expires { get; set; } = DateTime.Today.AddDays(15);
 }
