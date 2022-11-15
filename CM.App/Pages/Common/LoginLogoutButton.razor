@@ -21,6 +21,18 @@
 </AuthorizedView>
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+    
+    private AuthenticationState? _authState;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        _authState = await authenticationState;
+    }
+
     private void Login()
     {
         _navigation.NavigateTo("/login");
@@ -28,6 +40,7 @@
     
     private void Logout()
     {
+        
         _generalState.Logout();
         _navigation.NavigateTo("/login");
     }

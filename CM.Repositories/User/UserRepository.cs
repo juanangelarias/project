@@ -84,6 +84,7 @@ public class UserRepository: BaseRepository<User, UserDto>, IUserRepository
     {
         var record = await GetQuery()
             .Include(i => i.UserRoles)
+            .ThenInclude(i=>i.Role)
             .FirstOrDefaultAsync(f => f.Id == id);
 
         return _mapper.Map<UserDto>(record);

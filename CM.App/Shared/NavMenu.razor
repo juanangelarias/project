@@ -1,4 +1,5 @@
 ﻿@using CM.Model.Dto
+
 @inject IGeneralStateProvider State
 
 <AuthorizedView>
@@ -32,6 +33,9 @@
 
 @code
 {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+    
     private bool _isInscriptionsOptionAllowed;
     private bool _isAdministrationAllowed;
     private bool _isClubsOptionAllowed;
@@ -46,8 +50,12 @@
     private bool _isRolesOptionAllowed;
     private bool _isAdmin;
 
-    protected override void OnInitialized()
+    private AuthenticationState? _authState;
+
+    protected override async Task OnInitializedAsync()
     {
+        _authState = await authenticationState;
+        
         // ToDo: Uncomment after Authentication is done
 
         var roles = new List<RoleDto>();

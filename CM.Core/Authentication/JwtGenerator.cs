@@ -14,18 +14,21 @@ namespace CM.Core.Authentication;
 public class JwtGenerator : IJwtGenerator
 {
     private readonly IUserRepository _userRepository;
+    private readonly IUserRoleRepository _userRoleRepository;
     private readonly JwtSettings _jwtSettings;
 
-    public JwtGenerator(IUserRepository userRepository, IOptions<JwtSettings> jwtSettings)
+    public JwtGenerator(IUserRepository userRepository, IUserRoleRepository userRoleRepository,
+        IOptions<JwtSettings> jwtSettings)
     {
         _userRepository = userRepository;
+        _userRoleRepository = userRoleRepository;
         _jwtSettings = jwtSettings.Value;
     }
 
     public async Task<Token> GetToken(long userId)
     {
         var user = await _userRepository.GetByIdExpandedAsync(userId);
-        var claims = GetClaims(user);
+        var claims = await GetClaims(user);
         var expiresInMinutes = Convert.ToInt32(_jwtSettings.AccessTokenValidityInMinutes);
         var expires = DateTime.UtcNow.AddMinutes(expiresInMinutes);
         var token = CreateToken(claims, expires);
@@ -39,21 +42,26 @@ public class JwtGenerator : IJwtGenerator
         return result;
     }
 
-    private List<Claim> GetClaims(UserDto user)
+    private async Task<List<Claim>> GetClaims(UserDto user)
     {
         var claims = new List<Claim>
         {
-            new(JwtRegisteredClaimNames.Sub, user.Email),
+            new(JwtRegisteredClaimNames.Sub, user.Email!),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new("Id", Convert.ToString(user.Id)),
-            new("UserName", user.UserName)
+            new("UserName", user.UserName!)
         };
 
-        if (user.Roles != null && user.Roles.Any())
+        var roles = (await _userRoleRepository.GetUserRoles(user.Id)).ToList();
+        if (roles.Any())
         {
-            claims.AddRange(user.Roles.Select(role => new Claim(ClaimTypes.Role, role.Role.Name)));
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role.Code ?? "")));
         }
 
+        foreach (var claim in claims)
+        {
+            Console.WriteLine($"{claim.Type}: {claim.Value}");
+        }
         return claims;
     }
 

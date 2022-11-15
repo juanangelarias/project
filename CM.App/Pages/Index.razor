@@ -1,5 +1,7 @@
 ﻿@page "/"
 
+@inject ISnackbar Snackbar;
+
 <PageTitle>Index</PageTitle>
 
 <AuthorizeView>
@@ -26,8 +28,31 @@
     </NotAuthorized>
 </AuthorizeView>
 
+<AuthorizeView>
+    <Authorized>
+        <br/>
+        <br/>
+        <MudButton ButtonType="ButtonType.Button"
+                   Variant="Variant.Outlined"
+                   Color="Color.Primary"
+                   OnClick="DisplayGreeting">
+            Display Greeting
+        </MudButton>
+    </Authorized>
+    <NotAuthorized></NotAuthorized>
+</AuthorizeView>
+
 @code
 {
     [CascadingParameter]
     private Task<AuthenticationState> authenticationState { get; set; }
+
+    private async Task DisplayGreeting()
+    {
+        var authState = await authenticationState;
+
+        var message = $"Hello {authState?.User?.Identity?.Name ?? "ERROR"}";
+
+        Snackbar.Add(message, Severity.Info);
+    }
 }

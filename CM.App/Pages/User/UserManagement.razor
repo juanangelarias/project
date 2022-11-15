@@ -6,8 +6,8 @@
 @inject IPageHistoryStateProvider PageHistory
 @inject IUserStateProvider UserState
 
-<AuthorizeView>
-    <Authorized>
+@*<AuthorizeView>
+    <Authorized>*@
         @switch (_component)
         {
             case ManagementFunction.EditNew:
@@ -25,11 +25,11 @@
                           UserState=UserState/>
                 break;
         }
-    </Authorized>
+    @*</Authorized>
     <NotAuthorized>
         <NotAuthorizedComponent Functionality="User Management"/>
     </NotAuthorized>
-</AuthorizeView>
+</AuthorizeView>*@
 
 @code {
     private ManagementFunction _component;

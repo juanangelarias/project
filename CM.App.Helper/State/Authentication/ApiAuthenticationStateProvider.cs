@@ -24,7 +24,7 @@ public class ApiAuthenticationStateProvider: AuthenticationStateProvider
         try
         {
             var userSession = await ReadEncryptedItemAsync<UserDto>("User");
-            if (userSession == null)
+            if (userSession.FullName == null)
                 return await Task.FromResult(new AuthenticationState(_anonymous));
 
             var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
@@ -49,8 +49,8 @@ public class ApiAuthenticationStateProvider: AuthenticationStateProvider
         {
             claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
             {
-                new(ClaimTypes.Name, user.FullName),
-                new(ClaimTypes.Role, "Admin")
+                new(ClaimTypes.Name, user.FullName ?? "Guest"),
+                new(ClaimTypes.Role, user.Roles?.FirstOrDefault()?.Role?.Code ?? "Guest")
             }));
 
             await SaveItemEncryptedAsync("User", user);

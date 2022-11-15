@@ -15,18 +15,21 @@ public class UserFeature : IUserFeature
     private readonly IUserRepository _userRepository;
     private readonly IUserPasswordRepository _userPasswordRepository;
     private readonly IUserRequestTokenRepository _userRequestTokenRepository;
+    private readonly IUserRoleRepository _userRoleRepository;
     private readonly IEncryptionService _encryptionService;
     private readonly IJwtGenerator _jwtGenerator;
     private readonly IMailService _mailService;
     private readonly PasswordSettings _passwordSettings;
 
     public UserFeature(IUserRepository userRepository, IUserPasswordRepository userPasswordRepository,
-        IUserRequestTokenRepository userRequestTokenRepository, IEncryptionService encryptionService,
-        IJwtGenerator jwtGenerator, IMailService mailService, PasswordSettings passwordSettings)
+        IUserRequestTokenRepository userRequestTokenRepository, IUserRoleRepository userRoleRepository,
+        IEncryptionService encryptionService, IJwtGenerator jwtGenerator, IMailService mailService, 
+        PasswordSettings passwordSettings)
     {
         _userRepository = userRepository;
         _userPasswordRepository = userPasswordRepository;
         _userRequestTokenRepository = userRequestTokenRepository;
+        _userRoleRepository = userRoleRepository;
         _encryptionService = encryptionService;
         _jwtGenerator = jwtGenerator;
         _mailService = mailService;
@@ -51,7 +54,18 @@ public class UserFeature : IUserFeature
         if (hashedPassword == userPassword.PasswordHash)
         {
             user = await _userRepository.GetByIdExpandedAsync(user.Id);
-
+            user.Roles = new List<UserRoleDto>();
+            var roles = await _userRoleRepository.GetUserRoles(user.Id);
+            foreach (var role in roles)
+            {
+                user.Roles.Add(new UserRoleDto
+                {
+                    UserId = user.Id,
+                    RoleId = role.Id,
+                    Role = role
+                });
+            }
+            
             var token = await _jwtGenerator.GetToken(user.Id);
             user.Expires = token.Expires;
             user.Token = token.Value;
