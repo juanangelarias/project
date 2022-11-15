@@ -1,9 +1,10 @@
-﻿@inject NavigationManager _navigation
-@inject IGeneralStateProvider _generalState
+﻿
+@inject NavigationManager Navigation
+@inject IGeneralStateProvider State
 
-<AuthorizedView>
+<AuthorizeView>
     <Authorized>
-        <MudButton ButtonType="ButtonType.Submit"
+        <MudButton ButtonType="ButtonType.Button"
                    Variant="Variant.Filled"
                    Color="Color.Primary"
                    OnClick="Logout">
@@ -11,20 +12,21 @@
         </MudButton>
     </Authorized>
     <NotAuthorized>
-        <MudButton ButtonType="ButtonType.Submit"
-                   Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   OnClick="Login">
-            Login
-        </MudButton>
+        <MudButton ButtonType="ButtonType.Button"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           OnClick="Login">
+                    Login
+                </MudButton>
     </NotAuthorized>
-</AuthorizedView>
+</AuthorizeView>
 
-@code {
+@code
+{
     [CascadingParameter]
-    private Task<AuthenticationState> authenticationState { get; set; }
-    
-    private AuthenticationState? _authState;
+    private Task<AuthenticationStateProvider> authenticationState { get; set; }
+
+    private AuthenticationStateProvider? _authState;
 
     protected override async Task OnInitializedAsync()
     {
@@ -35,13 +37,12 @@
 
     private void Login()
     {
-        _navigation.NavigateTo("/login");
+        Navigation.NavigateTo("/login");
     }
     
     private void Logout()
     {
-        
-        _generalState.Logout();
-        _navigation.NavigateTo("/login");
+        State.Logout();
+        Navigation.NavigateTo("/login");
     }
 }

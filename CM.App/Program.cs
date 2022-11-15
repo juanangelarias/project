@@ -1,62 +1,68 @@
+global using Microsoft.AspNetCore.Components.Authorization;
+
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Blazored.LocalStorage;
+using Blazored.SessionStorage;
 using CM.App.Helper.Services;
-using CM.App.Helper.State;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using CM.App.Helper.State;
 using MudBlazor.Services;
 
-namespace CM.App;
+namespace Cm.App;
 
-public class Program
+public static class Program
 {
     private static readonly Uri BaseAddress = new Uri("https://localhost:7213/");
     
     public static async Task Main(string[] args)
     {
         var builder = WebAssemblyHostBuilder.CreateDefault(args);
-        builder.RootComponents.Add<App>("#app");
+        builder.RootComponents.Add<CM.App.App>("#app");
         builder.RootComponents.Add<HeadOutlet>("head::after");
-
-        builder.Services.AddMudServices();
+        
+        #region HTTP Clients
 
         void RegisterTypedClient<TClient, TImplementation>(Uri apiBaseUri)
-            where TClient : class
-            where TImplementation : class, TClient
+            where TClient: class
+            where TImplementation: class, TClient
         {
             builder.Services.AddHttpClient<TClient, TImplementation>(client =>
             {
                 client.BaseAddress = apiBaseUri;
             });
         }
-
-        #region Http Clients
-
+        
         // U
         RegisterTypedClient<IUserService, UserService>(BaseAddress);
 
         #endregion
 
-        #region State Provider
+        #region State Providers
 
         builder.Services
             // A
-            .AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>()
-            
+            .AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>()
             // G
-            .AddScoped<IGeneralStateProvider, GeneralStateProvider>()
-            
-            // P
-            .AddScoped<IPageHistoryStateProvider, PageHistoryStateProvider>()
-            
-            // U
-            .AddScoped<IUserStateProvider, UserStateProvider>();
+            .AddScoped<IGeneralStateProvider, GeneralStateProvider>();
 
         #endregion
 
         builder.Services
             .AddAuthorizationCore()
-            .AddBlazoredLocalStorage()
+            .AddBlazorContextMenu()
+            .AddBlazoredLocalStorage(config =>
+            {
+                config.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+                config.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                config.JsonSerializerOptions.IgnoreReadOnlyProperties = true;
+                config.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                config.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                config.JsonSerializerOptions.ReadCommentHandling = JsonCommentHandling.Skip;
+                config.JsonSerializerOptions.WriteIndented = false;
+            })
+            .AddBlazoredSessionStorage()
             .AddMudServices();
 
         await builder.Build().RunAsync();
