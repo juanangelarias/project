@@ -19,6 +19,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\CM.App.Helper\CM.App.Helper.csproj" />
+      <ProjectReference Include="..\CM.Common\CM.Common.csproj" />
     </ItemGroup>
 
 

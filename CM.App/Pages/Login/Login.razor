@@ -1,0 +1,98 @@
+﻿@page "/Login"
+@layout EmptyLayout
+
+@using CM.App.Helper.Services
+@using CM.Model.General
+@using Microsoft.AspNetCore.Components
+
+
+@inject IUserService UserService
+@inject ISnackbar Snackbar 
+@inject IGeneralStateProvider State
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthState
+
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="12" sm="6" md="4">
+        <EditForm Model="@_model" OnValidSubmit="OnValidSubmit" OnInvalidSubmit="OnInvalidSubmit">
+            <DataAnnotationsValidator/>
+            <MudCard Outlined="true" Elevation="7">
+                <MudCardHeader Style="justify-content: center;">
+                    <MudImage Src="resources/logo.png" Style="width: 150px; height: 150px;"/>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudGrid Justify="Justify.Center">
+                        <MudItem xs="12">
+                            <MudTextField Label="Email" Class="mt-3" Variant="Variant.Outlined"
+                                          @bind-Value="_model.Username" For="@(() => _model.Username)"/>
+
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudTextField Label="Password" Class="mt-3" Variant="Variant.Outlined"
+                                          @bind-Value="_model.Password" For="@(() => _model.Password)" InputType="InputType.Password"/>
+
+                        </MudItem>
+                    </MudGrid>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton
+                        ButtonType="ButtonType.Submit"
+                        Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        Class="ml-auto">
+                        Register
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+
+            @if (!_success)
+            {
+                <MudItem xs="4" sm="4">
+                    <MudPaper Class="pa-4 mud-height-full">
+                        <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+                        <MudText Color="@Color.Error">
+                            <ValidationSummary/>
+                        </MudText>
+                    </MudPaper>
+                </MudItem>
+            }
+        </EditForm>        
+    </MudItem>
+</MudGrid>
+
+@code {
+    private readonly LoginRequest _model = new();
+    private bool _success = true;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        // ToDo: To be removed
+        _model.Username = "arias@ariasmunguia.com";
+        _model.Password = "Delfos02!!";
+        
+        StateHasChanged();
+    }
+
+    private async Task OnValidSubmit(EditContext context)
+    {
+        var response = await UserService.Login(_model);
+        if (response != null && !string.IsNullOrEmpty(response.Token))
+        {
+            State.SetLocalStorage(response);
+            await AuthState.GetAuthenticationStateAsync();
+        }
+        else
+        {
+            Snackbar.Add("User name or password is invalid.", Severity.Error);
+        }
+        _success = true;
+        StateHasChanged();
+        Navigation.NavigateTo("/");
+    }
+
+    private void OnInvalidSubmit()
+    {
+        _success = false;
+        StateHasChanged();
+    }
+}

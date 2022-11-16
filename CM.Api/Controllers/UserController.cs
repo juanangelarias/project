@@ -110,7 +110,7 @@ public class UserController: ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginData data)
+    public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest data)
     {
         try
         {

@@ -1,5 +1,53 @@
-﻿<MudNavMenu>
-    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-    <MudNavLink Href="/counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Counter</MudNavLink>
-    <MudNavLink Href="/fetchdata" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Fetch data</MudNavLink>
-</MudNavMenu>
+﻿@inject IGeneralStateProvider State
+
+<AuthorizeView>
+    <Authorized>
+        <MudPaper Width="250px"
+                  Class="py-3"
+                  Elevation="0">
+            <MudNavMenu>
+                <MudNavLink Href="/counter">
+                    Inscriptions
+                </MudNavLink>
+                <MudDivider/>
+                <MudNavGroup Title="Administration">
+                    <MudNavLink Href="/clubs">
+                        Clubs
+                    </MudNavLink>
+                    <MudNavLink Href="/members">
+                        Members
+                    </MudNavLink>
+                </MudNavGroup>
+                <MudNavGroup Title="Settings">
+                    <MudNavLink Href="/countries">
+                        Countries
+                    </MudNavLink>
+                </MudNavGroup>
+                <MudNavGroup Title="Security">
+                    <MudNavLink Href="/users">
+                        Users
+                    </MudNavLink>
+                    <MudNavLink Href="/roles">
+                        Roles
+                    </MudNavLink>
+                </MudNavGroup>
+            </MudNavMenu>
+        </MudPaper>
+    </Authorized>
+    <NotAuthorized>
+        
+    </NotAuthorized>
+</AuthorizeView>
+
+@code
+{
+    [CascadingParameter]
+    protected Task<AuthenticationState>? AuthState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        //_authState = await authenticationState;
+    }
+}

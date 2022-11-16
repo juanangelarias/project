@@ -41,7 +41,7 @@ public class UserService: BaseService<UserDto>, IUserService
         return null;
     }*/
     
-    public async Task<LoginResponse?> Login(LoginData login)
+    public async Task<LoginResponse?> Login(LoginRequest login)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, $"{BaseUrl}/login")
         {
@@ -76,7 +76,7 @@ public class UserService: BaseService<UserDto>, IUserService
     {
         var data = new ResetPassword
         {
-            UserName = username,
+            Username = username,
             Password = null!,
             NewPassword = newPassword
         };

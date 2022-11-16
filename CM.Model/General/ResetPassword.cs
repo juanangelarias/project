@@ -1,6 +1,6 @@
 ﻿namespace CM.Model.General;
 
-public class ResetPassword: LoginData
+public class ResetPassword: LoginRequest
 {
     public string? NewPassword { get; set; }
 }

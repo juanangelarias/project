@@ -36,12 +36,12 @@ public class UserFeature : IUserFeature
         _passwordSettings = passwordSettings;
     }
 
-    public async Task<LoginResponse?> Login(LoginData login)
+    public async Task<LoginResponse?> Login(LoginRequest login)
     {
-        if (login.UserName == null)
+        if (login.Username == null)
             return null;
         
-        var user = await _userRepository.GetByUserName(login.UserName);
+        var user = await _userRepository.GetByUserName(login.Username);
         if (user == null)
             return null;
 
@@ -82,7 +82,7 @@ public class UserFeature : IUserFeature
 
     public async Task<bool> ChangePassword(ResetPassword data)
     {
-        var user = await _userRepository.GetByUserName(data.UserName);
+        var user = await _userRepository.GetByUserName(data.Username);
         if (user == null)
             return false;
 
@@ -114,7 +114,7 @@ public class UserFeature : IUserFeature
 
     public async Task<bool> ResetPassword(ResetPassword data)
     {
-        var user = await _userRepository.GetByUserName(data.UserName);
+        var user = await _userRepository.GetByUserName(data.Username);
         if (user == null)
             return false;
 

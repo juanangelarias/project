@@ -1,19 +1,51 @@
 ﻿@inherits LayoutComponentBase
 
+@inject IGeneralStateProvider State
+@inject NavigationManager Navigation
+
 <MudThemeProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 
 <MudLayout>
-    <MudAppBar Elevation="0">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
-        <MudSpacer/>
-        <MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Color="Color.Inherit" Link="https://mudblazor.com/" Target="_blank"/>
-        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/Garderoben/MudBlazor" Target="_blank"/>
-    </MudAppBar>
+    <MudAppBar>
+            <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                           Color="Color.Inherit"
+                           Edge="Edge.Start"
+                           OnClick="@(_ => DrawerToggle())">
+            </MudIconButton>
+            <MudText Typo="Typo.h5">
+                @_conferenceName
+            </MudText>
+            <MudSpacer/>
+            <LoginLogoutButton></LoginLogoutButton>
+            @if (_showDropDown && State?.User?.FullName != null)
+            {
+                <MudMenu Color="Color.Success"
+                         AnchorOrigin="Origin.BottomCenter">
+                    <ActivatorContent>
+                        <MudText Color="Color.Success">
+                            @State?.User.FullName
+                        </MudText>
+                    </ActivatorContent>
+                    <ChildContent>
+                        <MudMenuItem OnClick="@(() => Navigate("SetConference"))">Set Conference</MudMenuItem>
+                        <MudMenuItem OnClick="@(() => Navigate("ChangePassword"))">Change Password</MudMenuItem>
+                        <MudMenuItem OnClick="@(() => Navigate("Logout"))">Logout</MudMenuItem>
+                    </ChildContent>
+                </MudMenu>
+            }
+            else
+            {
+                <MudButton Color="Color.Primary"
+                           OnClick="@(Login)">
+                    Login
+                </MudButton>
+            }
+        </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
         <MudDrawerHeader>
-            <MudText Typo="Typo.h6">CM.App</MudText>
+            <MudText Typo="Typo.h6">Conference Manager</MudText>
         </MudDrawerHeader>
         <NavMenu/>
     </MudDrawer>
@@ -25,11 +57,53 @@
 </MudLayout>
 
 @code {
-    bool _drawerOpen = true;
+    [CascadingParameter]
+    protected Task<AuthenticationState>? AuthState { get; set; }
 
-    void DrawerToggle()
+    private bool _drawerOpen = true;
+    private string _conferenceName = "";
+    private bool _showDropDown;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+    //_conferenceName = State.Conference?.Name ?? "No conference is selected";
+        _conferenceName = "No conference is selected";
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (!firstRender) 
+            return;
+        
+        _showDropDown = true;
+        StateHasChanged();
+    }
+
+    private void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
     }
 
+    private void Login()
+    {
+        Navigation.NavigateTo("/login");
+    }
+
+    private void Navigate(string option)
+    {
+        switch (option)
+        {
+            case "SetConference":
+                Navigation.NavigateTo("/setUserDefaultConference");
+                break;
+            case "ChangePassword":
+                Navigation.NavigateTo("/user/changePassword");
+                break;
+            case "Logout":
+                Navigation.NavigateTo("/logout");
+                break;
+        }
+    }
 }
