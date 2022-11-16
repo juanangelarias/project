@@ -1,0 +1,168 @@
+﻿@using CM.Model.General
+
+@inject IUserStateProvider UserState
+@inject IGeneralStateProvider State
+
+<MudTable T="UserDto"
+          ServerData="@(new Func<TableState, Task<TableData<UserDto>>>(ServerReload))"
+          Hover="true"
+          Breakpoint="Breakpoint.Sm"
+          Loading="@_loading"
+          LoadingProgressColor="Color.Info"
+          FixedFooter="true"
+          FixedHeader="true"
+          @ref="_table"
+          Height="100%">
+    <ToolBarContent>
+        <MudButton OnClick="NewUser"
+                   Variant="Variant.Filled"
+                   ButtonType="ButtonType.Button"
+                   Color="Color.Primary">
+            New User
+        </MudButton>
+        <MudSpacer/>
+        <MudText Typo="Typo.h6">
+            User Management
+        </MudText>
+        <MudSpacer/>
+        <MudTextField T="string"
+                      ValueChanged="@(OnSearch)"
+                      Placeholder="Search"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      IconSize="Size.Medium"
+                      Class="mt-0"/>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Username</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Username">@context.UserName</MudTd>
+        <MudTd DataLabel="Name">@context.FullName</MudTd>
+        <MudTd DataLabel="">
+            @if (context.Id != -1)
+            {
+                <MudTooltip Text="Edit user" Placement="Placement.Start">
+                    <MudFab @onclick="@(() => EditUser(context))"
+                            Color="Color.Primary"
+                            Icon="@Icons.Material.Filled.Edit"
+                            Size="Size.Small"
+                            IconSize="Size.Small"
+                            Style="margin-right: 3px"/>
+                </MudTooltip>
+                @if (context.Id != _loggedUserId)
+                {
+                    <MudTooltip Text="Delete user" Placement="Placement.Start">
+                        <MudFab @onclick="@(() => DeleteUser(context))"
+                                Color="Color.Primary"
+                                Icon="@Icons.Material.Filled.Delete"
+                                Size="Size.Small"
+                                IconSize="Size.Small"
+                                Style="margin-right: 3px"/>
+                    </MudTooltip>
+                }
+                <MudTooltip Text="Edit user" Placement="Placement.Start">
+                    <MudFab @onclick="@(() => Roles(context))"
+                            Color="Color.Primary"
+                            Icon="@Icons.Material.Filled.Security"
+                            Size="Size.Small"
+                            IconSize="Size.Small"
+                            Style="margin-right: 3px"/>
+                </MudTooltip>
+                <MudTooltip Text="Send Invitation" Placement="Placement.Start">
+                    <MudFab @onclick="@(() => SendInvitation(context))"
+                            Color="Color.Primary"
+                            Icon="@Icons.Material.Filled.Mail"
+                            Size="Size.Small"
+                            IconSize="Size.Small"
+                            Style="margin-right: 3px"/>
+                </MudTooltip>
+            }
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager/>
+    </PagerContent>
+</MudTable>
+
+@code {
+    [Parameter]
+    public EventCallback OnEdit { get; set; }
+    
+    [Parameter]
+    public EventCallback OnUserRoles { get; set; }
+
+    private List<UserDto> _users = new();
+    private MudTable<UserDto> _table = new();
+    private int _count = 0;
+    private bool _loading = true;
+    private string _filter = string.Empty;
+    private long _loggedUserId;
+
+    protected override void OnInitialized()
+    {
+        State.Initialize();
+        _loggedUserId = State.UserId ?? 0;
+        Console.WriteLine($"Logged User Id: {_loggedUserId}");
+    }
+
+    private async Task<TableData<UserDto>> ServerReload(TableState state)
+    {
+        _loading = true;
+        
+        await UserState.LoadUserPage(new QueryParams
+        {
+            Filter = _filter,
+            PageIndex = state.Page,
+            PageSize = state.PageSize,
+            Sort = state.SortLabel,
+            Descending = state.SortDirection == SortDirection.Descending,
+            Expand = true
+        });
+
+        _loading = false;
+
+        return UserState.UserTable ?? new TableData<UserDto>();
+    }
+
+    private async Task OnSearch(string filter)
+    {
+        _filter = filter;
+        await _table.ReloadServerData();
+    }
+
+    private async Task NewUser()
+    {
+        await UserState.SetSelectedUser(0);
+        await OnEdit.InvokeAsync();
+    }
+
+    private async Task EditUser(UserDto user)
+    {
+        await UserState.SetSelectedUser(user.Id);
+        await OnEdit.InvokeAsync();
+    }
+
+    private async Task DeleteUser(UserDto user)
+    {
+        _loading = true;
+
+        await UserState.DeleteUser(user.Id);
+        await _table.ReloadServerData();
+
+        _loading = false;
+    }
+
+    private async Task Roles(UserDto user)
+    {
+        await UserState.SetSelectedUser(user.Id);
+        await OnUserRoles.InvokeAsync();
+    }
+
+    private async Task SendInvitation(UserDto user)
+    {
+        await UserState.SendInvitation(user.Id);
+    }
+}

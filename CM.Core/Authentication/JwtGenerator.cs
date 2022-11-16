@@ -49,18 +49,14 @@ public class JwtGenerator : IJwtGenerator
             new(JwtRegisteredClaimNames.Sub, user.Email!),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new("Id", Convert.ToString(user.Id)),
-            new("UserName", user.UserName!)
+            new("UserName", user.UserName!),
+            new("FullName", user.FullName!)
         };
 
         var roles = (await _userRoleRepository.GetUserRoles(user.Id)).ToList();
         if (roles.Any())
         {
             claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role.Code ?? "")));
-        }
-
-        foreach (var claim in claims)
-        {
-            Console.WriteLine($"{claim.Type}: {claim.Value}");
         }
         return claims;
     }

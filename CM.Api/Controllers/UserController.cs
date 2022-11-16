@@ -123,6 +123,22 @@ public class UserController: ControllerBase
         }
     }
 
+    [HttpOptions("changePassword")]
+    public async Task<ActionResult<ChangePasswordResponse>> ChangePassword([FromBody] ChangePasswordRequest request)
+    {
+        try
+        {
+            var response = await _userFeature.ChangePassword(request);
+
+            return Ok(response);
+        }
+        catch (Exception exception)
+        {
+            Log.Fatal(exception, "{Message}", exception.Message);
+            return StatusCode(500);
+        }
+    }
+
     [HttpPost("resetPassword")]
     public async Task<ActionResult<bool>> ResetPassword([FromBody] ResetPassword data)
     {

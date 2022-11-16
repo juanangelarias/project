@@ -8,6 +8,7 @@ public interface IUserService: IBaseService<UserDto>
     //Task<List<ConferenceDto>?> GetUserConferences(long userId);
     Task<LoginResponse?> Login(LoginRequest login);
     Task<bool?> ResetPassword(ResetPassword data);
+    Task<ChangePasswordResponse?> ChangePassword(ChangePasswordRequest changePasswordRequest);
     Task<bool?> ResetForgotPassword(string username, string newPassword);
     Task AddRoleToUser(UserRoleDto userRole);
     Task RemoveRoleFromUser(long userRoleId);

@@ -72,6 +72,23 @@ public class UserService: BaseService<UserDto>, IUserService
         return null;
     }
 
+    public async Task<ChangePasswordResponse?> ChangePassword(ChangePasswordRequest changePasswordRequest)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, $"{BaseUrl}/changePassword")
+        {
+            Content = new StringContent(JsonSerializer.Serialize(changePasswordRequest), Encoding.UTF8,
+                "application/json")
+        };
+        var response = await GetResponse(request);
+        if (response != null)
+        {
+            var result = await response.Content.ReadFromJsonAsync<ChangePasswordResponse>();
+            return result;
+        }
+
+        return null;
+    }
+    
     public async Task<bool?> ResetForgotPassword(string username, string newPassword)
     {
         var data = new ResetPassword

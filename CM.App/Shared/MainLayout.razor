@@ -19,13 +19,13 @@
             </MudText>
             <MudSpacer/>
             <LoginLogoutButton></LoginLogoutButton>
-            @if (_showDropDown && State?.User?.FullName != null)
+            @if (_showDropDown && State?.UserFullName != null)
             {
                 <MudMenu Color="Color.Success"
                          AnchorOrigin="Origin.BottomCenter">
                     <ActivatorContent>
                         <MudText Color="Color.Success">
-                            @State?.User.FullName
+                            @State?.UserFullName
                         </MudText>
                     </ActivatorContent>
                     <ChildContent>

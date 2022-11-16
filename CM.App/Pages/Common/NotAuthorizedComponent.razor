@@ -1,0 +1,14 @@
+﻿<MudCard Style="justify-content: center; width:100%" Class="mt-10 pa-10">
+    <MudCardHeader>
+        <MudText Typo="Typo.h5">You are not authorized for this functionality.</MudText>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudText Typo="Typo.body1">If you should have access to this funcionality, please contact your conference administrator.</MudText>
+        <MudText Typo="Typo.body2">Functionality: <b>@Functionality</b>.</MudText>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter]
+    public string Functionality { get; set; }
+}

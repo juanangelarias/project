@@ -1,0 +1,73 @@
+﻿@page "/Users"
+
+@using CM.App.Helper.Model.Enum
+
+@inject IPageHistoryStateProvider PageHistory
+@inject IUserStateProvider UserState
+
+<h3>UserManager</h3>
+
+<AuthorizeView>
+    <Authorized>
+        @switch (_component)
+        {
+            case ManagementFunction.EditNew:
+                <UserEdit GoBack="ShowList"/>
+                break;
+            case ManagementFunction.UserRoles:
+                <UserRoles GoBack="ShowList"/>
+                break;
+            default:
+                <UserList OnEdit="EditUser" 
+                          OnUserRoles="UserRoles"/>
+                break;
+        }
+    </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedComponent Functionality="User Management"/>
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@code {
+    private ManagementFunction _component;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        PageHistory.AddPageToHistory("/User");
+        _component = UserState.ActiveComponent;
+    }
+
+    private void EditUser()
+    {
+        UserState.ActiveComponent = UserState.SelectedUser != null
+            ? ManagementFunction.EditNew
+            : ManagementFunction.List;
+        
+        _component = UserState.ActiveComponent;
+        
+        StateHasChanged();
+    }
+
+    private void UserRoles()
+    {
+        UserState.ActiveComponent = UserState.SelectedUser != null
+            ? ManagementFunction.UserRoles
+            : ManagementFunction.List;
+        
+        _component = UserState.ActiveComponent;
+        
+        StateHasChanged();
+    }
+
+    private void ShowList()
+    {
+        UserState.ActiveComponent = ManagementFunction.List;
+        
+        _component = UserState.ActiveComponent;
+        
+        StateHasChanged();
+    }
+}

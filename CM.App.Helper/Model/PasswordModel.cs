@@ -4,9 +4,9 @@ namespace CM.App.Helper.Model;
 
 public class PasswordModel
 {
-    public string FullName { get; set; }
+    public string? FullName { get; set; }
     
-    public string Username { get; set; }
+    public string? Username { get; set; }
     
     [Required(ErrorMessage = "Password is required.")]
     [DataType(DataType.Password)]

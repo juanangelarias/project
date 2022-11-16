@@ -80,36 +80,47 @@ public class UserFeature : IUserFeature
         return null;
     }
 
-    public async Task<bool> ChangePassword(ResetPassword data)
+    public async Task<ChangePasswordResponse> ChangePassword(ChangePasswordRequest data)
     {
-        var user = await _userRepository.GetByUserName(data.Username);
-        if (user == null)
-            return false;
+        var user = await _userRepository.GetByIdExpandedAsync(data.UserId);
 
         var userPassword = await _userPasswordRepository.GetCurrentPassword(user.Id);
         if (userPassword == null)
-            return false;
-
-        var hashedPassword = _encryptionService.OneWayEncrypt(data.Password, userPassword.SecurityStamp);
-
-        if (hashedPassword == userPassword.PasswordHash &&
-            !await _userPasswordRepository.PasswordUsedBefore(user.Id, hashedPassword))
-        {
-            var newSecurityStamp = _encryptionService.CreateSalt();
-            var newUserPassword = new UserPasswordDto
+            return new ChangePasswordResponse
             {
-                UserId = user.Id,
-                Date = DateTime.Now,
-                PasswordHash = _encryptionService.OneWayEncrypt(data.NewPassword, newSecurityStamp),
-                SecurityStamp = newSecurityStamp
+                Success = false,
+                Message = "User does not have password."
             };
 
-            await _userPasswordRepository.CreateAsync(newUserPassword);
+        var hashedPassword = _encryptionService.OneWayEncrypt(data.OldPassword, userPassword.SecurityStamp!);
 
-            return true;
+        if (hashedPassword != userPassword.PasswordHash ||
+            await _userPasswordRepository.PasswordUsedBefore(user.Id, hashedPassword))
+        {
+            return new ChangePasswordResponse
+            {
+                Success = false,
+                Message = "Old password does not match."
+            };
         }
 
-        return false;
+        var newSecurityStamp = _encryptionService.CreateSalt();
+        var newUserPassword = new UserPasswordDto
+        {
+            UserId = user.Id,
+            Date = DateTime.Now,
+            PasswordHash = _encryptionService.OneWayEncrypt(data.NewPassword, newSecurityStamp),
+            SecurityStamp = newSecurityStamp
+        };
+
+        await _userPasswordRepository.CreateAsync(newUserPassword);
+
+        return new ChangePasswordResponse
+        {
+            Success = true,
+            Message = ""
+        };
+
     }
 
     public async Task<bool> ResetPassword(ResetPassword data)

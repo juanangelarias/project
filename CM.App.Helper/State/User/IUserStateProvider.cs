@@ -1,4 +1,5 @@
-﻿using CM.Model.Dto;
+﻿using CM.App.Helper.Model.Enum;
+using CM.Model.Dto;
 using CM.Model.General;
 using MudBlazor;
 
@@ -10,6 +11,7 @@ public interface IUserStateProvider
     public UserDto? SelectedUser { get; set; }
     public TableData<UserDto>? UserTable { get; set; }
     public int? UserCount { get; set; }
+    public ManagementFunction ActiveComponent { get; set; }
 
     //public List<RoleDto>? RoleList { get; set; }
     public List<RoleDto?> AssignedRoleList { get; set; }

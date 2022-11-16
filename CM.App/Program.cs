@@ -45,7 +45,11 @@ public static class Program
             // A
             .AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>()
             // G
-            .AddScoped<IGeneralStateProvider, GeneralStateProvider>();
+            .AddScoped<IGeneralStateProvider, GeneralStateProvider>()
+            // P
+            .AddScoped<IPageHistoryStateProvider, PageHistoryStateProvider>()
+            // U
+            .AddScoped<IUserStateProvider, UserStateProvider>();
 
         #endregion
 

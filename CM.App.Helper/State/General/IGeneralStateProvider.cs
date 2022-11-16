@@ -7,7 +7,10 @@ public interface IGeneralStateProvider
 {
     DateTime? Expires { get; set; }
     string? Token { get; set; }
-    UserDto? User { get; set; }
+    long? UserId { get; set; }
+    string? Username { get; set; }
+    string? UserFullName { get; set; }
+    List<string>? Roles { get; set; }
     // Conference
     void Initialize();
     void SetLocalStorage(LoginResponse data);

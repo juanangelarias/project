@@ -1,4 +1,5 @@
-﻿using CM.App.Helper.Services;
+﻿using CM.App.Helper.Model.Enum;
+using CM.App.Helper.Services;
 using CM.Model.Dto;
 using CM.Model.General;
 using MudBlazor;
@@ -69,6 +70,21 @@ public class UserStateProvider: BaseStateProvider, IUserStateProvider
         set
         {
             _userCount = value;
+            NotifyChanges();
+        }
+    }
+
+    #endregion
+
+    #region ActiveComponent
+
+    private ManagementFunction _activeComponent;
+    public ManagementFunction ActiveComponent
+    {
+        get => _activeComponent;
+        set
+        {
+            _activeComponent = value;
             NotifyChanges();
         }
     }
@@ -196,6 +212,8 @@ public class UserStateProvider: BaseStateProvider, IUserStateProvider
 
         _availableRoleList = new List<RoleDto>();
         _assignedRoleList = new List<RoleDto?>();
+
+        _activeComponent = ManagementFunction.List;
 
         _filterAssigned = "";
         _filterAvailable = "";

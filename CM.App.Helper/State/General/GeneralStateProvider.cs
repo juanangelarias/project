@@ -1,26 +1,25 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Text;
+﻿using System.Security.Claims;
 using System.Text.Json;
 using Blazored.LocalStorage;
-using CM.Model.Dto;
 using CM.Model.General;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.IdentityModel.Tokens;
 
 namespace CM.App.Helper.State;
 
 public class GeneralStateProvider : IGeneralStateProvider
 {
-    private const string JwtKey = "IGggo82wXEi0SYyQTGU7LgLocal";
+    /*private const string JwtKey = "IGggo82wXEi0SYyQTGU7LgLocal";*/
     
     private readonly ISyncLocalStorageService _localStorage;
     private readonly AuthenticationStateProvider _authentication;
 
     private DateTime? _expires;
     private string? _token;
+    private long? _userId;
+    private string? _username;
+    private string? _userFullName;
+    private List<string>? _roles;
     //private ConferenceDto? _conference;
-    private UserDto? _user;
-    //private List<RoleDto>? _roles;
 
     public DateTime? Expires
     {
@@ -42,6 +41,46 @@ public class GeneralStateProvider : IGeneralStateProvider
         }
     }
 
+    public long? UserId
+    {
+        get => _userId;
+        set
+        {
+            _userId = value;
+            NotifyChanges();
+        }
+    }
+
+    public string? Username
+    {
+        get => _username;
+        set
+        {
+            _username = value;
+            NotifyChanges();
+        }
+    }
+
+    public string? UserFullName
+    {
+        get => _userFullName;
+        set
+        {
+            _userFullName = value;
+            NotifyChanges();
+        }
+    }
+
+    public List<string>? Roles
+    {
+        get => _roles;
+        set
+        {
+            _roles = value;
+            NotifyChanges();
+        }
+    }
+    
     /*public ConferenceDto? Conference
     {
         get => _conference;
@@ -53,26 +92,7 @@ public class GeneralStateProvider : IGeneralStateProvider
         }
     }*/
 
-    public UserDto? User
-    {
-        get => _user;
-        set
-        {
-            _user = value;
-            NotifyChanges();
-        }
-    }
-
-    /*public List<RoleDto>? Roles
-    {
-        get => _roles;
-        set
-        {
-            _roles = value;
-            NotifyChanges();
-        }
-    }*/
-
+    
     public Action? OnChanges;
 
     public void Initialize()
@@ -80,7 +100,9 @@ public class GeneralStateProvider : IGeneralStateProvider
         SetData();
     }
     
-    public GeneralStateProvider(ISyncLocalStorageService localStorage, AuthenticationStateProvider authentication)
+    public GeneralStateProvider(
+        ISyncLocalStorageService localStorage, 
+        AuthenticationStateProvider authentication)
     {
         _localStorage = localStorage;
         _authentication = authentication;
@@ -93,7 +115,6 @@ public class GeneralStateProvider : IGeneralStateProvider
         _localStorage.SetItem("Token", data.Token);
         //_localStorage?.SetItem("Conference", JsonSerializer.Serialize(data.Conference));
         _localStorage.SetItem("User", JsonSerializer.Serialize(data.User));
-        //_localStorage?.SetItem("Roles", JsonSerializer.Serialize(data.Roles));
         
         SetData();
     }
@@ -102,7 +123,6 @@ public class GeneralStateProvider : IGeneralStateProvider
     {
         _localStorage.Clear();
         SetData();
-        _authentication.GetAuthenticationStateAsync();
     }
     
     private void SetData()
@@ -111,18 +131,33 @@ public class GeneralStateProvider : IGeneralStateProvider
             ? _localStorage.GetItem<string>("Token")
             : null;
 
-        /*_roles = _localStorage.ContainKey("Roles")
-            ? JsonSerializer.Deserialize<List<RoleDto>>(_localStorage.GetItem<string>("Roles"))
-            : null;*/
+        if (_token == null)
+            return;
+
+        var claims = Tools.ParseClaimsFromJwt(_token).ToList();
+
+        foreach (var claim in claims)
+        {
+            Console.WriteLine($"{claim.Type}: {claim.Value}");
+        }
+        _userId = Convert.ToInt64(claims.FirstOrDefault(r => r.Type == "Id")?.Value);
+        _username = claims.FirstOrDefault(r => r.Type == "UserName")?.Value;
+        _userFullName = claims.FirstOrDefault(r => r.Type == "FullName")?.Value;
+        _roles = claims
+            .Where(r => r.Type == ClaimTypes.Role)
+            .Select(s => s.Value)
+            .ToList();
 
         /*_conference = _localStorage.ContainKey("Conference")
             ? JsonSerializer.Deserialize<ConferenceDto>(_localStorage.GetItem<string>("Conference"))
             : null;*/
 
+        _authentication.GetAuthenticationStateAsync();
+
         NotifyChanges();
     }
 
-    private void ReadToken(string token)
+    /*private void ReadToken(string token)
     {
         Token = token;
         
@@ -139,7 +174,7 @@ public class GeneralStateProvider : IGeneralStateProvider
         
         //User =
         //return claims.Identity.Name;
-    }
+    }*/
     
     private void NotifyChanges() => OnChanges?.Invoke();
 }
