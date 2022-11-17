@@ -2,21 +2,46 @@
 
 @using CM.App.Helper.Model.Enum
 
-@inject PageHistoryStateProvider PageHistory
+@inject IPageHistoryStateProvider PageHistory
+@inject IRoleStateProvider RoleState
+
+<AuthorizeView>
+    <Authorized>
+        @switch (RoleState.ActiveComponent)
+        {
+            case ManagementFunction.EditNew:
+                <RoleEdit GoBack="ShowList"/>
+                break;
+            default:
+                <RoleList OnEdit="EditRole"/>
+                break;
+        }
+    </Authorized>
+</AuthorizeView>
+
 
 @code {
-    private ManagementFunction _component;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         
         PageHistory.AddPageToHistory("/Roles");
-        _component = ManagementFunction.List;
     }
 
     private void EditRole()
     {
+        RoleState.ActiveComponent = RoleState.SelectedRole != null
+            ? ManagementFunction.EditNew
+            : ManagementFunction.List;
+
+        StateHasChanged();
+    }
+
+    private void ShowList()
+    {
+        RoleState.ActiveComponent = ManagementFunction.List;
         
+        StateHasChanged();
     }
 }

@@ -1,0 +1,124 @@
+﻿@using CM.Model.General
+
+@inject IRoleStateProvider RoleState
+@inject IGeneralStateProvider State
+
+<MudTable T="RoleDto"
+          ServerData="new Func<TableState, Task<TableData<RoleDto>>>(ServerReload)"
+          Hover="true"
+          Breakpoint="Breakpoint.Sm"
+          Loading="@_loading"
+          LoadingProgressColor="Color.Info"
+          FixedFooter="true"
+          FixedHeader="true"
+          @ref="_table"
+          Height="100%">
+    <ToolBarContent>
+        <MudButton OnClick="NewRole"
+                   Variant="Variant.Filled"
+                   ButtonType="ButtonType.Button"
+                   Color="Color.Primary">
+            New Role
+        </MudButton>
+        <MudSpacer/>
+        <MudText Typo="Typo.h6">
+            Role Management
+        </MudText>
+        <MudSpacer/>
+        <MudTextField T="string"
+                      ValueChanged="@(OnSearch)"
+                      Placeholder="Search"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      IconSize="Size.Medium"
+                      Class="mt-0"/>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Code</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Description</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Code">@context.Code</MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Description">@context.Description</MudTd>
+        <MudTd DataLabel="">
+            <MudTooltip Text="Edit user" Placement="Placement.Start">
+                <MudFab @onclick="@(() => EditRole(context))"
+                        Color="Color.Primary"
+                        Icon="@Icons.Material.Filled.Edit"
+                        Size="Size.Small"
+                        IconSize="Size.Small"
+                        Style="margin-right: 3px"/>
+            </MudTooltip>
+                    
+            <MudTooltip Text="Delete user" Placement="Placement.Start">
+                <MudFab @onclick="@(() => DeleteRole(context))"
+                        Color="Color.Primary"
+                        Icon="@Icons.Material.Filled.Delete"
+                        Size="Size.Small"
+                        IconSize="Size.Small"
+                        Style="margin-right: 3px"/>
+            </MudTooltip>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    [Parameter]
+    public EventCallback OnEdit { get; set; }
+
+    private bool _loading = true;
+    private MudTable<RoleDto> _table = new();
+
+    protected override void OnInitialized()
+    {
+        State.Initialize();
+        
+        base.OnInitialized();
+    }
+
+    private async Task<TableData<RoleDto>> ServerReload(TableState state)
+    {
+        _loading = true;
+
+        await RoleState.LoadRolePage(new QueryParams
+        {
+            Filter = RoleState.Filter,
+            PageIndex = state.Page,
+            PageSize = state.PageSize,
+            Sort = state.SortLabel,
+            Descending = state.SortDirection == SortDirection.Descending,
+            Expand = true
+        });
+
+        _loading = false;
+
+        return RoleState.RoleTable;
+    }
+
+    private async Task OnSearch(string? filter)
+    {
+        RoleState.Filter = filter ?? string.Empty;
+
+        await _table.ReloadServerData();
+    }
+
+    private async Task NewRole()
+    {
+        RoleState.SetSelectedRole(0);
+        await OnEdit.InvokeAsync();
+    }
+
+    private async Task EditRole(RoleDto role)
+    {
+        RoleState.SetSelectedRole(role.Id);
+        await OnEdit.InvokeAsync();
+    }
+
+    private async Task DeleteRole(RoleDto role)
+    {
+        RoleState.SetSelectedRole(role.Id);
+        await RoleState.DeleteRole(role.Id);
+    }
+}

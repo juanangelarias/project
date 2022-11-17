@@ -51,6 +51,7 @@ public static class Program
             // P
             .AddScoped<IPageHistoryStateProvider, PageHistoryStateProvider>()
             // R
+            .AddScoped<IRoleStateProvider, RoleStateProvider>()
             // U
             .AddScoped<IUserStateProvider, UserStateProvider>();
 

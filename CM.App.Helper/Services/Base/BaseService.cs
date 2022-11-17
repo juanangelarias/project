@@ -10,7 +10,7 @@ using MudBlazor;
 
 namespace CM.App.Helper.Services;
 
-public class BaseService<T>: IBaseService<T>
+public abstract class BaseService<T>: IBaseService<T>
     where T: BaseDto
 {
     private readonly NavigationManager _navigation;
