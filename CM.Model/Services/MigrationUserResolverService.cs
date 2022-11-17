@@ -4,7 +4,7 @@ public class MigrationUserResolverService : IUserResolverService
 {
     public long? GetUserId()
     {
-        throw new NotImplementedException();
+        return -1;
     }
 
     public string GetUserName()

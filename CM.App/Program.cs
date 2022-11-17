@@ -33,7 +33,8 @@ public static class Program
                 client.BaseAddress = apiBaseUri;
             });
         }
-        
+        // C
+        RegisterTypedClient<ICountryService, CountryService>(BaseAddress);
         // R
         RegisterTypedClient<IRoleService, RoleService>(BaseAddress);
         // U
@@ -46,6 +47,8 @@ public static class Program
         builder.Services
             // A
             .AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>()
+            // C
+            .AddScoped<ICountryStateProvider, CountryStateProvider>()
             // G
             .AddScoped<IGeneralStateProvider, GeneralStateProvider>()
             // P

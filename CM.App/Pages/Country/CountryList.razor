@@ -1,0 +1,122 @@
+﻿@using CM.Model.General
+
+@inject ICountryStateProvider CountryState
+@inject IGeneralStateProvider State
+
+<MudTable T="CountryDto"
+          ServerData="new Func<TableState, Task<TableData<CountryDto>>>(ServerReload)"
+          Hover="true"
+          Breakpoint="Breakpoint.Sm"
+          Loading="@_loading"
+          LoadingProgressColor="Color.Info"
+          FixedFooter="true"
+          FixedHeader="true"
+          @ref="_table"
+          Height="100%">
+    <ToolBarContent>
+        <MudButton OnClick="NewCountry"
+                   Variant="Variant.Filled"
+                   ButtonType="ButtonType.Button"
+                   Color="Color.Primary">
+            New Country
+        </MudButton>
+        <MudSpacer/>
+        <MudText Typo="Typo.h6">
+            Country Management
+        </MudText>
+        <MudSpacer/>
+        <MudTextField T="string"
+                      ValueChanged="@(OnSearch)"
+                      Placeholder="Search"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      IconSize="Size.Medium"
+                      Class="mt-0"/>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Code</MudTh>
+        <MudTh>Name</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Code">@context.Code</MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="">
+            <MudTooltip Text="Edit user" Placement="Placement.Start">
+                <MudFab @onclick="@(() => EditCountry(context))"
+                        Color="Color.Primary"
+                        Icon="@Icons.Material.Filled.Edit"
+                        Size="Size.Small"
+                        IconSize="Size.Small"
+                        Style="margin-right: 3px"/>
+            </MudTooltip>
+                    
+            <MudTooltip Text="Delete user" Placement="Placement.Start">
+                <MudFab @onclick="@(() => DeleteCountry(context))"
+                        Color="Color.Primary"
+                        Icon="@Icons.Material.Filled.Delete"
+                        Size="Size.Small"
+                        IconSize="Size.Small"
+                        Style="margin-right: 3px"/>
+            </MudTooltip>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    [Parameter]
+    public EventCallback OnEdit { get; set; }
+
+    private bool _loading = true;
+    private MudTable<CountryDto> _table = new();
+
+    protected override void OnInitialized()
+    {
+        State.Initialize();
+        
+        base.OnInitialized();
+    }
+
+    private async Task<TableData<CountryDto>> ServerReload(TableState state)
+    {
+        _loading = true;
+
+        await CountryState.LoadCountryPage(new QueryParams
+        {
+            Filter = CountryState.Filter,
+            PageIndex = state.Page,
+            PageSize = state.PageSize,
+            Sort = state.SortLabel,
+            Descending = state.SortDirection == SortDirection.Descending,
+            Expand = true
+        });
+
+        _loading = false;
+
+        return CountryState.CountryTable;
+    }
+
+    private async Task OnSearch(string? filter)
+    {
+        CountryState.Filter = filter ?? string.Empty;
+
+        await _table.ReloadServerData();
+    }
+
+    private async Task NewCountry()
+    {
+        CountryState.SetSelectedCountry(0);
+        await OnEdit.InvokeAsync();
+    }
+
+    private async Task EditCountry(CountryDto country)
+    {
+        CountryState.SetSelectedCountry(country.Id);
+        await OnEdit.InvokeAsync();
+    }
+
+    private async Task DeleteCountry(CountryDto country)
+    {
+        CountryState.SetSelectedCountry(country.Id);
+        await CountryState.DeleteCountry(country.Id);
+    }
+}

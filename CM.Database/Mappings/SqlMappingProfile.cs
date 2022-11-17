@@ -7,6 +7,8 @@ public class SqlMappingProfile: AutoMapper.Profile
 {
     public SqlMappingProfile()
     {
+        // C
+        CreateMap<Country, CountryDto>().ReverseMap();
         // R
         CreateMap<Role, RoleDto>().ReverseMap();
         

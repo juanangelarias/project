@@ -1,0 +1,47 @@
+﻿@page "/Countries"
+
+@using CM.App.Helper.Model.Enum
+
+@inject IPageHistoryStateProvider PageHistory
+@inject ICountryStateProvider CountryState
+
+<AuthorizeView>
+    <Authorized>
+        @switch (CountryState.ActiveComponent)
+        {
+            case ManagementFunction.EditNew:
+                <CountryEdit GoBack="ShowList"/>
+                break;
+            default:
+                <CountryList OnEdit="EditCountry"/>
+                break;
+        }
+    </Authorized>
+</AuthorizeView>
+
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        PageHistory.AddPageToHistory("/Country");
+    }
+
+    private void EditCountry()
+    {
+        CountryState.ActiveComponent = CountryState.SelectedCountry != null
+            ? ManagementFunction.EditNew
+            : ManagementFunction.List;
+
+        StateHasChanged();
+    }
+
+    private void ShowList()
+    {
+        CountryState.ActiveComponent = ManagementFunction.List;
+        
+        StateHasChanged();
+    }
+}

@@ -12,6 +12,9 @@ public class CmDbContext: DbContext
     private readonly IUserResolverService _userResolverService;
     private readonly IDateConverterService _dateConverterService;
 
+    // C
+    public DbSet<Country> Countries { get; set; }
+    
     // R
     public DbSet<Role> Roles { get; set; }
     

@@ -184,6 +184,9 @@ public class Startup
         #region IOC container registrations
 
         services
+            // C
+            .AddScoped<ICountryRepository, CountryRepository>()
+            
             // D
             .AddScoped<IDateConverterService, DateConverterService>()
                 

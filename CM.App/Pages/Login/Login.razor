@@ -70,15 +70,18 @@
 
 @code
 {
-    private readonly LoginRequest _model = new();
+    private LoginRequest _model;
     private bool _success = true;
     
     protected override void OnInitialized()
     {
     // ToDo: To be removed
 
-        _model.Username = "arias@ariasmunguia.com";
-        _model.Password = "Delfos02!!";
+        _model = new LoginRequest
+        {
+            Username = "arias@ariasmunguia.com",
+            Password = "Delfos02!!"
+        };
         
         StateHasChanged();
     }

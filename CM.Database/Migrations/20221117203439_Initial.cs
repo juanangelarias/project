@@ -26,7 +26,7 @@ namespace CM.Database.Migrations
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
+                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
                     CreatedBy = table.Column<long>(type: "bigint", nullable: true),
                     ModifiedBy = table.Column<long>(type: "bigint", nullable: true)
                 },
@@ -46,6 +46,36 @@ namespace CM.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Country",
+                columns: table => new
+                {
+                    CountryId = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Code = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
+                    CreatedBy = table.Column<long>(type: "bigint", nullable: true),
+                    ModifiedBy = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Country", x => x.CountryId);
+                    table.ForeignKey(
+                        name: "FK_Country_User_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalTable: "User",
+                        principalColumn: "UserId");
+                    table.ForeignKey(
+                        name: "FK_Country_User_ModifiedBy",
+                        column: x => x.ModifiedBy,
+                        principalTable: "User",
+                        principalColumn: "UserId");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Role",
                 columns: table => new
                 {
@@ -57,7 +87,7 @@ namespace CM.Database.Migrations
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
+                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
                     CreatedBy = table.Column<long>(type: "bigint", nullable: true),
                     ModifiedBy = table.Column<long>(type: "bigint", nullable: true)
                 },
@@ -89,7 +119,7 @@ namespace CM.Database.Migrations
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
+                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
                     CreatedBy = table.Column<long>(type: "bigint", nullable: true),
                     ModifiedBy = table.Column<long>(type: "bigint", nullable: true)
                 },
@@ -132,7 +162,7 @@ namespace CM.Database.Migrations
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
+                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
                     CreatedBy = table.Column<long>(type: "bigint", nullable: true),
                     ModifiedBy = table.Column<long>(type: "bigint", nullable: true)
                 },
@@ -158,6 +188,44 @@ namespace CM.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserRequestToken",
+                columns: table => new
+                {
+                    UserRequestTokenId = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Emitted = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Expires = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
+                    CreatedBy = table.Column<long>(type: "bigint", nullable: true),
+                    ModifiedBy = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRequestToken", x => x.UserRequestTokenId);
+                    table.ForeignKey(
+                        name: "FK_UserRequestToken_User_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalTable: "User",
+                        principalColumn: "UserId");
+                    table.ForeignKey(
+                        name: "FK_UserRequestToken_User_ModifiedBy",
+                        column: x => x.ModifiedBy,
+                        principalTable: "User",
+                        principalColumn: "UserId");
+                    table.ForeignKey(
+                        name: "FK_UserRequestToken_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserRole",
                 columns: table => new
                 {
@@ -168,7 +236,7 @@ namespace CM.Database.Migrations
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
+                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
                     CreatedBy = table.Column<long>(type: "bigint", nullable: true),
                     ModifiedBy = table.Column<long>(type: "bigint", nullable: true)
                 },
@@ -198,6 +266,26 @@ namespace CM.Database.Migrations
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Country_Code",
+                table: "Country",
+                column: "Code");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Country_CreatedBy",
+                table: "Country",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Country_ModifiedBy",
+                table: "Country",
+                column: "ModifiedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Country_Name",
+                table: "Country",
+                column: "Name");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Role_CreatedBy",
@@ -250,6 +338,26 @@ namespace CM.Database.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserRequestToken_CreatedBy",
+                table: "UserRequestToken",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRequestToken_Expires",
+                table: "UserRequestToken",
+                column: "Expires");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRequestToken_ModifiedBy",
+                table: "UserRequestToken",
+                column: "ModifiedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRequestToken_UserId",
+                table: "UserRequestToken",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserRole_CreatedBy",
                 table: "UserRole",
                 column: "CreatedBy");
@@ -274,10 +382,16 @@ namespace CM.Database.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Country");
+
+            migrationBuilder.DropTable(
                 name: "UserPassword");
 
             migrationBuilder.DropTable(
                 name: "UserRefreshToken");
+
+            migrationBuilder.DropTable(
+                name: "UserRequestToken");
 
             migrationBuilder.DropTable(
                 name: "UserRole");

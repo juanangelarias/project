@@ -23,7 +23,7 @@ public static class Program
     private static IHost _host;
     private static IConfiguration? _configuration;
     
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
@@ -65,6 +65,9 @@ public static class Program
                     .AddSingleton(uspsConfig)
                     .AddSingleton(frontEndParameter)
                     .AddSingleton(passwordSettings)
+                    // C
+                    .AddScoped<ICountryRepository, CountryRepository>()
+                    
                     // D
                     .AddScoped<IDateConverterService, DateConverterService>()
 
@@ -92,10 +95,19 @@ public static class Program
             })
             .Build();
         
-        Start();
+        await Start();
     }
 
-    private static void Start()
+    private static async Task Start()
+    {
+        var seeder = new Seeder(_host.Services.GetService<ICountryRepository>());
+
+        await seeder.SeedCountry();
+
+        Console.ReadLine();
+    }
+
+    private static void EncryptionTest()
     {
         var tools = new Tools(
             _host.Services.GetService<IUserFeature>(), 
