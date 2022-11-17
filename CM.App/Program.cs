@@ -34,6 +34,8 @@ public static class Program
             });
         }
         
+        // R
+        RegisterTypedClient<IRoleService, RoleService>(BaseAddress);
         // U
         RegisterTypedClient<IUserService, UserService>(BaseAddress);
 
@@ -48,6 +50,7 @@ public static class Program
             .AddScoped<IGeneralStateProvider, GeneralStateProvider>()
             // P
             .AddScoped<IPageHistoryStateProvider, PageHistoryStateProvider>()
+            // R
             // U
             .AddScoped<IUserStateProvider, UserStateProvider>();
 

@@ -123,7 +123,7 @@ public class UserController: ControllerBase
         }
     }
 
-    [HttpOptions("changePassword")]
+    [HttpPost("changePassword")]
     public async Task<ActionResult<ChangePasswordResponse>> ChangePassword([FromBody] ChangePasswordRequest request)
     {
         try

@@ -90,7 +90,7 @@ public class BaseService<T>: IBaseService<T>
 
     public async Task<T?> Update(T dto)
     {
-        var request = new HttpRequestMessage(HttpMethod.Put, $"{BaseUrl}/{dto.Id}")
+        var request = new HttpRequestMessage(HttpMethod.Put, $"{BaseUrl}")
         {
             Content = new StringContent(JsonSerializer.Serialize(dto), Encoding.UTF8, "application/json")
         };

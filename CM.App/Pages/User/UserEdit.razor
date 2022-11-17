@@ -36,10 +36,10 @@
                                       For="@(()=>UserState!.SelectedUser.Email)"/>
                     </MudItem>
                     <MudItem xs="12" sm="12" md="6" lg="4" xl="4" xxl="3">
-                        <MudNumericField Label="Phone number" 
-                                         InputType="InputType.Telephone"
-                                         @bind-Value="UserState!.SelectedUser.PhoneNumber"
-                                         For="@(()=>UserState!.SelectedUser.PhoneNumber)"/>
+                        <MudTextField Label="Phone number" 
+                                      InputType="InputType.Telephone"
+                                      @bind-Value="UserState!.SelectedUser.PhoneNumber"
+                                      For="@(()=>UserState!.SelectedUser.PhoneNumber)"/>
                     </MudItem>
                 </MudGrid>
             </MudCardContent>
@@ -73,7 +73,7 @@
     private async Task OnValidSubmit()
     {
         _success = true;
-        if (UserState.SelectedUser!.Id != 0)
+        if (UserState.SelectedUser!.Id == 0)
         {
             await UserState.CreateUser();
         }

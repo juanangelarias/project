@@ -7,10 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Services" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\CM.Model\CM.Model.csproj" />
     </ItemGroup>
 
@@ -20,6 +16,10 @@
       <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.10" />
       <PackageReference Include="MudBlazor" Version="6.0.18" />
       <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.10.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="State\Role" />
     </ItemGroup>
 
 </Project>

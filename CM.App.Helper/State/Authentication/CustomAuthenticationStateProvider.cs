@@ -27,6 +27,17 @@ public class CustomAuthenticationStateProvider: AuthenticationStateProvider
         }
         
         var claims = Tools.ParseClaimsFromJwt(token).ToList();
+
+        var expiresMinutes = Convert.ToInt64(claims?.FirstOrDefault(f => f.Type == "exp")?.Value);
+        var expire = DateTimeOffset.FromUnixTimeSeconds(expiresMinutes);
+        if (DateTime.UtcNow > expire)
+        {
+            var anonymousState = new AuthenticationState(_anonymous);
+            NotifyAuthenticationStateChanged(Task.FromResult(anonymousState));
+            
+            return Task.FromResult(anonymousState);
+        }
+        
         var identity = new ClaimsIdentity(claims, "jwt");
         var user = new ClaimsPrincipal(identity);
         var state = new AuthenticationState(user);

@@ -1,0 +1,22 @@
+﻿@page "/Roles"
+
+@using CM.App.Helper.Model.Enum
+
+@inject PageHistoryStateProvider PageHistory
+
+@code {
+    private ManagementFunction _component;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        PageHistory.AddPageToHistory("/Roles");
+        _component = ManagementFunction.List;
+    }
+
+    private void EditRole()
+    {
+        
+    }
+}
