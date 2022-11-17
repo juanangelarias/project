@@ -13,6 +13,7 @@ public class CmDbContext: DbContext
     private readonly IDateConverterService _dateConverterService;
 
     // C
+    public DbSet<Club> Clubs { get; set; }
     public DbSet<Country> Countries { get; set; }
     
     // R

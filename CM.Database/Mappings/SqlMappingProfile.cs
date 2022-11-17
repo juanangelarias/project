@@ -8,7 +8,9 @@ public class SqlMappingProfile: AutoMapper.Profile
     public SqlMappingProfile()
     {
         // C
+        CreateMap<Club, ClubDto>();
         CreateMap<Country, CountryDto>().ReverseMap();
+        
         // R
         CreateMap<Role, RoleDto>().ReverseMap();
         

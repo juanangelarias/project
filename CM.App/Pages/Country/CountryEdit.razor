@@ -1,5 +1,77 @@
-﻿<h3>CountryEdit</h3>
+﻿@inject ISnackbar Snackbar
+@inject ICountryStateProvider CountryState
+
+<MudCard Style="Margin: 15px">
+    <EditForm Model="CountryState.SelectedCountry"
+              @ref="_form"
+              @bind-isValid="@_success"
+              OnValidSubmit="@(OnValidSubmit)"
+              OnInvalidSubmit="@(OnInvalidSubmit)">
+        <DataAnnotationsValidator/>
+        <MudCard>
+            <MudCardContent>
+                <MudGrid>
+                    <MudItem xs="12">
+                        <MudTextField Label="Code"
+                                      InputType="InputType.Text"
+                                      @bind-Value="CountryState.SelectedCountry.Code"
+                                      For="@(()=>CountryState.SelectedCountry.Code)"/>
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudTextField Label="Name"
+                                      InputType="InputType.Text"
+                                      @bind-Value="CountryState.SelectedCountry.Name"
+                                      For="@(()=>CountryState.SelectedCountry.Name)"/>                                            
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Style="margin-right: 15px"
+                           Variant="Variant.Filled"
+                           ButtonType="ButtonType.Button"
+                           Color="Color.Primary"
+                           OnClick="OnValidSubmit">
+                    Save
+                </MudButton>
+                <MudButton Style="margin-right: 15px"
+                           Variant="Variant.Filled"
+                           ButtonType="ButtonType.Button"
+                           Color="Color.Secondary"
+                           OnClick="GoBack">
+                    Cancel
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
+</MudCard>
 
 @code {
-    
+    [Parameter]
+    public EventCallback GoBack { get; set; }
+
+    private bool _success;
+    private EditForm _form = new();
+
+    private async Task OnValidSubmit()
+    {
+        _success = true;
+
+        if (CountryState.SelectedCountry!.Id == 0)
+        {
+            await CountryState.CreateCountry();
+        }
+        else
+        {
+            await CountryState.UpdateCountry();
+        }
+
+        Snackbar.Add("The data has been saved successfully.", Severity.Info);
+        await GoBack.InvokeAsync();
+    }
+
+    private void OnInvalidSubmit()
+    {
+        _success = false;
+        Snackbar.Add("There are validation errors that need to be addressed.", Severity.Error);
+    }
 }
