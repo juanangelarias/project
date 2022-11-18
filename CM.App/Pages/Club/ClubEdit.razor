@@ -1,8 +1,8 @@
 ﻿@inject ISnackbar Snackbar
-@inject ICountryStateProvider CountryState
+@inject IClubStateProvider ClubState
 
 <MudCard Style="Margin: 15px">
-    <EditForm Model="CountryState.SelectedCountry"
+    <EditForm Model="ClubState.SelectedClub"
               @ref="_form"
               @bind-isValid="@_success"
               OnValidSubmit="@(OnValidSubmit)"
@@ -11,17 +11,28 @@
         <MudCard>
             <MudCardContent>
                 <MudGrid>
-                    <MudItem xs="12" md="6" xl="3">
+                    <MudItem xs="12">
                         <MudTextField Label="Code"
                                       InputType="InputType.Text"
-                                      @bind-Value="CountryState.SelectedCountry.Code"
-                                      For="@(()=>CountryState.SelectedCountry.Code)"/>
+                                      @bind-Value="ClubState.SelectedClub.Code"
+                                      For="@(()=>ClubState.SelectedClub.Code)"/>
                     </MudItem>
                     <MudItem xs="12">
                         <MudTextField Label="Name"
                                       InputType="InputType.Text"
-                                      @bind-Value="CountryState.SelectedCountry.Name"
-                                      For="@(()=>CountryState.SelectedCountry.Name)"/>                                            
+                                      @bind-Value="ClubState.SelectedClub.Name"
+                                      For="@(()=>ClubState.SelectedClub.Name)"/>                                            
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudAutocomplete T="CountryDto"
+                                         Label="Country"
+                                         @bind-Value="ClubState.SelectedClub.Country"
+                                         ResetValueOnEmptyText="true"
+                                         CoerceText="false"
+                                         SearchFunc="@SearchCountry"
+                                         Text="@(ClubState.SelectedClub?.Country?.Name??string.Empty)">
+                            
+                        </MudAutocomplete>
                     </MudItem>
                 </MudGrid>
             </MudCardContent>
@@ -52,17 +63,29 @@
     private bool _success;
     private EditForm _form = new();
 
+    private Task<IEnumerable<CountryDto>> SearchCountry(string filter)
+    {
+        if (string.IsNullOrEmpty(filter))
+            return Task.FromResult<IEnumerable<CountryDto>>(ClubState.Countries.ToList());
+        
+        return Task.FromResult<IEnumerable<CountryDto>>(
+            ClubState.Countries
+            .Where(r => r.Name!.Contains(filter, StringComparison.InvariantCultureIgnoreCase))
+            .ToList()
+            );
+    }
+
     private async Task OnValidSubmit()
     {
         _success = true;
 
-        if (CountryState.SelectedCountry!.Id == 0)
+        if (ClubState.SelectedClub!.Id == 0)
         {
-            await CountryState.CreateCountry();
+            await ClubState.CreateClub();
         }
         else
         {
-            await CountryState.UpdateCountry();
+            await ClubState.UpdateClub();
         }
 
         Snackbar.Add("The data has been saved successfully.", Severity.Info);

@@ -1,0 +1,127 @@
+﻿@using CM.Model.General
+
+@inject IClubStateProvider ClubState
+@inject IGeneralStateProvider State
+
+<MudTable T="ClubDto"
+          ServerData="new Func<TableState, Task<TableData<ClubDto>>>(ServerReload)"
+          Hover="true"
+          Breakpoint="Breakpoint.Sm"
+          Loading="@_loading"
+          LoadingProgressColor="Color.Info"
+          FixedFooter="true"
+          FixedHeader="true"
+          @ref="_table"
+          Height="100%">
+    <ToolBarContent>
+        <MudButton OnClick="NewClub"
+                   Variant="Variant.Filled"
+                   ButtonType="ButtonType.Button"
+                   Color="Color.Primary">
+            New Club
+        </MudButton>
+        <MudSpacer/>
+        <MudText Typo="Typo.h6">
+            Club Management
+        </MudText>
+        <MudSpacer/>
+        <MudTextField T="string"
+                      ValueChanged="@(OnSearch)"
+                      Placeholder="Search"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      IconSize="Size.Medium"
+                      Class="mt-0"/>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Code</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Country</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Code">@context.Code</MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Name">@context.Country.Name</MudTd>
+        <MudTd DataLabel="">
+            <MudTooltip Text="Edit user" Placement="Placement.Start">
+                <MudFab @onclick="@(() => EditClub(context))"
+                        Color="Color.Primary"
+                        Icon="@Icons.Material.Filled.Edit"
+                        Size="Size.Small"
+                        IconSize="Size.Small"
+                        Style="margin-right: 3px"/>
+            </MudTooltip>
+                    
+            <MudTooltip Text="Delete user" Placement="Placement.Start">
+                <MudFab @onclick="@(() => DeleteClub(context))"
+                        Color="Color.Primary"
+                        Icon="@Icons.Material.Filled.Delete"
+                        Size="Size.Small"
+                        IconSize="Size.Small"
+                        Style="margin-right: 3px"/>
+            </MudTooltip>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager/>
+    </PagerContent>
+</MudTable>
+
+@code {
+    [Parameter]
+    public EventCallback OnEdit { get; set; }
+
+    private bool _loading = true;
+    private MudTable<ClubDto> _table = new();
+
+    protected override void OnInitialized()
+    {
+        State.Initialize();
+        
+        base.OnInitialized();
+    }
+
+    private async Task<TableData<ClubDto>> ServerReload(TableState state)
+    {
+        _loading = true;
+
+        await ClubState.LoadClubPage(new QueryParams
+        {
+            Filter = ClubState.Filter,
+            PageIndex = state.Page,
+            PageSize = state.PageSize,
+            Sort = state.SortLabel,
+            Descending = state.SortDirection == SortDirection.Descending,
+            Expand = true
+        });
+
+        _loading = false;
+
+        return ClubState.ClubTable;
+    }
+
+    private async Task OnSearch(string? filter)
+    {
+        ClubState.Filter = filter ?? string.Empty;
+
+        await _table.ReloadServerData();
+    }
+
+    private async Task NewClub()
+    {
+        ClubState.SetSelectedClub(0);
+        await OnEdit.InvokeAsync();
+    }
+
+    private async Task EditClub(ClubDto club)
+    {
+        ClubState.SetSelectedClub(club.Id);
+        await OnEdit.InvokeAsync();
+    }
+
+    private async Task DeleteClub(ClubDto club)
+    {
+        ClubState.SetSelectedClub(club.Id);
+        await ClubState.DeleteClub(club.Id);
+    }
+}

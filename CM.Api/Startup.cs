@@ -143,7 +143,7 @@ public class Startup
             options.AddPolicy(CorsPolicies.Development, builder =>
             {
                 builder.SetIsOriginAllowed(_ => true);
-                builder.WithOrigins(corsSettings.AllowedOrigins);
+                builder.WithOrigins(corsSettings.AllowedOrigins!);
                 builder.AllowAnyMethod();
                 builder.AllowAnyHeader();
                 builder.AllowCredentials();
@@ -152,7 +152,7 @@ public class Startup
             options.AddPolicy(CorsPolicies.Test, builder =>
             {
                 builder.SetIsOriginAllowed(_ => true);
-                builder.WithOrigins(corsSettings.AllowedOrigins);
+                builder.WithOrigins(corsSettings.AllowedOrigins!);
                 builder.AllowAnyMethod();
                 builder.AllowAnyHeader();
                 builder.AllowCredentials();
@@ -161,7 +161,7 @@ public class Startup
             options.AddPolicy(CorsPolicies.Uat, builder =>
             {
                 builder.SetIsOriginAllowed(_ => true);
-                builder.WithOrigins(corsSettings.AllowedOrigins);
+                builder.WithOrigins(corsSettings.AllowedOrigins!);
                 builder.AllowAnyMethod();
                 builder.AllowAnyHeader();
                 builder.AllowCredentials();
@@ -185,6 +185,7 @@ public class Startup
 
         services
             // C
+            .AddScoped<IClubRepository, ClubRepository>()
             .AddScoped<ICountryRepository, CountryRepository>()
             
             // D

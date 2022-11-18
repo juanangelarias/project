@@ -34,6 +34,7 @@ public static class Program
             });
         }
         // C
+        RegisterTypedClient<IClubService, ClubService>(BaseAddress);
         RegisterTypedClient<ICountryService, CountryService>(BaseAddress);
         // R
         RegisterTypedClient<IRoleService, RoleService>(BaseAddress);
@@ -48,6 +49,7 @@ public static class Program
             // A
             .AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>()
             // C
+            .AddScoped<IClubStateProvider, ClubStateProvider>()
             .AddScoped<ICountryStateProvider, CountryStateProvider>()
             // G
             .AddScoped<IGeneralStateProvider, GeneralStateProvider>()

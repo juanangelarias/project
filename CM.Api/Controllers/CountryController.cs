@@ -59,6 +59,20 @@ public class CountryController : Controller
         }
     }
 
+    [HttpGet("autocomplete")]
+    public async Task<ActionResult<IEnumerable<CountryDto>>> Autocomplete([FromQuery] AutoCompleteParams parameters)
+    {
+        try
+        {
+            return Ok(await _countryRepository.Autocomplete(parameters));
+        }
+        catch (Exception exception)
+        {
+            Log.Fatal(exception, "{Message}", exception.Message);
+            return StatusCode(500);
+        }
+    }
+
     [HttpPost]
     public async Task<ActionResult<CountryDto>> Create([FromBody] CountryDto country)
     {
