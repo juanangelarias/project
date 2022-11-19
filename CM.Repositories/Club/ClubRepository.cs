@@ -18,7 +18,7 @@ public class ClubRepository: BaseRepository<Club,ClubDto>, IClubRepository
         _mapper = mapper;
     }
 
-    public async Task<PagedResponse<ClubDto>> GetPage(QueryParams parameters)
+    public async Task<PagedResponse<ClubDto>> GetPageAsync(QueryParams parameters)
     {
         var qry = GetQuery();
         var sort = parameters.Sort ?? ClubSorts.Name;

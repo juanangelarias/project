@@ -7,6 +7,6 @@ namespace CM.Repositories;
 
 public interface IClubRepository: IBaseRepository<Club, ClubDto>
 {
-    Task<PagedResponse<ClubDto>> GetPage(QueryParams parameters);
+    Task<PagedResponse<ClubDto>> GetPageAsync(QueryParams parameters);
     Task<IEnumerable<ClubDto>> Autocomplete(AutoCompleteParams parameters);
 }

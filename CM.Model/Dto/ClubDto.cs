@@ -15,5 +15,5 @@ public class ClubDto: BaseDto
     [Required] 
     public long CountryId { get; set; }
 
-    public CountryDto Country { get; set; }
+    public CountryDto? Country { get; set; }
 }

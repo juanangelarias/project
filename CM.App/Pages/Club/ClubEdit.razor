@@ -30,8 +30,15 @@
                                          ResetValueOnEmptyText="true"
                                          CoerceText="false"
                                          SearchFunc="@SearchCountry"
-                                         Text="@(ClubState.SelectedClub?.Country?.Name??string.Empty)">
-                            
+                                         Text="@(ClubState.SelectedClub?.Country?.Name??string.Empty)"
+                                         ToStringFunc="@(state => state.Name)"
+                                         SelectValueOnTab="true">
+                            @*<ItemTemplate>
+                                <MudText>@context.Name</MudText>
+                            </ItemTemplate>
+                            <ItemSelectedTemplate>
+                                <MudText>@context.Name</MudText>
+                            </ItemSelectedTemplate>*@
                         </MudAutocomplete>
                     </MudItem>
                 </MudGrid>
@@ -79,6 +86,8 @@
     {
         _success = true;
 
+        ClubState.SelectedClub!.CountryId = ClubState.SelectedClub.Country.Id;
+        
         if (ClubState.SelectedClub!.Id == 0)
         {
             await ClubState.CreateClub();
