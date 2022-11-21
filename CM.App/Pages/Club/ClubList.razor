@@ -41,7 +41,7 @@
     <RowTemplate>
         <MudTd DataLabel="Code">@context.Code</MudTd>
         <MudTd DataLabel="Name">@context.Name</MudTd>
-        <MudTd DataLabel="Name">@context.Country.Name</MudTd>
+        <MudTd DataLabel="Name">@context.Country!.Name</MudTd>
         <MudTd DataLabel="">
             <MudTooltip Text="Edit user" Placement="Placement.Start">
                 <MudFab @onclick="@(() => EditClub(context))"

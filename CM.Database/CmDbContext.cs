@@ -16,6 +16,9 @@ public class CmDbContext: DbContext
     public DbSet<Club> Clubs { get; set; }
     public DbSet<Country> Countries { get; set; }
     
+    // M
+    public DbSet<Member> Members { get; set; }
+    
     // R
     public DbSet<Role> Roles { get; set; }
     

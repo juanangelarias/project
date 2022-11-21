@@ -11,6 +11,9 @@ public class SqlMappingProfile: AutoMapper.Profile
         CreateMap<Club, ClubDto>().ReverseMap();
         CreateMap<Country, CountryDto>().ReverseMap();
         
+        // M
+        CreateMap<Member, MemberDto>().ReverseMap();
+        
         // R
         CreateMap<Role, RoleDto>().ReverseMap();
         

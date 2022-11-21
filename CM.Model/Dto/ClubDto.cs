@@ -6,14 +6,18 @@ namespace CM.Model.Dto;
 public class ClubDto: BaseDto
 {
     [MaxLength(20)]
-    public string Code { get; set; }
+    public string? Code { get; set; }
     
     [Required]
     [MaxLength(100)]
-    public string Name { get; set; }
+    public string? Name { get; set; }
+    
+    [MaxLength(4)] 
+    public string? District { get; set; }
     
     [Required] 
     public long CountryId { get; set; }
 
+    [Required]
     public CountryDto? Country { get; set; }
 }

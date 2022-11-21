@@ -36,6 +36,8 @@ public static class Program
         // C
         RegisterTypedClient<IClubService, ClubService>(BaseAddress);
         RegisterTypedClient<ICountryService, CountryService>(BaseAddress);
+        // M
+        RegisterTypedClient<IMemberService, MemberService>(BaseAddress);
         // R
         RegisterTypedClient<IRoleService, RoleService>(BaseAddress);
         // U
@@ -53,6 +55,8 @@ public static class Program
             .AddScoped<ICountryStateProvider, CountryStateProvider>()
             // G
             .AddScoped<IGeneralStateProvider, GeneralStateProvider>()
+            // M
+            .AddScoped<IMemberStateProvider, MemberStateProvider>()
             // P
             .AddScoped<IPageHistoryStateProvider, PageHistoryStateProvider>()
             // R

@@ -8,6 +8,7 @@ public class Club: BaseEntity, IBaseEntity
     public string? Code { get; set; }
     public string? Name { get; set; }
     public long? CountryId { get; set; }
+    public string? District { get; set; }
 
     public Country? Country { get; set; }
     
@@ -23,6 +24,9 @@ public class Club: BaseEntity, IBaseEntity
             e.Property(p => p.Name)
                 .HasMaxLength(100)
                 .IsRequired();
+
+            e.Property(p => p.District)
+                .HasMaxLength(6);
 
             e.HasIndex(i => i.Name);
 

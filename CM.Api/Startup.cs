@@ -200,6 +200,7 @@ public class Startup
             
             // M
             .AddScoped<IMailService, MailService>()
+            .AddScoped<IMemberRepository, MemberRepository>()
             
             // R
             .AddScoped<IRoleRepository, RoleRepository>()
