@@ -31,6 +31,9 @@ namespace CM.Database.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
+                    b.Property<long?>("ClubTypeId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Code")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
@@ -70,6 +73,8 @@ namespace CM.Database.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClubTypeId");
+
                     b.HasIndex("CountryId");
 
                     b.HasIndex("CreatedBy");
@@ -79,6 +84,131 @@ namespace CM.Database.Migrations
                     b.HasIndex("Name");
 
                     b.ToTable("Club", (string)null);
+                });
+
+            modelBuilder.Entity("CM.Entities.ClubType", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("ClubTypeId");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<long?>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<long?>("ModifiedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<byte[]>("Timestamp")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("ModifiedBy");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("ClubType", (string)null);
+                });
+
+            modelBuilder.Entity("CM.Entities.Conference", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("ConferenceId");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<long?>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("ExchangeRate")
+                        .IsRequired()
+                        .HasPrecision(10, 4)
+                        .HasColumnType("decimal(10,4)");
+
+                    b.Property<long?>("HostClubId")
+                        .IsRequired()
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<long?>("ModifiedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(75)
+                        .HasColumnType("nvarchar(75)");
+
+                    b.Property<long?>("PrimaryCurrencyId")
+                        .IsRequired()
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("SecondaryCurrencyId")
+                        .IsRequired()
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("Timestamp")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("HostClubId");
+
+                    b.HasIndex("ModifiedBy");
+
+                    b.HasIndex("PrimaryCurrencyId");
+
+                    b.HasIndex("SecondaryCurrencyId");
+
+                    b.ToTable("Conference", (string)null);
                 });
 
             modelBuilder.Entity("CM.Entities.Country", b =>
@@ -132,6 +262,58 @@ namespace CM.Database.Migrations
                     b.HasIndex("Name");
 
                     b.ToTable("Country", (string)null);
+                });
+
+            modelBuilder.Entity("CM.Entities.Currency", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("CurrencyId");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<long?>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<long?>("ModifiedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Symbol")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
+
+                    b.Property<byte[]>("Timestamp")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("ModifiedBy");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Currency", (string)null);
                 });
 
             modelBuilder.Entity("CM.Entities.Member", b =>
@@ -564,6 +746,11 @@ namespace CM.Database.Migrations
 
             modelBuilder.Entity("CM.Entities.Club", b =>
                 {
+                    b.HasOne("CM.Entities.ClubType", "ClubType")
+                        .WithMany()
+                        .HasForeignKey("ClubTypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("CM.Entities.Country", "Country")
                         .WithMany()
                         .HasForeignKey("CountryId")
@@ -577,6 +764,8 @@ namespace CM.Database.Migrations
                         .WithMany()
                         .HasForeignKey("ModifiedBy");
 
+                    b.Navigation("ClubType");
+
                     b.Navigation("Country");
 
                     b.Navigation("CreatedByUser");
@@ -584,7 +773,76 @@ namespace CM.Database.Migrations
                     b.Navigation("ModifiedByUser");
                 });
 
+            modelBuilder.Entity("CM.Entities.ClubType", b =>
+                {
+                    b.HasOne("CM.Entities.User", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy");
+
+                    b.HasOne("CM.Entities.User", "ModifiedByUser")
+                        .WithMany()
+                        .HasForeignKey("ModifiedBy");
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("ModifiedByUser");
+                });
+
+            modelBuilder.Entity("CM.Entities.Conference", b =>
+                {
+                    b.HasOne("CM.Entities.User", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy");
+
+                    b.HasOne("CM.Entities.Club", "HostClub")
+                        .WithMany()
+                        .HasForeignKey("HostClubId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("CM.Entities.User", "ModifiedByUser")
+                        .WithMany()
+                        .HasForeignKey("ModifiedBy");
+
+                    b.HasOne("CM.Entities.Currency", "PrimaryCurrency")
+                        .WithMany()
+                        .HasForeignKey("PrimaryCurrencyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("CM.Entities.Currency", "SecondaryCurrency")
+                        .WithMany()
+                        .HasForeignKey("SecondaryCurrencyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("HostClub");
+
+                    b.Navigation("ModifiedByUser");
+
+                    b.Navigation("PrimaryCurrency");
+
+                    b.Navigation("SecondaryCurrency");
+                });
+
             modelBuilder.Entity("CM.Entities.Country", b =>
+                {
+                    b.HasOne("CM.Entities.User", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy");
+
+                    b.HasOne("CM.Entities.User", "ModifiedByUser")
+                        .WithMany()
+                        .HasForeignKey("ModifiedBy");
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("ModifiedByUser");
+                });
+
+            modelBuilder.Entity("CM.Entities.Currency", b =>
                 {
                     b.HasOne("CM.Entities.User", "CreatedByUser")
                         .WithMany()

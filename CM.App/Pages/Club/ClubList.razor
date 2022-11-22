@@ -36,14 +36,16 @@
     <HeaderContent>
         <MudTh>Code</MudTh>
         <MudTh>Name</MudTh>
+        <MudTh>Type</MudTh>
         <MudTh>Country</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Code">@context.Code</MudTd>
         <MudTd DataLabel="Name">@context.Name</MudTd>
-        <MudTd DataLabel="Name">@context.Country!.Name</MudTd>
+        <MudTd DataLabel="Type">@context.ClubType!.Name</MudTd>
+        <MudTd DataLabel="Country">@context.Country!.Name</MudTd>
         <MudTd DataLabel="">
-            <MudTooltip Text="Edit user" Placement="Placement.Start">
+            <MudTooltip Text="Edit Club" Placement="Placement.Start">
                 <MudFab @onclick="@(() => EditClub(context))"
                         Color="Color.Primary"
                         Icon="@Icons.Material.Filled.Edit"
@@ -52,7 +54,7 @@
                         Style="margin-right: 3px"/>
             </MudTooltip>
                     
-            <MudTooltip Text="Delete user" Placement="Placement.Start">
+            <MudTooltip Text="Delete Club" Placement="Placement.Start">
                 <MudFab @onclick="@(() => DeleteClub(context))"
                         Color="Color.Primary"
                         Icon="@Icons.Material.Filled.Delete"

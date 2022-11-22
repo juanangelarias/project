@@ -24,6 +24,20 @@
                                       For="@(()=>ClubState.SelectedClub.Name)"/>                                            
                     </MudItem>
                     <MudItem xs="12">
+                        <MudAutocomplete T="ClubTypeDto"
+                                         Label="Type"
+                                         @bind-Value="ClubState.SelectedClub.ClubType"
+                                         ResetValueOnEmptyText="true"
+                                         CoerceText="true"
+                                         SearchFunc="@SearchClubType"
+                                         Text="@(ClubState?.SelectedClub?.ClubType?.Name ?? string.Empty)"
+                                         ToStringFunc="@(type=>type.Name)"
+                                         SelectValueOnTab="true"
+                                         Validation="@(new Func<ClubTypeDto?, bool>(ValidateClubType))"
+                                         ErrorText="Invalid Club Type"/>
+                    </MudItem>
+
+                    <MudItem xs="12">
                         <MudAutocomplete T="CountryDto"
                                          Label="Country"
                                          @bind-Value="ClubState.SelectedClub.Country"
@@ -33,7 +47,7 @@
                                          Text="@(ClubState?.SelectedClub?.Country?.Name ?? string.Empty)"
                                          ToStringFunc="@(country=>country.Name)"
                                          SelectValueOnTab="true"
-                                         Validation="@(new Func<CountryDto?, bool>(Validate))"
+                                         Validation="@(new Func<CountryDto?, bool>(ValidateCountry))"
                                          ErrorText="Invalid Country"/>
                     </MudItem>
                     <MudItem xs="12">
@@ -70,14 +84,6 @@
 
     private bool _success;
     private EditForm _form = new();
-    private CountryDto? _selectedCountry;
-    
-    protected override void OnInitialized()
-    {
-        _selectedCountry = ClubState.SelectedClub!.CountryId == 0
-            ? null
-            : ClubState.SelectedClub!.Country;
-    }
 
     private Task<IEnumerable<CountryDto>> SearchCountry(string filter)
     {
@@ -91,10 +97,28 @@
             );
     }
     
-    private bool Validate(CountryDto? value)
+    private Task<IEnumerable<ClubTypeDto>> SearchClubType(string filter)
+    {
+        if (string.IsNullOrEmpty(filter))
+            return Task.FromResult<IEnumerable<ClubTypeDto>>(ClubState.ClubTypes.ToList());
+        
+        return Task.FromResult<IEnumerable<ClubTypeDto>>(
+            ClubState.ClubTypes
+                .Where(r => r.Name.Contains(filter, StringComparison.InvariantCultureIgnoreCase))
+                .ToList()
+            );
+    }
+    
+    private bool ValidateCountry(CountryDto? value)
     {
         return value != null;
     }
+    
+    private bool ValidateClubType(ClubTypeDto? value)
+    {
+        return value != null;
+    }
+
 
     private async Task OnValidSubmit()
     {

@@ -7,6 +7,7 @@ namespace CM.Repositories;
 
 public interface IMemberRepository: IBaseRepository<Member, MemberDto>
 {
+    Task<IEnumerable<MemberDto>> GetAllAsync();
     Task<PagedResponse<MemberDto>> GetPageAsync(QueryParams parameters);
     Task<IEnumerable<MemberDto>> Autocomplete(AutoCompleteParams parameters);
 }

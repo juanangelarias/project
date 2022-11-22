@@ -1,0 +1,128 @@
+﻿@using CM.Model.General
+
+@inject IConferenceStateProvider ConferenceState
+@inject IGeneralStateProvider State
+
+<MudTable T="ConferenceDto"
+          ServerData="new Func<TableState, Task<TableData<ConferenceDto>>>(ServerReload)"
+          Hover="true"
+          Breakpoint="Breakpoint.Sm"
+          Loading="@_loading"
+          LoadingProgressColor="Color.Info"
+          FixedFooter="true"
+          FixedHeader="true"
+          @ref="_table"
+          Height="100%">
+    <ToolBarContent>
+        <MudButton OnClick="NewConference"
+                   Variant="Variant.Filled"
+                   ButtonType="ButtonType.Button"
+                   Color="Color.Primary">
+            New Club Type
+        </MudButton>
+        <MudSpacer/>
+        <MudText Typo="Typo.h6">
+            Conference Management
+        </MudText>
+        <MudSpacer/>
+        <MudTextField T="string"
+                      ValueChanged="@(OnSearch)"
+                      Placeholder="Search"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      IconSize="Size.Medium"
+                      Class="mt-0"/>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Name</MudTh>
+        <MudTh>Description</MudTh>
+        <MudTh>Start Date</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Description">@context.Description</MudTd>
+        <MudTd DataLabel="Start Date">@context.StartDate</MudTd>
+        <MudTd DataLabel="">
+            <MudTooltip Text="Edit Conference" Placement="Placement.Start">
+                <MudFab @onclick="@(() => EditConference(context))"
+                        Color="Color.Primary"
+                        Icon="@Icons.Material.Filled.Edit"
+                        Size="Size.Small"
+                        IconSize="Size.Small"
+                        Style="margin-right: 3px"/>
+            </MudTooltip>
+                    
+            <MudTooltip Text="Delete Conference" Placement="Placement.Start">
+                <MudFab @onclick="@(() => DeleteConference(context))"
+                        Color="Color.Primary"
+                        Icon="@Icons.Material.Filled.Delete"
+                        Size="Size.Small"
+                        IconSize="Size.Small"
+                        Style="margin-right: 3px"/>
+            </MudTooltip>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager/>
+    </PagerContent>
+</MudTable>
+
+@code {
+    [Parameter]
+    public EventCallback OnEdit { get; set; }
+
+    private bool _loading = true;
+    private MudTable<ConferenceDto> _table = new();
+
+    protected override void OnInitialized()
+    {
+        State.Initialize();
+        
+        base.OnInitialized();
+    }
+
+    private async Task<TableData<ConferenceDto>> ServerReload(TableState state)
+    {
+        _loading = true;
+
+        await ConferenceState.LoadConferencePage(new QueryParams
+        {
+            Filter = ConferenceState.Filter,
+            PageIndex = state.Page,
+            PageSize = state.PageSize,
+            Sort = state.SortLabel,
+            Descending = state.SortDirection == SortDirection.Descending,
+            Expand = true
+        });
+
+        _loading = false;
+
+        return ConferenceState.ConferenceTable;
+    }
+
+    private async Task OnSearch(string? filter)
+    {
+        ConferenceState.Filter = filter ?? string.Empty;
+
+        await _table.ReloadServerData();
+    }
+
+    private async Task NewConference()
+    {
+        ConferenceState.SetSelectedConference(0);
+        await OnEdit.InvokeAsync();
+    }
+
+    private async Task EditConference(ConferenceDto conference)
+    {
+        ConferenceState.SetSelectedConference(conference.Id);
+        await OnEdit.InvokeAsync();
+    }
+
+    private async Task DeleteConference(ConferenceDto conference)
+    {
+        ConferenceState.SetSelectedConference(conference.Id);
+        await ConferenceState.DeleteConference(conference.Id);
+    }
+}

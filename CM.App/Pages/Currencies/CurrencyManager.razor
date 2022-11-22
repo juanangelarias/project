@@ -1,0 +1,47 @@
+﻿@page "/Currencies"
+
+@using CM.App.Helper.Model.Enum
+
+@inject IPageHistoryStateProvider PageHistory
+@inject ICurrencyStateProvider CurrencyState
+
+<AuthorizeView>
+    <Authorized>
+        @switch (CurrencyState.ActiveComponent)
+        {
+            case ManagementFunction.EditNew:
+                <CurrencyEdit GoBack="ShowList"/>
+                break;
+            default:
+                <CurrencyList OnEdit="EditCurrency"/>
+                break;
+        }
+    </Authorized>
+</AuthorizeView>
+
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        PageHistory.AddPageToHistory("/Currencys");
+    }
+
+    private void EditCurrency()
+    {
+        CurrencyState.ActiveComponent = CurrencyState.SelectedCurrency != null
+            ? ManagementFunction.EditNew
+            : ManagementFunction.List;
+
+        StateHasChanged();
+    }
+
+    private void ShowList()
+    {
+        CurrencyState.ActiveComponent = ManagementFunction.List;
+        
+        StateHasChanged();
+    }
+}

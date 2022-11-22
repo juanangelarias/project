@@ -10,6 +10,7 @@ public class ClubStateProvider: BaseStateProvider, IClubStateProvider
 {
     private readonly IClubService _clubService;
     private readonly ICountryService _countryService;
+    private readonly IClubTypeService _clubTypeService;
 
     #region Field & Properties
 
@@ -114,12 +115,29 @@ public class ClubStateProvider: BaseStateProvider, IClubStateProvider
 
     #endregion
 
+    #region Club Types
+
+    private List<ClubTypeDto> _clubTypes = new();
+
+    public List<ClubTypeDto> ClubTypes
+    {
+        get => _clubTypes;
+        set
+        {
+            _clubTypes = value;
+            NotifyChanges();
+        }
+    }
+
     #endregion
 
-    public ClubStateProvider(IClubService clubService, ICountryService countryService)
+    #endregion
+
+    public ClubStateProvider(IClubService clubService, ICountryService countryService, IClubTypeService clubTypeService)
     {
         _clubService = clubService;
         _countryService = countryService;
+        _clubTypeService = clubTypeService;
     }
     
     public async Task LoadClubPage(QueryParams parameters)
@@ -186,6 +204,8 @@ public class ClubStateProvider: BaseStateProvider, IClubStateProvider
         {
             Code = string.Empty,
             Name = string.Empty,
+            ClubTypeId = 0,
+            ClubType = new ClubTypeDto(),
             CountryId = 0,
             Country = new CountryDto(),
             Timestamp = Array.Empty<byte>()
@@ -219,5 +239,10 @@ public class ClubStateProvider: BaseStateProvider, IClubStateProvider
     public async Task GetCountries()
     {
         _countries = await _countryService.Get();
+    }
+
+    public async Task GetClubTypes()
+    {
+        _clubTypes = await _clubTypeService.Get();
     }
 }

@@ -1,0 +1,47 @@
+﻿@page "/ClubTypes"
+
+@using CM.App.Helper.Model.Enum
+
+@inject IPageHistoryStateProvider PageHistory
+@inject IClubTypeStateProvider ClubTypeState
+
+<AuthorizeView>
+    <Authorized>
+        @switch (ClubTypeState.ActiveComponent)
+        {
+            case ManagementFunction.EditNew:
+                <ClubTypeEdit GoBack="ShowList"/>
+                break;
+            default:
+                <ClubTypeList OnEdit="EditClubType"/>
+                break;
+        }
+    </Authorized>
+</AuthorizeView>
+
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        PageHistory.AddPageToHistory("/ClubTypes");
+    }
+
+    private void EditClubType()
+    {
+        ClubTypeState.ActiveComponent = ClubTypeState.SelectedClubType != null
+            ? ManagementFunction.EditNew
+            : ManagementFunction.List;
+
+        StateHasChanged();
+    }
+
+    private void ShowList()
+    {
+        ClubTypeState.ActiveComponent = ManagementFunction.List;
+        
+        StateHasChanged();
+    }
+}

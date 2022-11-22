@@ -4,4 +4,5 @@ public class ClubSorts
 {
     public const string Code = "code";
     public const string Name = "name";
+    public const string ClubType = "clubtype";
 }

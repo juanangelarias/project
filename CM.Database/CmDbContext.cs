@@ -7,21 +7,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CM.Database;
 
-public class CmDbContext: DbContext
+public class CmDbContext : DbContext
 {
     private readonly IUserResolverService _userResolverService;
     private readonly IDateConverterService _dateConverterService;
 
     // C
     public DbSet<Club> Clubs { get; set; }
+    public DbSet<ClubType> ClubTypes { get; set; }
+    public DbSet<Conference> Conferences { get; set; }
     public DbSet<Country> Countries { get; set; }
-    
+    public DbSet<Currency> Currencies { get; set; }
+
     // M
     public DbSet<Member> Members { get; set; }
-    
+
     // R
     public DbSet<Role> Roles { get; set; }
-    
+
     // U
     public DbSet<User> Users { get; set; }
     public DbSet<UserPassword> UserPasswords { get; set; }
@@ -29,16 +32,20 @@ public class CmDbContext: DbContext
     public DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
 
-    public CmDbContext(DbContextOptions<CmDbContext> options, IUserResolverService userResolverService, IDateConverterService dateConverterService) : base(options)
+    public CmDbContext(
+        DbContextOptions<CmDbContext> options,
+        IUserResolverService userResolverService,
+        IDateConverterService dateConverterService
+    ) : base(options)
     {
         _userResolverService = userResolverService;
         _dateConverterService = dateConverterService;
     }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
+
         foreach (var type in EntityTypes.GetEntityTypes<IConfigurableEntity>())
         {
             var instance = (IConfigurableEntity)Activator.CreateInstance(type)!;
@@ -82,9 +89,11 @@ public class CmDbContext: DbContext
     {
         var entries = ChangeTracker
             .Entries()
-            .Where(e => e.Entity is IBaseEntity && (
-                e.State == EntityState.Added
-                || e.State == EntityState.Modified));
+            .Where(
+                e =>
+                    e.Entity is IBaseEntity
+                    && (e.State == EntityState.Added || e.State == EntityState.Modified)
+            );
 
         var userId = _userResolverService.GetUserId();
 
@@ -99,10 +108,10 @@ public class CmDbContext: DbContext
             {
                 ((IBaseEntity)entityEntry.Entity).ModifiedBy = userId;
                 ((IBaseEntity)entityEntry.Entity).ModifiedOn = DateTime.UtcNow;
-            } 
+            }
             else if (entityEntry.State == EntityState.Deleted)
             {
-                ((IBaseEntity) entityEntry.Entity).IsDeleted = true;
+                ((IBaseEntity)entityEntry.Entity).IsDeleted = true;
                 ((IBaseEntity)entityEntry.Entity).ModifiedBy = userId;
                 ((IBaseEntity)entityEntry.Entity).ModifiedOn = DateTime.UtcNow;
                 entityEntry.State = EntityState.Modified;

@@ -9,7 +9,10 @@ public class SqlMappingProfile: AutoMapper.Profile
     {
         // C
         CreateMap<Club, ClubDto>().ReverseMap();
+        CreateMap<ClubType, ClubTypeDto>().ReverseMap();
+        CreateMap<Conference, ConferenceDto>().ReverseMap();
         CreateMap<Country, CountryDto>().ReverseMap();
+        CreateMap<Currency, CurrencyDto>().ReverseMap();
         
         // M
         CreateMap<Member, MemberDto>().ReverseMap();

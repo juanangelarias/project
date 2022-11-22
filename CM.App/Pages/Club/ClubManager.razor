@@ -28,7 +28,8 @@
         
         PageHistory.AddPageToHistory("/Club");
 
-        ClubState.GetCountries();
+        await ClubState.GetCountries();
+        await ClubState.GetClubTypes();
     }
 
     private void EditClub()

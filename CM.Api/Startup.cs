@@ -186,7 +186,10 @@ public class Startup
         services
             // C
             .AddScoped<IClubRepository, ClubRepository>()
+            .AddScoped<IClubTypeRepository, ClubTypeRepository>()
+            .AddScoped<IConferenceRepository, ConferenceRepository>()
             .AddScoped<ICountryRepository, CountryRepository>()
+            .AddScoped<ICurrencyRepository, CurrencyRepository>()
             
             // D
             .AddScoped<IDateConverterService, DateConverterService>()

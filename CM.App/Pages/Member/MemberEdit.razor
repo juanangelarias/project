@@ -1,5 +1,116 @@
-﻿<h3>MemberEdit</h3>
+﻿@inject ISnackbar Snackbar
+@inject IMemberStateProvider MemberState
+
+<MudCard Style="Margin: 15px">
+    <EditForm Model="MemberState.SelectedMember"
+              @ref="_form"
+              @bind-isValid="@_success"
+              OnValidSubmit="@(OnValidSubmit)"
+              OnInvalidSubmit="@(OnInvalidSubmit)">
+        <DataAnnotationsValidator/>
+        <MudCard>
+            <MudCardContent>
+                <MudGrid>
+                    <MudItem xs="12">
+                        <MudTextField Label="Code"
+                                      InputType="InputType.Text"
+                                      @bind-Value="MemberState.SelectedMember.Code"
+                                      For="@(()=>MemberState.SelectedMember.Code)"/>
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudTextField Label="Name"
+                                      InputType="InputType.Text"
+                                      @bind-Value="MemberState.SelectedMember.Name"
+                                      For="@(()=>MemberState.SelectedMember.Name)"/>                                            
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudTextField Label="Alias"
+                                      InputType="InputType.Text"
+                                      @bind-Value="MemberState.SelectedMember.Alias"
+                                      For="@(()=>MemberState.SelectedMember.Alias)"/>                                            
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudAutocomplete T="ClubDto"
+                                         Label="Club"
+                                         @bind-Value="MemberState.SelectedMember.Club"
+                                         ResetValueOnEmptyText="true"
+                                         CoerceText="true"
+                                         SearchFunc="@SearchClub"
+                                         Text="@(MemberState?.SelectedMember?.Club?.Name ?? string.Empty)"
+                                         ToStringFunc="@(country=>country.Name)"
+                                         SelectValueOnTab="true"
+                                         Validation="@(new Func<ClubDto?, bool>(Validate))"
+                                         ErrorText="Invalid Club"/>
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Style="margin-right: 15px"
+                           Variant="Variant.Filled"
+                           ButtonType="ButtonType.Button"
+                           Color="Color.Primary"
+                           OnClick="OnValidSubmit">
+                    Save
+                </MudButton>
+                <MudButton Style="margin-right: 15px"
+                           Variant="Variant.Filled"
+                           ButtonType="ButtonType.Button"
+                           Color="Color.Secondary"
+                           OnClick="GoBack">
+                    Cancel
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
+</MudCard>
 
 @code {
+    [Parameter]
+    public EventCallback GoBack { get; set; }
+
+    private bool _success;
+    private EditForm _form = new();
+
+    private Task<IEnumerable<ClubDto>> SearchClub(string filter)
+    {
+        if (string.IsNullOrEmpty(filter))
+            return Task.FromResult<IEnumerable<ClubDto>>(MemberState.Clubs.ToList());
+        
+        return Task.FromResult<IEnumerable<ClubDto>>(
+            MemberState.Clubs
+            .Where(r => r.Name!.Contains(filter, StringComparison.InvariantCultureIgnoreCase))
+            .ToList()
+            );
+    }
     
+    private bool Validate(ClubDto? value)
+    {
+        return value != null;
+    }
+
+    private async Task OnValidSubmit()
+    {
+        _success = true;
+
+        MemberState.SelectedMember!.ClubId = MemberState.SelectedMember!.Club!.Id;
+        
+
+        if (MemberState.SelectedMember!.Id == 0)
+        {
+            await MemberState.CreateMember();
+        }
+        else
+        {
+            await MemberState.UpdateMember();
+        }
+
+        Snackbar.Add("The data has been saved successfully.", Severity.Info);
+        await GoBack.InvokeAsync();
+    }
+
+    private void OnInvalidSubmit()
+    {
+        _success = false;
+        Snackbar.Add("There are validation errors that need to be addressed.", Severity.Error);
+    }
 }

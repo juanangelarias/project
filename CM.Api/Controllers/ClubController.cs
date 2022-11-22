@@ -23,7 +23,7 @@ public class ClubController : Controller
     {
         try
         {
-            return Ok(await _clubRepository.GetAsync());
+            return Ok(await _clubRepository.GetAllAsync());
         }
         catch (Exception exception)
         {
@@ -80,6 +80,7 @@ public class ClubController : Controller
         try
         {
             club.Country = null;
+            club.ClubType = null;
             return Ok(await _clubRepository.CreateAsync(club));
         }
         catch (Exception exception)

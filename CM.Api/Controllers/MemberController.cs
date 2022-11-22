@@ -23,7 +23,7 @@ public class MemberController : Controller
     {
         try
         {
-            return Ok(await _memberRepository.GetAsync());
+            return Ok(await _memberRepository.GetAllAsync());
         }
         catch (Exception exception)
         {

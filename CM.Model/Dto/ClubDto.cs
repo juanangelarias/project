@@ -12,6 +12,12 @@ public class ClubDto: BaseDto
     [MaxLength(100)]
     public string? Name { get; set; }
     
+    [Required] 
+    public long ClubTypeId { get; set; }
+    
+    [Required] 
+    public ClubTypeDto? ClubType { get; set; }
+    
     [MaxLength(4)] 
     public string? District { get; set; }
     

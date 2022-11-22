@@ -13,6 +13,7 @@ public interface IClubStateProvider
     ManagementFunction ActiveComponent { get; set; }
     string Filter { get; set; }
     List<CountryDto> Countries { get; set; }
+    List<ClubTypeDto> ClubTypes { get; set; }
     
     Task LoadClubPage(QueryParams parameters);
     Task CreateClub();
@@ -22,4 +23,5 @@ public interface IClubStateProvider
     void SetSelectedClub(long clubId);
     List<CountryDto> CountryAutocomplete(AutoCompleteParams parameters);
     Task GetCountries();
+    Task GetClubTypes();
 }

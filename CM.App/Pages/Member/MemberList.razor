@@ -1,5 +1,149 @@
-﻿<h3>MemberList</h3>
+﻿@using CM.Model.General
+
+@inject IMemberStateProvider MemberState
+@inject IGeneralStateProvider State
+
+<MudTable T="MemberDto"
+          ServerData="new Func<TableState, Task<TableData<MemberDto>>>(ServerReload)"
+          Hover="true"
+          Breakpoint="Breakpoint.Sm"
+          Loading="@_loading"
+          LoadingProgressColor="Color.Info"
+          FixedFooter="true"
+          FixedHeader="true"
+          @ref="_table"
+          Height="100%">
+    <ToolBarContent>
+        <MudButton OnClick="NewMember"
+                   Variant="Variant.Filled"
+                   ButtonType="ButtonType.Button"
+                   Color="Color.Primary">
+            New Member
+        </MudButton>
+        <MudSpacer/>
+        <MudText Typo="Typo.h6">
+            Member Management
+        </MudText>
+        <MudSpacer/>
+        <MudTextField T="string"
+                      ValueChanged="@(OnSearch)"
+                      Placeholder="Search"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      IconSize="Size.Medium"
+                      Class="mt-0"/>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>
+            <MudTableSortLabel SortLabel="name" 
+                               T="MemberDto">
+                Name
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="alias"
+                               T="MemberDto">
+                Alias
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="club" 
+                               T="MemberDto">
+                Club
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Alias">@context.Alias</MudTd>
+        <MudTd DataLabel="Club">@context.Club!.Name</MudTd>
+        <MudTd DataLabel="">
+            <MudTooltip Text="Edit Member" Placement="Placement.Start">
+                <MudFab @onclick="@(() => EditMember(context))"
+                        Color="Color.Primary"
+                        Icon="@Icons.Material.Filled.Edit"
+                        Size="Size.Small"
+                        IconSize="Size.Small"
+                        Style="margin-right: 3px"/>
+            </MudTooltip>
+                    
+            <MudTooltip Text="Delete Member" Placement="Placement.Start">
+                <MudFab @onclick="@(() => DeleteMember(context))"
+                        Color="Color.Primary"
+                        Icon="@Icons.Material.Filled.Delete"
+                        Size="Size.Small"
+                        IconSize="Size.Small"
+                        Style="margin-right: 3px"/>
+            </MudTooltip>
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+            <MudText>No matching records found</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>Loading...</MudText>
+        </LoadingContent>
+    <PagerContent>
+        <MudTablePager/>
+    </PagerContent>
+</MudTable>
 
 @code {
-    
+    [Parameter]
+    public EventCallback OnEdit { get; set; }
+
+    private bool _loading = true;
+    private MudTable<MemberDto> _table = new();
+
+    protected override void OnInitialized()
+    {
+        State.Initialize();
+        
+        base.OnInitialized();
+    }
+
+    private async Task<TableData<MemberDto>> ServerReload(TableState state)
+    {
+        _loading = true;
+
+        await MemberState.LoadMemberPage(new QueryParams
+        {
+            Filter = MemberState.Filter,
+            PageIndex = state.Page,
+            PageSize = state.PageSize,
+            Sort = state.SortLabel,
+            Descending = state.SortDirection == SortDirection.Descending,
+            Expand = true
+        });
+
+        _loading = false;
+
+        return MemberState.MemberTable;
+    }
+
+    private async Task OnSearch(string? filter)
+    {
+        MemberState.Filter = filter ?? string.Empty;
+
+        await _table.ReloadServerData();
+    }
+
+    private async Task NewMember()
+    {
+        MemberState.SetSelectedMember(0);
+        await OnEdit.InvokeAsync();
+    }
+
+    private async Task EditMember(MemberDto member)
+    {
+        MemberState.SetSelectedMember(member.Id);
+        await OnEdit.InvokeAsync();
+    }
+
+    private async Task DeleteMember(MemberDto member)
+    {
+        MemberState.SetSelectedMember(member.Id);
+        await MemberState.DeleteMember(member.Id);
+    }
 }

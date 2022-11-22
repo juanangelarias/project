@@ -1,0 +1,71 @@
+﻿@inject ISnackbar Snackbar
+@inject IClubTypeStateProvider ClubTypeState
+
+<MudCard Style="Margin: 15px">
+    <EditForm Model="ClubTypeState.SelectedClubType"
+              @ref="_form"
+              @bind-isValid="@_success"
+              OnValidSubmit="@(OnValidSubmit)"
+              OnInvalidSubmit="@(OnInvalidSubmit)">
+        <DataAnnotationsValidator/>
+        <MudCard>
+            <MudCardContent>
+                <MudGrid>
+                    <MudItem xs="12">
+                        <MudTextField Label="Name"
+                                      InputType="InputType.Text"
+                                      @bind-Value="ClubTypeState.SelectedClubType.Name"
+                                      For="@(()=>ClubTypeState.SelectedClubType.Name)"/>                                            
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Style="margin-right: 15px"
+                           Variant="Variant.Filled"
+                           ButtonType="ButtonType.Button"
+                           Color="Color.Primary"
+                           OnClick="OnValidSubmit">
+                    Save
+                </MudButton>
+                <MudButton Style="margin-right: 15px"
+                           Variant="Variant.Filled"
+                           ButtonType="ButtonType.Button"
+                           Color="Color.Secondary"
+                           OnClick="GoBack">
+                    Cancel
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
+</MudCard>
+
+@code {
+    [Parameter]
+    public EventCallback GoBack { get; set; }
+
+    private bool _success;
+    private EditForm _form = new();
+
+    private async Task OnValidSubmit()
+    {
+        _success = true;
+
+        if (ClubTypeState.SelectedClubType!.Id == 0)
+        {
+            await ClubTypeState.CreateClubType();
+        }
+        else
+        {
+            await ClubTypeState.UpdateClubType();
+        }
+
+        Snackbar.Add("The data has been saved successfully.", Severity.Info);
+        await GoBack.InvokeAsync();
+    }
+
+    private void OnInvalidSubmit()
+    {
+        _success = false;
+        Snackbar.Add("There are validation errors that need to be addressed.", Severity.Error);
+    }
+}

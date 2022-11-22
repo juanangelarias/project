@@ -7,20 +7,26 @@ using MudBlazor;
 
 namespace CM.App.Helper.Services;
 
-public class ClubService: BaseService<ClubDto>, IClubService
+public class ClubService : BaseService<ClubDto>, IClubService
 {
-    public ClubService(NavigationManager navigation, IGeneralStateProvider state, HttpClient client, ISnackbar snackbar) 
-        : base(navigation, state, client, snackbar)
+    public ClubService(
+        NavigationManager navigation,
+        IGeneralStateProvider state,
+        HttpClient client,
+        ISnackbar snackbar
+    ) : base(navigation, state, client, snackbar)
     {
         BaseUrl = "api/club/v1";
     }
 
     public async Task<IEnumerable<ClubDto>> Autocomplete(AutoCompleteParams parameters)
     {
-
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{BaseUrl}/autocomplete" +
-                                                             $"?filter={parameters.Filter}" +
-                                                             $"&Count={parameters.Count}");
+        var request = new HttpRequestMessage(
+            HttpMethod.Get,
+            $"{BaseUrl}/autocomplete"
+                + $"?filter={parameters.Filter}"
+                + $"&Count={parameters.Count}"
+        );
         var response = await GetResponse(request);
         if (response != null)
         {

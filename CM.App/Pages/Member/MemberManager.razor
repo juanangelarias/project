@@ -1,6 +1,49 @@
 ﻿@page "/Members"
-<h3>MemberManager</h3>
+
+@using CM.App.Helper.Model.Enum
+
+@inject IPageHistoryStateProvider PageHistory
+@inject IMemberStateProvider MemberState
+
+<AuthorizeView>
+    <Authorized>
+        @switch (MemberState.ActiveComponent)
+        {
+            case ManagementFunction.EditNew:
+                <MemberEdit GoBack="ShowList"/>
+                break;
+            default:
+                <MemberList OnEdit="EditMember"/>
+                break;
+        }
+    </Authorized>
+</AuthorizeView>
+
 
 @code {
-    
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        PageHistory.AddPageToHistory("/Member");
+
+        await MemberState.GetClubs();
+    }
+
+    private void EditMember()
+    {
+        MemberState.ActiveComponent = MemberState.SelectedMember != null
+            ? ManagementFunction.EditNew
+            : ManagementFunction.List;
+
+        StateHasChanged();
+    }
+
+    private void ShowList()
+    {
+        MemberState.ActiveComponent = ManagementFunction.List;
+        
+        StateHasChanged();
+    }
 }

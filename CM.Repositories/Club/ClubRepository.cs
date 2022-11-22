@@ -9,13 +9,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CM.Repositories;
 
-public class ClubRepository: BaseRepository<Club,ClubDto>, IClubRepository
+public class ClubRepository : BaseRepository<Club, ClubDto>, IClubRepository
 {
     private readonly IMapper _mapper;
 
     public ClubRepository(IMapper mapper, CmDbContext db) : base(mapper, db)
     {
         _mapper = mapper;
+    }
+
+    public async Task<IEnumerable<ClubDto>> GetAllAsync()
+    {
+        var qry = await GetQuery().Include(i => i.Country).Include(i => i.ClubType).ToListAsync();
+
+        return _mapper.Map<List<ClubDto>>(qry);
     }
 
     public async Task<PagedResponse<ClubDto>> GetPageAsync(QueryParams parameters)
@@ -25,33 +32,36 @@ public class ClubRepository: BaseRepository<Club,ClubDto>, IClubRepository
 
         if (parameters.Expand)
         {
-            qry = qry
-                .Include(i => i.Country);
+            qry = qry.Include(i => i.Country).Include(i => i.ClubType);
         }
-        
+
         if (!string.IsNullOrEmpty(parameters.Filter))
         {
             var filter = parameters.Filter.ToLower();
-            qry = qry.Where(r =>
-                r.Code!.ToLower().Contains(filter) ||
-                r.Name!.ToLower().Contains(filter));
+            qry = qry.Where(
+                r => r.Code!.ToLower().Contains(filter) || r.Name!.ToLower().Contains(filter)
+            );
         }
 
         qry = sort switch
         {
-            ClubSorts.Code => parameters.Descending
-                ? qry.OrderByDescending(o => o.Code)
-                : qry.OrderBy(o => o.Code),
-            _ => parameters.Descending
-                ? qry.OrderByDescending(o => o.Name)
-                : qry.OrderBy(o => o.Name)
+            ClubSorts.Code
+                => parameters.Descending
+                    ? qry.OrderByDescending(o => o.Code)
+                    : qry.OrderBy(o => o.Code),
+            ClubSorts.ClubType
+                => parameters.Descending
+                    ? qry.OrderByDescending(o => o.ClubType!.Name)
+                    : qry.OrderBy(o => o.ClubType!.Name),
+            _
+                => parameters.Descending
+                    ? qry.OrderByDescending(o => o.Name)
+                    : qry.OrderBy(o => o.Name)
         };
 
         var queryable = GetPaginatedQueryable(parameters, qry);
 
-        var result = queryable.query != null
-            ? await queryable.query.ToListAsync()
-            : null;
+        var result = queryable.query != null ? await queryable.query.ToListAsync() : null;
 
         var mappedResult = _mapper.Map<List<ClubDto>>(result);
 
@@ -62,17 +72,12 @@ public class ClubRepository: BaseRepository<Club,ClubDto>, IClubRepository
 
     public async Task<IEnumerable<ClubDto>> Autocomplete(AutoCompleteParams parameters)
     {
-        var filter = parameters.Filter == null
-            ? string.Empty
-            : parameters.Filter.ToLower();
+        var filter = parameters.Filter == null ? string.Empty : parameters.Filter.ToLower();
 
-        var count = parameters.Count is null or 0
-            ? 5
-            : (int) parameters.Count;
+        var count = parameters.Count is null or 0 ? 5 : (int)parameters.Count;
 
         var list = await GetQuery()
-            .Where(r => r.Code!.ToLower().Contains(filter) ||
-                        r.Name!.ToLower().Contains(filter))
+            .Where(r => r.Code!.ToLower().Contains(filter) || r.Name!.ToLower().Contains(filter))
             .Take(count)
             .ToListAsync();
 

@@ -1,0 +1,47 @@
+﻿@page "/Conferences"
+
+@using CM.App.Helper.Model.Enum
+
+@inject IPageHistoryStateProvider PageHistory
+@inject IConferenceStateProvider ConferenceState
+
+<AuthorizeView>
+    <Authorized>
+        @switch (ConferenceState.ActiveComponent)
+        {
+            case ManagementFunction.EditNew:
+                <ConferenceEdit GoBack="ShowList"/>
+                break;
+            default:
+                <ConferenceList OnEdit="EditConference"/>
+                break;
+        }
+    </Authorized>
+</AuthorizeView>
+
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        PageHistory.AddPageToHistory("/Conferences");
+    }
+
+    private void EditConference()
+    {
+        ConferenceState.ActiveComponent = ConferenceState.SelectedConference != null
+            ? ManagementFunction.EditNew
+            : ManagementFunction.List;
+
+        StateHasChanged();
+    }
+
+    private void ShowList()
+    {
+        ConferenceState.ActiveComponent = ManagementFunction.List;
+        
+        StateHasChanged();
+    }
+}
