@@ -22,6 +22,10 @@ public class CmDbContext : DbContext
     // M
     public DbSet<Member> Members { get; set; }
 
+    // P
+    public DbSet<Product> Products { get; set; }
+    public DbSet<ProductCombo> ProductCombos { get; set; }
+
     // R
     public DbSet<Role> Roles { get; set; }
 

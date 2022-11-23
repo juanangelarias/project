@@ -3,25 +3,33 @@ using CM.Model.Dto;
 
 namespace CM.Database.Mappings;
 
-public class SqlMappingProfile: AutoMapper.Profile
+public class SqlMappingProfile : AutoMapper.Profile
 {
     public SqlMappingProfile()
     {
         // C
-        CreateMap<Club, ClubDto>().ReverseMap();
+        CreateMap<Club, ClubDto>()
+            .ReverseMap();
         CreateMap<ClubType, ClubTypeDto>().ReverseMap();
         CreateMap<Conference, ConferenceDto>().ReverseMap();
         CreateMap<Country, CountryDto>().ReverseMap();
         CreateMap<Currency, CurrencyDto>().ReverseMap();
-        
+
         // M
-        CreateMap<Member, MemberDto>().ReverseMap();
-        
+        CreateMap<Member, MemberDto>()
+            .ReverseMap();
+
+        // P
+        CreateMap<Product, ProductDto>();
+        CreateMap<ProductCombo, ProductComboDto>();
+
         // R
-        CreateMap<Role, RoleDto>().ReverseMap();
-        
+        CreateMap<Role, RoleDto>()
+            .ReverseMap();
+
         // U
-        CreateMap<User, UserDto>().ReverseMap();
+        CreateMap<User, UserDto>()
+            .ReverseMap();
         CreateMap<UserPassword, UserPasswordDto>().ReverseMap();
         CreateMap<UserRefreshToken, UserRefreshTokenDto>().ReverseMap();
         CreateMap<UserRequestToken, UserRequestTokenDto>().ReverseMap();

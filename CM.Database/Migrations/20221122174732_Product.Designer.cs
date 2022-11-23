@@ -4,6 +4,7 @@ using CM.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CM.Database.Migrations
 {
     [DbContext(typeof(CmDbContext))]
-    partial class CmDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221122174732_Product")]
+    partial class Product
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -426,6 +428,9 @@ namespace CM.Database.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<long?>("ParentProductId")
+                        .HasColumnType("bigint");
+
                     b.Property<decimal?>("PrimaryPrice")
                         .IsRequired()
                         .HasPrecision(10, 2)
@@ -436,9 +441,6 @@ namespace CM.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
-
-                    b.Property<int>("ProductType")
-                        .HasColumnType("int");
 
                     b.Property<bool?>("RequireName")
                         .IsRequired()
@@ -465,59 +467,9 @@ namespace CM.Database.Migrations
 
                     b.HasIndex("ModifiedBy");
 
+                    b.HasIndex("ParentProductId");
+
                     b.ToTable("Product", (string)null);
-                });
-
-            modelBuilder.Entity("CM.Entities.ProductCombo", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("ProductComboId");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
-
-                    b.Property<long?>("ChildProductId")
-                        .IsRequired()
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("CreatedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<long?>("ModifiedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("ParentProductId")
-                        .IsRequired()
-                        .HasColumnType("bigint");
-
-                    b.Property<byte[]>("Timestamp")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChildProductId");
-
-                    b.HasIndex("CreatedBy");
-
-                    b.HasIndex("ModifiedBy");
-
-                    b.HasIndex("ParentProductId", "ChildProductId")
-                        .IsUnique();
-
-                    b.ToTable("ProductCombo", (string)null);
                 });
 
             modelBuilder.Entity("CM.Entities.Role", b =>
@@ -1036,36 +988,11 @@ namespace CM.Database.Migrations
                         .WithMany()
                         .HasForeignKey("ModifiedBy");
 
-                    b.Navigation("Conference");
-
-                    b.Navigation("CreatedByUser");
-
-                    b.Navigation("ModifiedByUser");
-                });
-
-            modelBuilder.Entity("CM.Entities.ProductCombo", b =>
-                {
-                    b.HasOne("CM.Entities.Product", "ChildProduct")
-                        .WithMany()
-                        .HasForeignKey("ChildProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("CM.Entities.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
-
-                    b.HasOne("CM.Entities.User", "ModifiedByUser")
-                        .WithMany()
-                        .HasForeignKey("ModifiedBy");
-
                     b.HasOne("CM.Entities.Product", "ParentProduct")
-                        .WithMany()
-                        .HasForeignKey("ParentProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .WithMany("ChildProducts")
+                        .HasForeignKey("ParentProductId");
 
-                    b.Navigation("ChildProduct");
+                    b.Navigation("Conference");
 
                     b.Navigation("CreatedByUser");
 
@@ -1206,6 +1133,11 @@ namespace CM.Database.Migrations
             modelBuilder.Entity("CM.Entities.Conference", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("CM.Entities.Product", b =>
+                {
+                    b.Navigation("ChildProducts");
                 });
 
             modelBuilder.Entity("CM.Entities.Role", b =>

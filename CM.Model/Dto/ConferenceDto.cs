@@ -2,12 +2,13 @@
 
 namespace CM.Model.Dto;
 
-public class ConferenceDto: BaseDto
+public class ConferenceDto : BaseDto
 {
     public string? Name { get; set; }
     public string? Description { get; set; }
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
+    public string? City { get; set; }
     public long? HostClubId { get; set; }
     public long? PrimaryCurrencyId { get; set; }
     public long? SecondaryCurrencyId { get; set; }

@@ -4,6 +4,7 @@ using CM.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CM.Database.Migrations
 {
     [DbContext(typeof(CmDbContext))]
-    partial class CmDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221122163649_ConferenceCity")]
+    partial class ConferenceCity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -194,10 +196,6 @@ namespace CM.Database.Migrations
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Theme")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
 
                     b.Property<byte[]>("Timestamp")
                         .IsConcurrencyToken()
@@ -387,137 +385,6 @@ namespace CM.Database.Migrations
                     b.HasIndex("ClubId", "Name");
 
                     b.ToTable("Member", (string)null);
-                });
-
-            modelBuilder.Entity("CM.Entities.Product", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("ProductId");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
-
-                    b.Property<long?>("ConferenceId")
-                        .IsRequired()
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("CreatedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<long?>("ModifiedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<decimal?>("PrimaryPrice")
-                        .IsRequired()
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<bool?>("PrintBadge")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<int>("ProductType")
-                        .HasColumnType("int");
-
-                    b.Property<bool?>("RequireName")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<decimal?>("SecondaryPrice")
-                        .IsRequired()
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<byte[]>("Timestamp")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ConferenceId");
-
-                    b.HasIndex("CreatedBy");
-
-                    b.HasIndex("ModifiedBy");
-
-                    b.ToTable("Product", (string)null);
-                });
-
-            modelBuilder.Entity("CM.Entities.ProductCombo", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("ProductComboId");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
-
-                    b.Property<long?>("ChildProductId")
-                        .IsRequired()
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("CreatedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<long?>("ModifiedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("ParentProductId")
-                        .IsRequired()
-                        .HasColumnType("bigint");
-
-                    b.Property<byte[]>("Timestamp")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChildProductId");
-
-                    b.HasIndex("CreatedBy");
-
-                    b.HasIndex("ModifiedBy");
-
-                    b.HasIndex("ParentProductId", "ChildProductId")
-                        .IsUnique();
-
-                    b.ToTable("ProductCombo", (string)null);
                 });
 
             modelBuilder.Entity("CM.Entities.Role", b =>
@@ -1020,60 +887,6 @@ namespace CM.Database.Migrations
                     b.Navigation("ModifiedByUser");
                 });
 
-            modelBuilder.Entity("CM.Entities.Product", b =>
-                {
-                    b.HasOne("CM.Entities.Conference", "Conference")
-                        .WithMany("Products")
-                        .HasForeignKey("ConferenceId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("CM.Entities.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
-
-                    b.HasOne("CM.Entities.User", "ModifiedByUser")
-                        .WithMany()
-                        .HasForeignKey("ModifiedBy");
-
-                    b.Navigation("Conference");
-
-                    b.Navigation("CreatedByUser");
-
-                    b.Navigation("ModifiedByUser");
-                });
-
-            modelBuilder.Entity("CM.Entities.ProductCombo", b =>
-                {
-                    b.HasOne("CM.Entities.Product", "ChildProduct")
-                        .WithMany()
-                        .HasForeignKey("ChildProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("CM.Entities.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
-
-                    b.HasOne("CM.Entities.User", "ModifiedByUser")
-                        .WithMany()
-                        .HasForeignKey("ModifiedBy");
-
-                    b.HasOne("CM.Entities.Product", "ParentProduct")
-                        .WithMany()
-                        .HasForeignKey("ParentProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("ChildProduct");
-
-                    b.Navigation("CreatedByUser");
-
-                    b.Navigation("ModifiedByUser");
-
-                    b.Navigation("ParentProduct");
-                });
-
             modelBuilder.Entity("CM.Entities.Role", b =>
                 {
                     b.HasOne("CM.Entities.User", "CreatedByUser")
@@ -1201,11 +1014,6 @@ namespace CM.Database.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("CM.Entities.Conference", b =>
-                {
-                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("CM.Entities.Role", b =>
