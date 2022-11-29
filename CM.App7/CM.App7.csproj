@@ -7,20 +7,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Blazor.ContextMenu" Version="1.14.0" />
-        <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
-        <PackageReference Include="Blazored.SessionStorage" Version="2.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.0" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
-        <PackageReference Include="MudBlazor" Version="6.1.2" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\CM.App.Helper\CM.App.Helper.csproj" />
       <ProjectReference Include="..\CM.Common\CM.Common.csproj" />
+      <ProjectReference Include="..\CM.Model\CM.Model.csproj" />
     </ItemGroup>
-
 
 </Project>

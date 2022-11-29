@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CM.Database;
 using CM.Entities;
 using CM.Model.Dto;
 using CM.Model.General;
@@ -13,7 +14,7 @@ public class ProductComboRepository: BaseRepository<ProductCombo, ProductComboDt
 {
     private readonly IMapper _mapper;
 
-    public ProductComboRepository(IMapper mapper, DbContext db) : base(mapper, db)
+    public ProductComboRepository(IMapper mapper, CmDbContext db) : base(mapper, db)
     {
         _mapper = mapper;
     }

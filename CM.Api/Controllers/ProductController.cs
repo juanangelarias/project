@@ -70,7 +70,7 @@ public class ProductController: Controller
     {
         try
         {
-            return Ok(_productFeature.GetChildren(productId));
+            return Ok(await _productFeature.GetChildren(productId));
         }
         catch (Exception exception)
         {
