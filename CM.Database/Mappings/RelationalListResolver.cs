@@ -24,12 +24,7 @@ public class RelationalListIdResolver<T, U, V, W> : IValueResolver<T, V, IEnumer
             return relations;
         }
             
-        var sourceRelations = (IEnumerable<U>)propertyInfo.GetValue(source);
-
-        if (sourceRelations == null)
-        {
-            return relations;
-        }
+        var sourceRelations = (IEnumerable<U>)propertyInfo.GetValue(source)!;
 
         foreach (var sourceRelation in sourceRelations)
         {

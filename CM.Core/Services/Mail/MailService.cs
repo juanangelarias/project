@@ -40,7 +40,7 @@ public class MailService: IMailService
 
     public bool SendTemplate(PasswordMailData data)
     {
-        var body = GetTemplate(data.Type, data.Email, data.FullName, data.Token);
+        var body = GetTemplate(data.Type, data.Email!, data.FullName!, data.Token!);
         var subject = GetSubject(data.Type);
 
         var email = new MimeMessage(); 

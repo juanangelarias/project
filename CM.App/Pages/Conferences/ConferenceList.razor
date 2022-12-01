@@ -18,7 +18,7 @@
                    Variant="Variant.Filled"
                    ButtonType="ButtonType.Button"
                    Color="Color.Primary">
-            New Club Type
+            New Conference
         </MudButton>
         <MudSpacer/>
         <MudText Typo="Typo.h6">
@@ -42,7 +42,7 @@
     <RowTemplate>
         <MudTd DataLabel="Name">@context.Name</MudTd>
         <MudTd DataLabel="Description">@context.Description</MudTd>
-        <MudTd DataLabel="Start Date">@context.StartDate</MudTd>
+        <MudTd DataLabel="Start Date">@(DateFormat(context.StartDate))</MudTd>
         <MudTd DataLabel="">
             <MudTooltip Text="Edit Conference" Placement="Placement.Start">
                 <MudFab @onclick="@(() => EditConference(context))"
@@ -101,6 +101,11 @@
         return ConferenceState.ConferenceTable;
     }
 
+    private string DateFormat(DateTime? date)
+    {
+        return Convert.ToDateTime(date).ToShortDateString();
+    }
+
     private async Task OnSearch(string? filter)
     {
         ConferenceState.Filter = filter ?? string.Empty;
@@ -110,19 +115,19 @@
 
     private async Task NewConference()
     {
-        ConferenceState.SetSelectedConference(0);
+        await ConferenceState.SetSelectedConference(0);
         await OnEdit.InvokeAsync();
     }
 
     private async Task EditConference(ConferenceDto conference)
     {
-        ConferenceState.SetSelectedConference(conference.Id);
+        await ConferenceState.SetSelectedConference(conference.Id);
         await OnEdit.InvokeAsync();
     }
 
     private async Task DeleteConference(ConferenceDto conference)
     {
-        ConferenceState.SetSelectedConference(conference.Id);
+        await ConferenceState.SetSelectedConference(conference.Id);
         await ConferenceState.DeleteConference(conference.Id);
     }
 }

@@ -10,7 +10,7 @@ public class RelationalIdResolver<T, TU, TV, TW> : IValueResolver<T, TV, TW>
     where TV : BaseEntity
     where TW : BaseEntity
 {
-    public TW Resolve(T source, TV destination, TW destinationRelation, ResolutionContext context)
+    public TW Resolve(T source, TV destination, TW? destinationRelation, ResolutionContext context)
     {
         var relation = new object() as TW;
 
@@ -22,13 +22,13 @@ public class RelationalIdResolver<T, TU, TV, TW> : IValueResolver<T, TV, TW>
 
         if (propertyInfo == null)
         {
-            return relation;
+            return relation!;
         }
 
         var sourceRelation = propertyInfo.GetValue(source);
 
         if (sourceRelation == null)
-            return relation;
+            return relation!;
 
         relation = destinationRelation != null
             ? context.Mapper.Map(sourceRelation, destinationRelation)

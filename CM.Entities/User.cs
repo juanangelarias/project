@@ -16,10 +16,10 @@ public class User: BaseEntity, IBaseEntity
     
     public string FullName => $"{FirstName} {LastName}";
 
-    public IEnumerable<UserRole> UserRoles { get; set; }
-    public IEnumerable<UserRefreshToken> UserRefreshToken { get; set; }
-    public IEnumerable<UserRequestToken> UserRequestTokens { get; set; }
-    public IEnumerable<UserPassword> UserPasswords { get; set; }
+    public IEnumerable<UserRole>? UserRoles { get; set; }
+    public IEnumerable<UserRefreshToken>? UserRefreshToken { get; set; }
+    public IEnumerable<UserRequestToken>? UserRequestTokens { get; set; }
+    public IEnumerable<UserPassword>? UserPasswords { get; set; }
     
     public void OnModelCreating(ModelBuilder m)
     {

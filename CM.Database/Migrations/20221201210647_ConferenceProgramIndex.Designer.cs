@@ -4,6 +4,7 @@ using CM.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CM.Database.Migrations
 {
     [DbContext(typeof(CmDbContext))]
-    partial class CmDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221201210647_ConferenceProgramIndex")]
+    partial class ConferenceProgramIndex
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -459,12 +461,11 @@ namespace CM.Database.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ConferenceId");
+
                     b.HasIndex("CreatedBy");
 
                     b.HasIndex("ModifiedBy");
-
-                    b.HasIndex("ConferenceId", "Name")
-                        .IsUnique();
 
                     b.ToTable("Product", (string)null);
                 });

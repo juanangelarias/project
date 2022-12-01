@@ -38,8 +38,9 @@ public class AuthorizeAttribute : Attribute, IAuthorizationFilter
 
     private bool CheckValidatePermission(string controller, string action, IEnumerable<Claim> claimList)
     {
-        var filterClaim = claimList.Where(x => x.Value.Split('|')[0].ToLower() == controller.ToLower()).FirstOrDefault();
-        var claimFlag = filterClaim.Value.Split('|');
+        var filterClaim = claimList
+            .FirstOrDefault(x => string.Equals(x.Value.Split('|')[0], controller, StringComparison.CurrentCultureIgnoreCase));
+        var claimFlag = filterClaim!.Value.Split('|');
         Enum.TryParse(action, out PermissionActions value);
 
         switch (value)

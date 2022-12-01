@@ -23,7 +23,7 @@ public class CmDbContextFactory: IDesignTimeDbContextFactory<CmDbContext>
         // Get connection string
         var optionsBuilder = new DbContextOptionsBuilder<CmDbContext>();
         var connectionString = config.GetConnectionString(nameof(CmDbContext));
-        optionsBuilder.UseSqlServer(connectionString, b =>
+        optionsBuilder.UseSqlServer(connectionString!, b =>
             b.MigrationsAssembly("CM.Database"));
         return new CmDbContext(optionsBuilder.Options, new MigrationUserResolverService(), new DateConverterService());
     }

@@ -14,8 +14,8 @@
                     <MudItem xs="12">
                         <MudTextField Label="Name"
                                       InputType="InputType.Text"
-                                      @bind-Value="ClubTypeState.SelectedClubType.Name"
-                                      For="@(()=>ClubTypeState.SelectedClubType.Name)"/>                                            
+                                      @bind-Value="ClubTypeState!.SelectedClubType!.Name"
+                                      For="@(()=>ClubTypeState!.SelectedClubType!.Name)"/>                                            
                     </MudItem>
                 </MudGrid>
             </MudCardContent>

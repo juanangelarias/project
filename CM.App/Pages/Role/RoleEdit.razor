@@ -14,20 +14,20 @@
                     <MudItem xs="12">
                         <MudTextField Label="Code"
                                       InputType="InputType.Text"
-                                      @bind-Value="RoleState.SelectedRole.Code"
-                                      For="@(()=>RoleState.SelectedRole.Code)"/>
+                                      @bind-Value="RoleState!.SelectedRole!.Code"
+                                      For="@(()=>RoleState!.SelectedRole!.Code)"/>
                     </MudItem>
                     <MudItem xs="12">
                         <MudTextField Label="Name"
                                       InputType="InputType.Text"
-                                      @bind-Value="RoleState.SelectedRole.Name"
-                                      For="@(()=>RoleState.SelectedRole.Name)"/>                                            
+                                      @bind-Value="RoleState!.SelectedRole!.Name"
+                                      For="@(()=>RoleState!.SelectedRole!.Name)"/>                                            
                     </MudItem>
                     <MudItem xs="12">
                         <MudTextField Label="Description"
                                       InputType="InputType.Text"
-                                      @bind-Value="RoleState.SelectedRole.Description"
-                                      For="@(()=>RoleState.SelectedRole.Description)"/>                                            
+                                      @bind-Value="RoleState!.SelectedRole!.Description"
+                                      For="@(()=>RoleState!.SelectedRole!.Description)"/>                                            
                     </MudItem>
                 </MudGrid>
             </MudCardContent>

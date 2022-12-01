@@ -2,6 +2,6 @@
 
 public class Token
 {
-    public string Value { get; set; }
+    public string? Value { get; set; }
     public DateTime Expires { get; set; }
 }

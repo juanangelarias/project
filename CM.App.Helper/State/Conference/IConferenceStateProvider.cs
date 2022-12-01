@@ -12,11 +12,13 @@ public interface IConferenceStateProvider
     TableData<ConferenceDto> ConferenceTable { get; set; }
     ManagementFunction ActiveComponent { get; set; }
     string Filter { get; set; }
+    List<CurrencyDto> CurrencyList { get; set; }
+    List<ClubDto> ClubList { get; set; }
 
     Task LoadConferencePage(QueryParams parameters);
     Task CreateConference();
     Task UpdateConference();
     Task DeleteConference(long conferenceId);
     ConferenceDto GetNewConference();
-    void SetSelectedConference(long conferenceId);
+    Task SetSelectedConference(long conferenceId);
 }

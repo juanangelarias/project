@@ -20,7 +20,7 @@ namespace CM.TestApp;
 
 public static class Program
 {
-    private static IHost _host;
+    private static IHost _host = null!;
     private static IConfiguration? _configuration;
     
     public static async Task Main(string[] args)
@@ -58,7 +58,7 @@ public static class Program
                     }, typeof(CmDbContext).Assembly)
                     .AddDbContext<CmDbContext>(options =>
                     {
-                        options.UseSqlServer(_configuration.GetConnectionString(nameof(CmDbContext)));
+                        options.UseSqlServer(_configuration.GetConnectionString(nameof(CmDbContext))!);
                     })
                     .AddSingleton(keyConfig)
                     .AddSingleton(mailParameter)
@@ -110,8 +110,8 @@ public static class Program
     private static void EncryptionTest()
     {
         var tools = new Tools(
-            _host.Services.GetService<IUserFeature>(), 
-            _host.Services.GetService<IEncryptionService>());
+            _host.Services.GetService<IUserFeature>()!, 
+            _host.Services.GetService<IEncryptionService>()!);
 
         var key = tools.GetKey();
         var plainText = "Delfos02!!";

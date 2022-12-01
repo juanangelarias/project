@@ -48,7 +48,7 @@ public class Startup
 
         services.AddDbContext<CmDbContext>(options =>
         {
-            options.UseSqlServer(_configuration.GetConnectionString(nameof(CmDbContext)));
+            options.UseSqlServer(_configuration.GetConnectionString(nameof(CmDbContext))!);
         });
         
         #region Swagger
@@ -128,7 +128,7 @@ public class Startup
             {
                 ValidIssuer = _configuration["JwtSettings:Issuer"],
                 ValidAudience = _configuration["JwtSettings:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"])),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]!)),
                 NameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier",
                 RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
             });
@@ -143,7 +143,7 @@ public class Startup
             options.AddPolicy(CorsPolicies.Development, builder =>
             {
                 builder.SetIsOriginAllowed(_ => true);
-                builder.WithOrigins(corsSettings.AllowedOrigins!);
+                builder.WithOrigins(corsSettings!.AllowedOrigins!);
                 builder.AllowAnyMethod();
                 builder.AllowAnyHeader();
                 builder.AllowCredentials();
@@ -152,7 +152,7 @@ public class Startup
             options.AddPolicy(CorsPolicies.Test, builder =>
             {
                 builder.SetIsOriginAllowed(_ => true);
-                builder.WithOrigins(corsSettings.AllowedOrigins!);
+                builder.WithOrigins(corsSettings!.AllowedOrigins!);
                 builder.AllowAnyMethod();
                 builder.AllowAnyHeader();
                 builder.AllowCredentials();
@@ -161,7 +161,7 @@ public class Startup
             options.AddPolicy(CorsPolicies.Uat, builder =>
             {
                 builder.SetIsOriginAllowed(_ => true);
-                builder.WithOrigins(corsSettings.AllowedOrigins!);
+                builder.WithOrigins(corsSettings!.AllowedOrigins!);
                 builder.AllowAnyMethod();
                 builder.AllowAnyHeader();
                 builder.AllowCredentials();

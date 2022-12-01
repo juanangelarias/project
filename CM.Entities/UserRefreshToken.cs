@@ -18,7 +18,7 @@ public class UserRefreshToken : BaseEntity, IBaseEntity
     public bool IsActive => !IsRevoked && !IsExpired;
 
     public long UserId { get; set; }
-    public User User { get; set; }
+    public User? User { get; set; }
 
     public void OnModelCreating(ModelBuilder m)
     {

@@ -14,25 +14,25 @@
                     <MudItem xs="12">
                         <MudTextField Label="Code"
                                       InputType="InputType.Text"
-                                      @bind-Value="MemberState.SelectedMember.Code"
-                                      For="@(()=>MemberState.SelectedMember.Code)"/>
+                                      @bind-Value="MemberState!.SelectedMember!.Code"
+                                      For="@(()=>MemberState!.SelectedMember!.Code)"/>
                     </MudItem>
                     <MudItem xs="12">
                         <MudTextField Label="Name"
                                       InputType="InputType.Text"
-                                      @bind-Value="MemberState.SelectedMember.Name"
-                                      For="@(()=>MemberState.SelectedMember.Name)"/>                                            
+                                      @bind-Value="MemberState!.SelectedMember!.Name"
+                                      For="@(()=>MemberState!.SelectedMember!.Name)"/>                                            
                     </MudItem>
                     <MudItem xs="12">
                         <MudTextField Label="Alias"
                                       InputType="InputType.Text"
-                                      @bind-Value="MemberState.SelectedMember.Alias"
-                                      For="@(()=>MemberState.SelectedMember.Alias)"/>                                            
+                                      @bind-Value="MemberState!.SelectedMember!.Alias"
+                                      For="@(()=>MemberState!.SelectedMember!.Alias)"/>                                            
                     </MudItem>
                     <MudItem xs="12">
                         <MudAutocomplete T="ClubDto"
                                          Label="Club"
-                                         @bind-Value="MemberState.SelectedMember.Club"
+                                         @bind-Value="MemberState!.SelectedMember!.Club"
                                          ResetValueOnEmptyText="true"
                                          CoerceText="true"
                                          SearchFunc="@SearchClub"

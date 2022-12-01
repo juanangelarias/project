@@ -22,8 +22,8 @@ public class UserRepository: BaseRepository<User, UserDto>, IUserRepository
     {
         filter = filter.ToLower();
         var qry = GetQuery()
-            .Where(r => r.FirstName.ToLower().Contains(filter) ||
-                        r.LastName.ToLower().Contains(filter))
+            .Where(r => r.FirstName!.ToLower().Contains(filter) ||
+                        r.LastName!.ToLower().Contains(filter))
             .OrderBy(o => o.FirstName)
             .ThenBy(t => t.LastName)
             .Take(count);
@@ -48,7 +48,7 @@ public class UserRepository: BaseRepository<User, UserDto>, IUserRepository
             var filter = parameters.Filter.ToLower();
             query = query.Where(r =>
                 (r.FirstName + ' ' + r.LastName).ToLower().Contains(filter) ||
-                r.UserName.ToLower().Contains(filter));
+                r.UserName!.ToLower().Contains(filter));
         }
 
         query = sort switch
@@ -83,7 +83,7 @@ public class UserRepository: BaseRepository<User, UserDto>, IUserRepository
     public async Task<UserDto> GetByIdExpandedAsync(long id)
     {
         var record = await GetQuery()
-            .Include(i => i.UserRoles)
+            .Include(i => i.UserRoles)!
             .ThenInclude(i=>i.Role)
             .FirstOrDefaultAsync(f => f.Id == id);
 
@@ -109,11 +109,11 @@ public class UserRepository: BaseRepository<User, UserDto>, IUserRepository
     public async Task<IEnumerable<RoleDto>> GetUserRoles(long userId)
     {
         var user = await GetQuery()
-            .Include(i => i.UserRoles)
+            .Include(i => i.UserRoles)!
             .ThenInclude(t => t.Role)
             .FirstOrDefaultAsync(r => r.Id == userId);
 
-        var roles = user?.UserRoles
+        var roles = user?.UserRoles!
             .Select(s => s.Role)
             .ToList();
 

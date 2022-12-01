@@ -5,7 +5,7 @@ namespace CM.Entities;
 
 public class ClubType: BaseEntity, IBaseEntity
 {
-    public string Name { get; set; }
+    public string? Name { get; set; }
     
     public void OnModelCreating(ModelBuilder m)
     {

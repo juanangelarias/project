@@ -149,6 +149,6 @@ public class Seeder
 
 public class IsoCountry
 {
-    public string Code { get; set; }
-    public string Name { get; set; }
+    public string? Code { get; set; }
+    public string? Name { get; set; }
 }

@@ -14,19 +14,19 @@
                     <MudItem xs="12">
                         <MudTextField Label="Code"
                                       InputType="InputType.Text"
-                                      @bind-Value="ClubState.SelectedClub.Code"
-                                      For="@(()=>ClubState.SelectedClub.Code)"/>
+                                      @bind-Value="ClubState.SelectedClub!.Code"
+                                      For="@(()=>ClubState.SelectedClub!.Code)"/>
                     </MudItem>
                     <MudItem xs="12">
                         <MudTextField Label="Name"
                                       InputType="InputType.Text"
-                                      @bind-Value="ClubState.SelectedClub.Name"
-                                      For="@(()=>ClubState.SelectedClub.Name)"/>                                            
+                                      @bind-Value="ClubState.SelectedClub!.Name"
+                                      For="@(()=>ClubState.SelectedClub!.Name)"/>                                            
                     </MudItem>
                     <MudItem xs="12">
                         <MudAutocomplete T="ClubTypeDto"
                                          Label="Type"
-                                         @bind-Value="ClubState.SelectedClub.ClubType"
+                                         @bind-Value="ClubState!.SelectedClub!.ClubType"
                                          ResetValueOnEmptyText="true"
                                          CoerceText="true"
                                          SearchFunc="@SearchClubType"
@@ -40,7 +40,7 @@
                     <MudItem xs="12">
                         <MudAutocomplete T="CountryDto"
                                          Label="Country"
-                                         @bind-Value="ClubState.SelectedClub.Country"
+                                         @bind-Value="ClubState!.SelectedClub!.Country"
                                          ResetValueOnEmptyText="true"
                                          CoerceText="true"
                                          SearchFunc="@SearchCountry"
@@ -53,8 +53,8 @@
                     <MudItem xs="12">
                         <MudTextField Label="District"
                                       InputType="InputType.Text"
-                                      @bind-Value="ClubState.SelectedClub.District"
-                                      For="@(()=>ClubState.SelectedClub.District)"/>                                            
+                                      @bind-Value="ClubState!.SelectedClub!.District"
+                                      For="@(()=>ClubState!.SelectedClub!.District)"/>                                            
                     </MudItem>
                 </MudGrid>
             </MudCardContent>
@@ -89,14 +89,14 @@
     {
         if (string.IsNullOrEmpty(filter))
             return Task.FromResult<IEnumerable<CountryDto>>(ClubState.Countries.ToList());
-        
+
         return Task.FromResult<IEnumerable<CountryDto>>(
             ClubState.Countries
-            .Where(r => r.Name!.Contains(filter, StringComparison.InvariantCultureIgnoreCase))
-            .ToList()
+                .Where(r => r.Name!.Contains(filter, StringComparison.InvariantCultureIgnoreCase))
+                .ToList()
             );
     }
-    
+
     private Task<IEnumerable<ClubTypeDto>> SearchClubType(string filter)
     {
         if (string.IsNullOrEmpty(filter))
@@ -104,7 +104,7 @@
         
         return Task.FromResult<IEnumerable<ClubTypeDto>>(
             ClubState.ClubTypes
-                .Where(r => r.Name.Contains(filter, StringComparison.InvariantCultureIgnoreCase))
+                .Where(r => r.Name!.Contains(filter, StringComparison.InvariantCultureIgnoreCase))
                 .ToList()
             );
     }

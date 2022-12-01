@@ -10,5 +10,9 @@ public enum ManagementFunction
     MemberEditNew,
     
     // User
-    UserRoles
+    UserRoles,
+    
+    // Conference
+    Products,
+    Inscriptions
 }

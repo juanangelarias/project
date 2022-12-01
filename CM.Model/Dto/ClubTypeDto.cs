@@ -7,5 +7,5 @@ public class ClubTypeDto: BaseDto
 {
     [Required]
     [MaxLength(20)]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 }

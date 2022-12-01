@@ -159,9 +159,9 @@ public class UserService: BaseService<UserDto>, IUserService
         return result;
     }
 
-    public async Task<PasswordMailData> GetUserFromToken(string token)
+    public async Task<PasswordMailData?> GetUserFromToken(string token)
     {
-        PasswordMailData result = null;
+        PasswordMailData? result = null;
         var request = new HttpRequestMessage(
             HttpMethod.Get, 
             $"{BaseUrl}/getUserFromToken?token={token}");
@@ -173,5 +173,57 @@ public class UserService: BaseService<UserDto>, IUserService
         }
 
         return result;
+    }
+
+    public async Task<IEnumerable<RoleDto>?> GetUserRoles(long userId)
+    {
+        var request = new HttpRequestMessage(
+            HttpMethod.Get,
+            $"{BaseUrl}/{userId}/roles");
+        var response = await GetResponse(request);
+        if (response != null)
+        {
+            var result = await response.Content.ReadFromJsonAsync<IEnumerable<RoleDto>>();
+
+            return result;
+        }
+
+        return null;
+    }
+
+    public async Task<IEnumerable<RoleDto>?> SetUserRoles(long userId, IEnumerable<RoleDto> roles)
+    {
+        var request = new HttpRequestMessage(
+            HttpMethod.Post,
+            $"{BaseUrl}/{userId}/roles")
+        {
+            Content = new StringContent(JsonSerializer.Serialize(roles), Encoding.UTF8, "application/json")
+        };
+
+        var response = await GetResponse(request);
+        if (response != null)
+        {
+            var result = await response.Content.ReadFromJsonAsync<IEnumerable<RoleDto>>();
+
+            return result;
+        }
+
+        return null;
+    }
+
+    public async Task AddRoleToUser(long userId, long roleId)
+    {
+        var request = new HttpRequestMessage(
+            HttpMethod.Post,
+            $"{BaseUrl}/{userId}/role/{roleId}");
+        await GetResponse(request);
+    }
+
+    public async Task RemoveRoleFromUser(long userId, long roleId)
+    {
+        var request = new HttpRequestMessage(
+            HttpMethod.Delete,
+            $"{BaseUrl}/{userId}/role/{roleId}");
+        await GetResponse(request);
     }
 }

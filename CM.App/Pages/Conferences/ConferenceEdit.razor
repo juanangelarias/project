@@ -1,7 +1,186 @@
-﻿<h3>ConferenceEdit</h3>
+﻿@inject ISnackbar Snackbar
+@inject IConferenceStateProvider ConferenceState
+
+<MudCard Style="Margin: 15px">
+    <EditForm Model="ConferenceState.SelectedConference"
+              @ref="_form"
+              @bind-isValid="@_success"
+              OnValidSubmit="@(OnValidSubmit)"
+              OnInvalidSubmit="@(OnInvalidSubmit)">
+        <DataAnnotationsValidator/>
+        <MudCard>
+            <MudCardContent>
+                <MudGrid>
+                    <MudItem xs="12">
+                        <MudTextField Label="Name"
+                                      InputType="InputType.Text"
+                                      @bind-Value="ConferenceState!.SelectedConference!.Name"
+                                      For="@(()=>ConferenceState!.SelectedConference!.Name)"/>                                            
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudTextField Label="Description/Theme"
+                                      InputType="InputType.Text"
+                                      @bind-Value="ConferenceState!.SelectedConference!.Description"
+                                      For="@(()=>ConferenceState!.SelectedConference!.Description)"/>                                            
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudDateRangePicker Label="Dates"
+                                            Editable="true"
+                                            @bind-DataRange="_dateRange"/>                                            
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudTextField Label="City"
+                                      InputType="InputType.Text"
+                                      @bind-Value="ConferenceState!.SelectedConference!.City"
+                                      For="@(()=>ConferenceState!.SelectedConference!.City)"/>                                            
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudAutocomplete T="ClubDto"
+                                         Label="Host Club"
+                                         @bind-Value="ConferenceState!.SelectedConference!.HostClub"
+                                         ResetValueOnEmptyText="true"
+                                         CoerceText="true"
+                                         SearchFunc="@SearchHostClub"
+                                         Text="@(ConferenceState?.SelectedConference?.HostClub?.Name ?? string.Empty)"
+                                         ToStringFunc="@(club=>club.Name)"
+                                         SelectValueOnTab="true"
+                                         Validation="@(new Func<ClubDto?, bool>(ValidateHostClub))"
+                                         ErrorText="Invalid Host Club"/>
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudAutocomplete T="CurrencyDto"
+                                         Label="Primary Currency"
+                                         @bind-Value="ConferenceState!.SelectedConference!.PrimaryCurrency"
+                                         ResetValueOnEmptyText="true"
+                                         CoerceText="true"
+                                         SearchFunc="@SearchCurrency"
+                                         Text="@(ConferenceState?.SelectedConference?.PrimaryCurrency?.Name ?? string.Empty)"
+                                         ToStringFunc="@(currency=>currency.Name)"
+                                         SelectValueOnTab="true"
+                                         Validation="@(new Func<CurrencyDto?, bool>(ValidateCurrency))"
+                                         ErrorText="Invalid Currency"/>                                            
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudAutocomplete T="CurrencyDto"
+                                         Label="Secondary Currency"
+                                         @bind-Value="ConferenceState!.SelectedConference!.SecondaryCurrency"
+                                         ResetValueOnEmptyText="true"
+                                         CoerceText="true"
+                                         SearchFunc="@SearchCurrency"
+                                         Text="@(ConferenceState?.SelectedConference?.SecondaryCurrency?.Name ?? string.Empty)"
+                                         ToStringFunc="@(currency=>currency.Name)"
+                                         SelectValueOnTab="true"
+                                         Validation="@(new Func<CurrencyDto?, bool>(ValidateCurrency))"
+                                         ErrorText="Invalid Currency"/>                                            
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudNumericField T="decimal?" 
+                                         Label="Exchange Rate"
+                                         @bind-Value="ConferenceState!.SelectedConference!.ExchangeRate"
+                                         For="@(()=>ConferenceState!.SelectedConference!.ExchangeRate)"
+                                         Min="(decimal)0.0001"
+                                         Max="(decimal)999999.9999"
+                                         HideSpinButtons="true"
+                                         Format="N4"/>                                            
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Style="margin-right: 15px"
+                           Variant="Variant.Filled"
+                           ButtonType="ButtonType.Button"
+                           Color="Color.Primary"
+                           OnClick="OnValidSubmit">
+                    Save
+                </MudButton>
+                <MudButton Style="margin-right: 15px"
+                           Variant="Variant.Filled"
+                           ButtonType="ButtonType.Button"
+                           Color="Color.Secondary"
+                           OnClick="GoBack">
+                    Cancel
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
+</MudCard>
 
 @code {
     [Parameter]
     public EventCallback GoBack { get; set; }
 
+    private bool _success;
+    private EditForm _form = new();
+    private DateRange _dateRange = null!;
+
+    protected override void OnInitialized()
+    {
+        _dateRange = ConferenceState.SelectedConference!.Id == 0
+            ? new DateRange(DateTime.Now.Date, DateTime.Now.AddDays(5).Date)
+            : new DateRange(ConferenceState.SelectedConference.StartDate, ConferenceState.SelectedConference.EndDate);
+    }
+
+    private Task<IEnumerable<CurrencyDto>> SearchCurrency(string filter)
+    {
+        if (string.IsNullOrEmpty(filter))
+            return Task.FromResult<IEnumerable<CurrencyDto>>(ConferenceState.CurrencyList);
+
+        return Task.FromResult<IEnumerable<CurrencyDto>>(
+            ConferenceState.CurrencyList
+                .Where(r => r.Name!.Contains(filter, StringComparison.InvariantCultureIgnoreCase))
+                .ToList()
+            );
+    }
+
+    private Task<IEnumerable<ClubDto>> SearchHostClub(string filter)
+    {
+        if (string.IsNullOrEmpty(filter))
+            return Task.FromResult<IEnumerable<ClubDto>>(ConferenceState.ClubList);
+
+        return Task.FromResult<IEnumerable<ClubDto>>(
+            ConferenceState.ClubList
+                .Where(r => r.Name!.Contains(filter, StringComparison.InvariantCultureIgnoreCase))
+                .ToList()
+            );
+    }
+
+    private bool ValidateCurrency(CurrencyDto? value)
+    {
+        return value != null;
+    }
+
+    private bool ValidateHostClub(ClubDto? value)
+    {
+        return value != null;
+    }
+
+    private async Task OnValidSubmit()
+    {
+        _success = true;
+
+        ConferenceState.SelectedConference!.StartDate = _dateRange.Start;
+        ConferenceState.SelectedConference!.EndDate = _dateRange.End;
+
+        ConferenceState.SelectedConference!.HostClubId = ConferenceState.SelectedConference!.HostClub!.Id;
+        ConferenceState.SelectedConference!.PrimaryCurrencyId = ConferenceState.SelectedConference!.PrimaryCurrency!.Id;
+        ConferenceState.SelectedConference!.SecondaryCurrencyId = ConferenceState.SelectedConference!.SecondaryCurrency!.Id;
+        
+        if (ConferenceState.SelectedConference!.Id == 0)
+        {
+            await ConferenceState.CreateConference();
+        }
+        else
+        {
+            await ConferenceState.UpdateConference();
+        }
+
+        Snackbar.Add("The data has been saved successfully.", Severity.Info);
+        await GoBack.InvokeAsync();
+    }
+
+    private void OnInvalidSubmit()
+    {
+        _success = false;
+        Snackbar.Add("There are validation errors that need to be addressed.", Severity.Error);
+    }
 }

@@ -9,7 +9,9 @@ namespace CM.App.Helper.State;
 public class ConferenceStateProvider: BaseStateProvider, IConferenceStateProvider
 {
     private readonly IConferenceService _conferenceService;
-    
+    private readonly IClubService _clubService;
+    private readonly ICurrencyService _currencyService;
+
     #region Fields & Properties
 
     #region Conference List
@@ -92,11 +94,45 @@ public class ConferenceStateProvider: BaseStateProvider, IConferenceStateProvide
 
     #endregion
     
+    #region Currency List
+
+    private List<CurrencyDto> _currencyList = new();
+
+    public List<CurrencyDto> CurrencyList
+    {
+        get => _currencyList;
+        set
+        {
+            _currencyList = value;
+            NotifyChanges();
+        }
+    }
+
     #endregion
 
-    public ConferenceStateProvider(IConferenceService conferenceService)
+    #region ClubList
+
+    private List<ClubDto> _clubList = new();
+
+    public List<ClubDto> ClubList
+    {
+        get => _clubList;
+        set
+        {
+            _clubList = value;
+            NotifyChanges();
+        }
+    }
+
+    #endregion
+    
+    #endregion
+
+    public ConferenceStateProvider(IConferenceService conferenceService, IClubService clubService, ICurrencyService currencyService)
     {
         _conferenceService = conferenceService;
+        _clubService = clubService;
+        _currencyService = currencyService;
     }
 
     public async Task LoadConferencePage(QueryParams parameters)
@@ -166,10 +202,29 @@ public class ConferenceStateProvider: BaseStateProvider, IConferenceStateProvide
         };
     }
 
-    public void SetSelectedConference(long conferenceId)
+    public async Task SetSelectedConference(long conferenceId)
     {
+        await LoadClubs();
+        await LoadCurrencies();
+        
         SelectedConference = conferenceId != 0
             ? ConferenceList.First(f => f.Id == conferenceId)
             : GetNewConference();
+    }
+
+    private async Task LoadCurrencies()
+    {
+        if (!CurrencyList.Any())
+        {
+            CurrencyList = await _currencyService.Get();
+        }
+    }
+
+    private async Task LoadClubs()
+    {
+        if (!ClubList.Any())
+        {
+            ClubList = await _clubService.Get();
+        }
     }
 }

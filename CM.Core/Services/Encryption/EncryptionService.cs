@@ -23,7 +23,7 @@ public class EncryptionService : IEncryptionService
             
         var iv = new byte[15];
         rand.NextBytes(iv);
-        var pdb = new Rfc2898DeriveBytes(encryptionKey, iv);
+        var pdb = new Rfc2898DeriveBytes(encryptionKey!, iv);
         encryptor.Key = pdb.GetBytes(32);
         encryptor.IV = pdb.GetBytes(16);
         using var ms = new MemoryStream();

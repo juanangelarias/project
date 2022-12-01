@@ -64,6 +64,20 @@ public class UserController: ControllerBase
         }
     }
 
+    [HttpGet("{userId:long}/roles")]
+    public async Task<ActionResult<IEnumerable<RoleDto>>> GetUserRoles([FromRoute] long userId)
+    {
+        try
+        {
+            return Ok(await _userFeature.GetUserRoles(userId));
+        }
+        catch (Exception exception)
+        {
+            Log.Fatal(exception, "{Message}", exception.Message);
+            return StatusCode(500);
+        }
+    }
+
     [HttpGet("{userId:long}/sendMail/{template:int}")]
     public async Task<ActionResult<bool>> SendMail([FromRoute] long userId, [FromRoute] int template)
     {
@@ -153,6 +167,37 @@ public class UserController: ControllerBase
         }
     }
 
+    [HttpPost("{userId:long}/roles")]
+    public async Task<ActionResult<IEnumerable<RoleDto>>> SetUserRoles([FromRoute] long userId, [FromBody] List<RoleDto> roles)
+    {
+        try
+        {
+            return Ok(await _userFeature.SetUserRoles(userId, roles));
+        }
+        catch (Exception exception)
+        {
+            Log.Fatal(exception, "{Message}", exception.Message);
+            return StatusCode(500);
+        }
+    }
+
+    [HttpPost("{userId:long}/role/{roleId:long}")]
+    public async Task<IActionResult> AddRoleToUser([FromRoute] long userId, [FromRoute] long roleId)
+    {
+        try
+        {
+            await _userFeature.AddRoleToUser(userId, roleId);
+
+            return NoContent();
+        }
+        catch (Exception exception)
+        {
+            
+            Log.Fatal(exception, "{Message}", exception.Message);
+            return StatusCode(500);
+        }
+    }
+
     [HttpPut]
     public async Task<ActionResult<UserDto>> Update([FromBody] UserDto user)
     {
@@ -178,6 +223,23 @@ public class UserController: ControllerBase
         }
         catch (Exception exception)
         {
+            Log.Fatal(exception, "{Message}", exception.Message);
+            return StatusCode(500);
+        }
+    }
+    
+    [HttpDelete("{userId:long}/role/{roleId:long}")]
+    public async Task<IActionResult> RemoveRoleFromUser([FromRoute] long userId, [FromRoute] long roleId)
+    {
+        try
+        {
+            await _userFeature.RemoveRoleFromUser(userId, roleId);
+
+            return NoContent();
+        }
+        catch (Exception exception)
+        {
+            
             Log.Fatal(exception, "{Message}", exception.Message);
             return StatusCode(500);
         }

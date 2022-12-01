@@ -73,7 +73,7 @@ public class UserFeature : IUserFeature
             return new LoginResponse
             {
                 User = user,
-                Token = token.Value
+                Token = token.Value!
             };
         }
 
@@ -92,7 +92,7 @@ public class UserFeature : IUserFeature
                 Message = "User does not have password."
             };
 
-        var hashedPassword = _encryptionService.OneWayEncrypt(data.OldPassword, userPassword.SecurityStamp!);
+        var hashedPassword = _encryptionService.OneWayEncrypt(data.OldPassword!, userPassword.SecurityStamp!);
 
         if (hashedPassword != userPassword.PasswordHash ||
             await _userPasswordRepository.PasswordUsedBefore(user.Id, hashedPassword))
@@ -109,7 +109,7 @@ public class UserFeature : IUserFeature
         {
             UserId = user.Id,
             Date = DateTime.Now,
-            PasswordHash = _encryptionService.OneWayEncrypt(data.NewPassword, newSecurityStamp),
+            PasswordHash = _encryptionService.OneWayEncrypt(data.NewPassword!, newSecurityStamp),
             SecurityStamp = newSecurityStamp
         };
 
@@ -125,7 +125,7 @@ public class UserFeature : IUserFeature
 
     public async Task<bool> ResetPassword(ResetPassword data)
     {
-        var user = await _userRepository.GetByUserName(data.Username);
+        var user = await _userRepository.GetByUserName(data.Username!);
         if (user == null)
             return false;
 
@@ -134,7 +134,7 @@ public class UserFeature : IUserFeature
         {
             UserId = user.Id,
             Date = DateTime.Now,
-            PasswordHash = _encryptionService.OneWayEncrypt(data.NewPassword, newSecurityStamp),
+            PasswordHash = _encryptionService.OneWayEncrypt(data.NewPassword!, newSecurityStamp),
             SecurityStamp = newSecurityStamp
         };
 
@@ -180,18 +180,13 @@ public class UserFeature : IUserFeature
         _mailService.SendTemplate(data);
     }
 
-    public async Task<PasswordMailData> GetUserFromToken(string token)
+    public async Task<PasswordMailData?> GetUserFromToken(string token)
     {
         var tokenDef = await _userRequestTokenRepository.GetTokenDefinition(token);
 
-        if (tokenDef == null)
-        {
-            return null;
-        }
-
         var data = new PasswordMailData
         {
-            Email = tokenDef.User.UserName,
+            Email = tokenDef.User!.UserName,
             Expiration = tokenDef.Expires,
             FullName = tokenDef.User.FullName,
             Token = tokenDef.Token,
@@ -199,5 +194,52 @@ public class UserFeature : IUserFeature
             UserId = tokenDef.User.Id
         };
         return data;
+    }
+
+    public async Task<IEnumerable<RoleDto>> GetUserRoles(long userId)
+    {
+        return await _userRoleRepository.GetUserRoles(userId);
+    }
+
+    public async Task<IEnumerable<RoleDto>> SetUserRoles(long userId, List<RoleDto> roles)
+    {
+        var actualRoles = (await _userRoleRepository.GetUserRoles(userId)).ToList();
+
+        var rolesToBeDeleted = actualRoles
+            .Where(r => roles.All(a => a.Id != r.Id))
+            .Select(s=>s.Id)
+            .ToList();
+        var rolesToBeAdded = roles
+            .Where(r => actualRoles.All(a => a.Id != r.Id))
+            .Select(s => s.Id)
+            .ToList();
+
+        var userRoles = (await _userRoleRepository.GetByUser(userId)).ToList();
+
+        var userRolesIdToBeDeleted = userRoles
+            .Where(r => rolesToBeAdded.Contains(r.RoleId))
+            .Select(s => s.Id);
+        var userRolesToBeAdded = rolesToBeAdded
+            .Select(s => new UserRoleDto {UserId = userId, RoleId = s})
+            .ToList();
+
+        await _userRoleRepository.DeleteManyAsync(userRolesIdToBeDeleted);
+        await _userRoleRepository.CreateManyAsync(userRolesToBeAdded);
+
+        return await _userRoleRepository.GetUserRoles(userId);
+    }
+
+    public async Task AddRoleToUser(long userId, long roleId)
+    {
+        await _userRoleRepository.CreateAsync(new UserRoleDto
+        {
+            UserId = userId,
+            RoleId = roleId
+        });
+    }
+
+    public async Task RemoveRoleFromUser(long userId, long roleId)
+    {
+        await _userRoleRepository.RemoveUserRole(userId, roleId);
     }
 }

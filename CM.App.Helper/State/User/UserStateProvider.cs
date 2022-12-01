@@ -9,6 +9,7 @@ namespace CM.App.Helper.State;
 public class UserStateProvider: BaseStateProvider, IUserStateProvider
 {
     private readonly IUserService _userService;
+    private readonly IRoleService _roleService;
 
     #region Fields & Properties
 
@@ -206,9 +207,10 @@ public class UserStateProvider: BaseStateProvider, IUserStateProvider
 
     #endregion
 
-    public UserStateProvider(IUserService userService)  //, IRoleService roleService, IUserRoleService userRoleService)
+    public UserStateProvider(IUserService userService, IRoleService roleService)
     {
         _userService = userService;
+        _roleService = roleService;
 
         _availableRoleList = new List<RoleDto>();
         _assignedRoleList = new List<RoleDto?>();
@@ -221,7 +223,11 @@ public class UserStateProvider: BaseStateProvider, IUserStateProvider
 
     public async Task GetUsers()
     {
-        await GetRoles();
+        if (RoleList == null || RoleList.Count == 0)
+        {
+            await GetRoles();
+        }
+
         UserList = await _userService.Get();
     }
 
@@ -244,14 +250,14 @@ public class UserStateProvider: BaseStateProvider, IUserStateProvider
     {
         var filter = FilterAssigned ?? "";
         var items = AssignedRoleList
-            .Where(f => (f?.Name.ToLower()??"").Contains(filter.ToLower()) ||
+            .Where(f => (f?.Name!.ToLower()??"").Contains(filter.ToLower()) ||
                         (f?.Description != null &&
                          f.Description.ToLower().Contains(filter.ToLower())))
             .OrderBy(o => o?.Name)
             .ToList();
         
         var count = AssignedRoleList
-            .Count(f => (f?.Name.ToLower()??"").Contains(filter.ToLower()) ||
+            .Count(f => (f?.Name!.ToLower()??"").Contains(filter.ToLower()) ||
                         (f?.Description != null &&
                          f.Description.ToLower().Contains(filter.ToLower())));
         
@@ -266,14 +272,14 @@ public class UserStateProvider: BaseStateProvider, IUserStateProvider
     {
         var filter = FilterAvailable.ToLower();
         var items = AvailableRoleList?
-            .Where(f => f.Name.ToLower().Contains(filter) ||
+            .Where(f => f.Name!.ToLower().Contains(filter) ||
                         (f.Description != null
                          && f.Description.ToLower().Contains(filter)))
             .OrderBy(o => o.Name)
             .ToList();
         
         var count = AvailableRoleList?
-            .Count(f => f.Name.ToLower().Contains(filter) ||
+            .Count(f => f.Name!.ToLower().Contains(filter) ||
                         (f.Description != null &&
                          f.Description.ToLower().Contains(filter))); 
         
@@ -288,16 +294,7 @@ public class UserStateProvider: BaseStateProvider, IUserStateProvider
     {
         if (SelectedUser != null)
         {
-            var userRoleToAdd = new UserRoleDto
-            {
-                UserId = SelectedUser?.Id ?? 0,
-                User = null,
-                RoleId = role.Id,
-                Role = null,
-                Timestamp = Array.Empty<byte>()
-            };
-
-            await _userService.AddRoleToUser(userRoleToAdd);
+            await _userService.AddRoleToUser(SelectedUser.Id, role.Id);
 
             var toRemoveAvailable = AvailableRoleList?
                 .First(f => f.Id == role.Id);
@@ -319,31 +316,27 @@ public class UserStateProvider: BaseStateProvider, IUserStateProvider
 
     public async Task RemoveRole(RoleDto role, string filterAssigned, string filterAvailable)
     {
-        return;
-        /*var userRoleToRemove = SelectedUser?.UserRoles
-            .FirstOrDefault(f => f.RoleId == role.Id);
-
-        if (userRoleToRemove != null)
+        if (SelectedUser != null)
         {
-            await _userService.RemoveRoleFromUser(userRoleToRemove.Id);
-            SelectedUser?.UserRoles.Remove(userRoleToRemove);
-        }
-
-        var toRemoveAssigned = AssignedRoleList
-            .First(f => f?.Id == role.Id);
-
-        if (toRemoveAssigned != null)
-        {
-            AssignedRoleList.Remove(toRemoveAssigned);
-        }
+            await _userService.RemoveRoleFromUser(SelectedUser.Id, role.Id);
+            
+            var toRemoveAssigned = AssignedRoleList
+                .First(f => f?.Id == role.Id);
+            
+            if (toRemoveAssigned != null)
+            {
+                AssignedRoleList.Remove(toRemoveAssigned);
+            }
+            
+            AvailableRoleList?.Add(role);
+            
+            FilterAssigned = filterAssigned;
+            FilterAvailable = filterAvailable;
         
-        AvailableRoleList?.Add(role);
+            FilterAssignedRoles();
+            FilterAvailableRoles();
 
-        FilterAssigned = filterAssigned;
-        FilterAvailable = filterAvailable;
-        
-        FilterAssignedRoles();
-        FilterAvailableRoles();*/
+        }
     }
 
     public async Task CreateUser()
@@ -411,14 +404,17 @@ public class UserStateProvider: BaseStateProvider, IUserStateProvider
             ? UserList?.FirstOrDefault(f => f.Id == userId)
             : GetNewUser();
 
-        /*if (SelectedUser?.Id == 0)
+        if (SelectedUser?.Id == 0)
         {
             AssignedRoleList = new List<RoleDto?>();
         }
         else
         {
-            var userRoles = await _userRoleService.GetByUser(userId);
-            AssignedRoleList = userRoles?.Select(s => s.Role).ToList() ?? new List<RoleDto?>();
+            var userRoles = await _userService.GetUserRoles(SelectedUser!.Id);
+            if (userRoles != null)
+            {
+                AssignedRoleList = userRoles.ToList()!; 
+            }
         }
     
         AvailableRoleList = RoleList?
@@ -435,19 +431,19 @@ public class UserStateProvider: BaseStateProvider, IUserStateProvider
         {
             Items = AssignedRoleList!,
             TotalItems = AssignedRoleList.Count
-        };*/
+        };
     }
 
     public async Task GetRoles()
     {
-        /*if (RoleList == null || RoleList.Count == 0)
+        if (RoleList == null || RoleList.Count == 0)
         {
             RoleList = await _roleService.Get();
-        }*/
+        }
     }
 
     public async Task SendInvitation(long userId)
     {
-        var result = _userService.SendInvitation(userId);
+        await _userService.SendInvitation(userId);
     }
 }

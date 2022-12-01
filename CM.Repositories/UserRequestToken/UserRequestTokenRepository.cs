@@ -18,9 +18,9 @@ public class UserRequestTokenRepository: BaseRepository<UserRequestToken, UserRe
 
     public async Task<UserRequestTokenDto> GetTokenDefinition(string token)
     {
-        var tokenDef = GetQuery()
+        var tokenDef = await GetQuery()
             .Include(i=>i.User)
-            .FirstOrDefault(f =>
+            .FirstOrDefaultAsync(f =>
                 f.Expires >= DateTime.UtcNow &&
                 f.Token == token);
 

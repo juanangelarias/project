@@ -14,14 +14,14 @@
                     <MudItem xs="12" md="6" xl="3">
                         <MudTextField Label="Code"
                                       InputType="InputType.Text"
-                                      @bind-Value="CountryState.SelectedCountry.Code"
-                                      For="@(()=>CountryState.SelectedCountry.Code)"/>
+                                      @bind-Value="CountryState!.SelectedCountry!.Code"
+                                      For="@(()=>CountryState!.SelectedCountry!.Code)"/>
                     </MudItem>
                     <MudItem xs="12">
                         <MudTextField Label="Name"
                                       InputType="InputType.Text"
-                                      @bind-Value="CountryState.SelectedCountry.Name"
-                                      For="@(()=>CountryState.SelectedCountry.Name)"/>                                            
+                                      @bind-Value="CountryState!.SelectedCountry!.Name"
+                                      For="@(()=>CountryState!.SelectedCountry!.Name)"/>                                            
                     </MudItem>
                 </MudGrid>
             </MudCardContent>

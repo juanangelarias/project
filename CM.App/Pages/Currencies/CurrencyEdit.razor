@@ -14,14 +14,14 @@
                     <MudItem xs="12">
                         <MudTextField Label="Name"
                                       InputType="InputType.Text"
-                                      @bind-Value="CurrencyState.SelectedCurrency.Name"
-                                      For="@(()=>CurrencyState.SelectedCurrency.Name)"/>                                            
+                                      @bind-Value="CurrencyState.SelectedCurrency!.Name"
+                                      For="@(()=>CurrencyState.SelectedCurrency!.Name)"/>                                            
                     </MudItem>
                     <MudItem xs="12">
                         <MudTextField Label="Symbol"
                                       InputType="InputType.Text"
-                                      @bind-Value="CurrencyState.SelectedCurrency.Symbol"
-                                      For="@(()=>CurrencyState.SelectedCurrency.Symbol)"/>                                            
+                                      @bind-Value="CurrencyState.SelectedCurrency!.Symbol"
+                                      For="@(()=>CurrencyState.SelectedCurrency!.Symbol)"/>                                            
                     </MudItem>
                 </MudGrid>
             </MudCardContent>

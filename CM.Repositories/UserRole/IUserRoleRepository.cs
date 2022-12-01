@@ -6,5 +6,7 @@ namespace CM.Repositories;
 
 public interface IUserRoleRepository: IBaseRepository<UserRole, UserRoleDto>
 {
+    Task<IEnumerable<UserRoleDto>> GetByUser(long userId);
     Task<IEnumerable<RoleDto>> GetUserRoles(long userId);
+    Task RemoveUserRole(long userId, long roleId);
 }

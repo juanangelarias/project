@@ -38,6 +38,9 @@ public class Product : BaseEntity, IBaseEntity
             e.Property(p => p.PrintBadge).IsRequired().HasDefaultValue(false);
 
             e.Property(p => p.ProductType).IsRequired();
+
+            e.HasIndex(i => new {i.ConferenceId, i.Name})
+                .IsUnique();
         });
     }
 }

@@ -13,28 +13,29 @@ public class CmDbContext : DbContext
     private readonly IDateConverterService _dateConverterService;
 
     // C
-    public DbSet<Club> Clubs { get; set; }
-    public DbSet<ClubType> ClubTypes { get; set; }
-    public DbSet<Conference> Conferences { get; set; }
-    public DbSet<Country> Countries { get; set; }
-    public DbSet<Currency> Currencies { get; set; }
+    public DbSet<Club> Clubs { get; set; } = null!;
+    public DbSet<ClubType> ClubTypes { get; set; } = null!;
+    public DbSet<Conference> Conferences { get; set; } = null!;
+    public DbSet<Country> Countries { get; set; } = null!;
+    public DbSet<Currency> Currencies { get; set; } = null!;
 
     // M
-    public DbSet<Member> Members { get; set; }
+    public DbSet<Member> Members { get; set; } = null!;
 
     // P
-    public DbSet<Product> Products { get; set; }
-    public DbSet<ProductCombo> ProductCombos { get; set; }
+    public DbSet<Product> Products { get; set; } = null!;
+    public DbSet<ProductCombo> ProductCombos { get; set; } = null!;
+    public DbSet<Program> Programs { get; set; }
 
     // R
-    public DbSet<Role> Roles { get; set; }
+    public DbSet<Role> Roles { get; set; } = null!;
 
     // U
-    public DbSet<User> Users { get; set; }
-    public DbSet<UserPassword> UserPasswords { get; set; }
-    public DbSet<UserRequestToken> UserRequestTokens { get; set; }
-    public DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
-    public DbSet<UserRole> UserRoles { get; set; }
+    public DbSet<User> Users { get; set; } = null!;
+    public DbSet<UserPassword> UserPasswords { get; set; } = null!;
+    public DbSet<UserRequestToken> UserRequestTokens { get; set; } = null!;
+    public DbSet<UserRefreshToken> UserRefreshTokens { get; set; } = null!;
+    public DbSet<UserRole> UserRoles { get; set; } = null!;
 
     public CmDbContext(
         DbContextOptions<CmDbContext> options,

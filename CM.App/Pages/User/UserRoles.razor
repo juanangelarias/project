@@ -1,8 +1,211 @@
 ﻿@inject IUserStateProvider UserState
 
-<h3>UserRoles</h3>
+<MudCard Height="100%">
+    <MudCardHeader>
+        <MudText Typo="Typo.h5">
+            @UserState!.SelectedUser!.FullName Roles
+        </MudText>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudGrid>
+            <MudItem xs="6">
+                <MudTable T="RoleDto"
+                          ServerData="new Func<TableState, Task<TableData<RoleDto>>>(AssignedServerReload)"
+                          Hover="true"
+                          Breakpoint="Breakpoint.Sm"
+                          Loading="_loading"
+                          LoadingProgressColor="Color.Info"
+                          FixedFooter="true"
+                          FixedHeader="true"
+                          @ref="_assignedTable">
+                    <ToolBarContent>
+                        <MudText Typo="Typo.subtitle1">
+                            Assigned Roles
+                        </MudText>
+                        <MudSpacer/>
+                        <MudTextField T="string"
+                                      ValueChanged="@(OnSearchAssigned)"
+                                      Placeholder="Search"
+                                      Adornment="Adornment.Start"
+                                      AdornmentIcon="@Icons.Material.Filled.Search"
+                                      IconSize="Size.Medium"
+                                      Class="mt-0"/>
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>
+                            <MudTableSortLabel SortBy="new Func<RoleDto, object>(x => x.Name!)">
+                                Name
+                            </MudTableSortLabel>
+                        </MudTh>
+                        <MudTh>
+                            <MudTableSortLabel SortBy="new Func<RoleDto, object>(x => x.Description!)">
+                                Description
+                            </MudTableSortLabel>
+                        </MudTh>
+                        <MudTh></MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Name">
+                            @context.Name
+                        </MudTd>
+                        <MudTd DataLabel="Description">
+                            @context.Description
+                        </MudTd>
+                        <MudTd DataLabel="">
+                            <MudTooltip Text="Remove Role" Placement="Placement.Start">
+                                <MudFab
+                                    @onclick="@(()=>RemoveRole(context))"
+                                    Color="Color.Error"
+                                    StartIcon="@Icons.Material.Filled.Remove"
+                                    Size="Size.Small"
+                                    IconSize="Size.Small"
+                                    Style="margin-right: 3px"/>
+                            </MudTooltip>
+                        </MudTd>
+                    </RowTemplate>
+                    
+                </MudTable>
+            </MudItem>
+            
+            <MudItem xs="6">
+                <MudTable T="RoleDto"
+                          ServerData="@(new Func<TableState, Task<TableData<RoleDto>>>(AvailableServerReload))"
+                          Hover="true"
+                          Breakpoint="Breakpoint.Sm"
+                          Loading="_loading"
+                          LoadingProgressColor="Color.Info"
+                          FixedFooter="true"
+                          FixedHeader="true"
+                          @ref="_assignedTable">
+                    <ToolBarContent>
+                        <MudText Typo="Typo.subtitle1">
+                            Available Roles
+                        </MudText>
+                        <MudSpacer/>
+                        <MudTextField T="string"
+                                      ValueChanged="@(OnSearchAvailable)"
+                                      Placeholder="Search"
+                                      Adornment="Adornment.Start"
+                                      AdornmentIcon="@Icons.Material.Filled.Search"
+                                      IconSize="Size.Medium"
+                                      Class="mt-0"/>
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>
+                            <MudTableSortLabel SortBy="new Func<RoleDto, object>(x => x.Name!)">
+                                Name
+                            </MudTableSortLabel>
+                        </MudTh>
+                        <MudTh>
+                            <MudTableSortLabel SortBy="new Func<RoleDto, object>(x => x.Description!)">
+                                Description
+                            </MudTableSortLabel>
+                        </MudTh>
+                        <MudTh></MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Name">
+                            @context.Name
+                        </MudTd>
+                        <MudTd DataLabel="Description">
+                            @context.Description
+                        </MudTd>
+                        <MudTd DataLabel="">
+                            <MudTooltip Text="Add Role" Placement="Placement.Start">
+                                <MudFab
+                                    @onclick="@(()=>AssignRole(context))"
+                                    Color="Color.Primary"
+                                    StartIcon="@Icons.Material.Filled.Add"
+                                    Size="Size.Small"
+                                    IconSize="Size.Small"
+                                    Style="margin-right: 3px"/>
+                            </MudTooltip>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>       
+            </MudItem>
+        </MudGrid>
+    </MudCardContent>
+</MudCard>
 
 @code {
     [Parameter]
     public EventCallback GoBack { get; set; }
+
+    private MudTable<RoleDto> _assignedTable = new();
+    private MudTable<RoleDto> _availableTable = new();
+    private string _assignedFilter = string.Empty;
+    private string _availableFilter = string.Empty;
+    private bool _loading = true;
+
+    protected override void OnInitialized()
+    {
+        _assignedTable = new MudTable<RoleDto>
+        {
+            Items = UserState.AssignedRoleList!,
+            TotalItems = UserState.AssignedRoleList.Count
+        };
+        
+        _availableTable = new MudTable<RoleDto>
+        {
+            Items = UserState.AvailableRoleList!,
+            TotalItems = UserState.AvailableRoleList?.Count ?? 0
+        };
+
+        _loading = false;
+    }
+
+    private Task<TableData<RoleDto>> AssignedServerReload(TableState state)
+    {
+        var result = UserState.AssignedRoleTable ?? new TableData<RoleDto> 
+        {
+            Items = new List<RoleDto>(),
+            TotalItems = 0
+        };
+
+        return Task.FromResult(result);
+    } 
+
+    private Task<TableData<RoleDto>> AvailableServerReload(TableState state)
+    {
+        var result = UserState.AvailableRoleTable ?? new TableData<RoleDto> 
+        {
+            Items = new List<RoleDto>(),
+            TotalItems = 0
+        };
+
+        return Task.FromResult(result);
+    }
+
+    private async Task OnSearchAssigned(string filter)
+    {
+        UserState.FilterAssigned = filter;
+        UserState.FilterAssignedRoles();
+        await _assignedTable.ReloadServerData();
+    }
+    
+    private async Task OnSearchAvailable(string filter)
+    {
+        UserState.FilterAvailable = filter;
+        UserState.FilterAvailableRoles();
+        await _assignedTable.ReloadServerData();
+    }
+
+    private async Task AssignRole(RoleDto role)
+    {
+        _loading = true;
+        await UserState.AssignRole(role, _assignedFilter, _availableFilter);
+        await _assignedTable.ReloadServerData();
+        await _availableTable.ReloadServerData();
+        _loading = false;
+    }
+    
+    private async Task RemoveRole(RoleDto role)
+    {
+        _loading = true;
+        await UserState.RemoveRole(role, _assignedFilter, _availableFilter);
+        await _assignedTable.ReloadServerData();
+        await _availableTable.ReloadServerData();
+        _loading = false;
+    }
 }

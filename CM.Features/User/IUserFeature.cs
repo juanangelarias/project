@@ -10,5 +10,9 @@ public interface IUserFeature
     Task<bool> ResetPassword(ResetPassword data);
     Task<ChangePasswordResponse> ChangePassword(ChangePasswordRequest data);
     Task SendMail(long userId, EmailTemplate template);
-    Task<PasswordMailData> GetUserFromToken(string token);
+    Task<PasswordMailData?> GetUserFromToken(string token);
+    Task<IEnumerable<RoleDto>> GetUserRoles(long userId);
+    Task<IEnumerable<RoleDto>> SetUserRoles(long userId, List<RoleDto> roles);
+    Task AddRoleToUser(long userId, long roleId);
+    Task RemoveRoleFromUser(long userId, long roleId);
 }

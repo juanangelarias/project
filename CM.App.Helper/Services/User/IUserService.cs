@@ -14,5 +14,9 @@ public interface IUserService: IBaseService<UserDto>
     Task RemoveRoleFromUser(long userRoleId);
     //Task SetDefaultConference(long userId, ConferenceDto conference);
     Task<bool> SendInvitation(long userId);
-    Task<PasswordMailData> GetUserFromToken(string token);
+    Task<PasswordMailData?> GetUserFromToken(string token);
+    Task<IEnumerable<RoleDto>?> GetUserRoles(long userId);
+    Task<IEnumerable<RoleDto>?> SetUserRoles(long userId, IEnumerable<RoleDto> roles);
+    Task AddRoleToUser(long userId, long roleId);
+    Task RemoveRoleFromUser(long userId, long roleId);
 }

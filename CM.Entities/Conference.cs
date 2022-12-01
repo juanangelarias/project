@@ -20,6 +20,7 @@ public class Conference : BaseEntity, IBaseEntity
     public Currency? PrimaryCurrency { get; set; }
     public Currency? SecondaryCurrency { get; set; }
     public List<Product>? Products { get; set; }
+    public List<Program> Programs { get; set; }
 
     public void OnModelCreating(ModelBuilder m)
     {
@@ -63,6 +64,11 @@ public class Conference : BaseEntity, IBaseEntity
                 .OnDelete(DeleteBehavior.Restrict);
 
             e.HasMany(x => x.Products)
+                .WithOne(o => o.Conference)
+                .HasForeignKey(k => k.ConferenceId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            e.HasMany(x => x.Programs)
                 .WithOne(o => o.Conference)
                 .HasForeignKey(k => k.ConferenceId)
                 .OnDelete(DeleteBehavior.Restrict);

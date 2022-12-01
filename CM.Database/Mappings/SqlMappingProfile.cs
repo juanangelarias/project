@@ -22,6 +22,7 @@ public class SqlMappingProfile : AutoMapper.Profile
         // P
         CreateMap<Product, ProductDto>();
         CreateMap<ProductCombo, ProductComboDto>();
+        CreateMap<Program, ProgramDto>();
 
         // R
         CreateMap<Role, RoleDto>()

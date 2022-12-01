@@ -79,11 +79,14 @@ public class ConferenceController: Controller
     }
 
     [HttpPost]
-    public async Task<ActionResult<ConferenceDto>> Create([FromBody] ConferenceDto club)
+    public async Task<ActionResult<ConferenceDto>> Create([FromBody] ConferenceDto conference)
     {
         try
         {
-            return Ok(await _conferenceRepository.CreateAsync(club));
+            conference.HostClub = null;
+            conference.PrimaryCurrency = null;
+            conference.SecondaryCurrency = null;
+            return Ok(await _conferenceRepository.CreateAsync(conference));
         }
         catch (Exception exception)
         {
@@ -93,11 +96,14 @@ public class ConferenceController: Controller
     }
 
     [HttpPut]
-    public async Task<ActionResult<ConferenceDto>> Update([FromBody] ConferenceDto club)
+    public async Task<ActionResult<ConferenceDto>> Update([FromBody] ConferenceDto conference)
     {
         try
         {
-            return Ok(await _conferenceRepository.UpdateAsync(club));
+            conference.HostClub = null;
+            conference.PrimaryCurrency = null;
+            conference.SecondaryCurrency = null;
+            return Ok(await _conferenceRepository.UpdateAsync(conference));
         }
         catch (Exception exception)
         {
