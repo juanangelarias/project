@@ -187,6 +187,7 @@ public class Startup
             // C
             .AddScoped<IClubRepository, ClubRepository>()
             .AddScoped<IClubTypeRepository, ClubTypeRepository>()
+            .AddScoped<IConferenceFeature, ConferenceFeature>()
             .AddScoped<IConferenceRepository, ConferenceRepository>()
             .AddScoped<ICountryRepository, CountryRepository>()
             .AddScoped<ICurrencyRepository, CurrencyRepository>()
@@ -206,6 +207,7 @@ public class Startup
             .AddScoped<IMemberRepository, MemberRepository>()
             
             // P
+            .AddScoped<IProgramRepository, ProgramRepository>()
             .AddScoped<IProductFeature, ProductFeature>()
             .AddScoped<IProductRepository, ProductRepository>()
             .AddScoped<IProductComboRepository, ProductComboRepository>()
