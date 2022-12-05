@@ -189,6 +189,7 @@ public class Startup
             .AddScoped<IClubTypeRepository, ClubTypeRepository>()
             .AddScoped<IConferenceFeature, ConferenceFeature>()
             .AddScoped<IConferenceRepository, ConferenceRepository>()
+            .AddScoped<IConferencePaymentMethodRepository, ConferencePaymentMethodRepository>()
             .AddScoped<ICountryRepository, CountryRepository>()
             .AddScoped<ICurrencyRepository, CurrencyRepository>()
             
@@ -197,6 +198,9 @@ public class Startup
                 
             // E
             .AddScoped<IEncryptionService, EncryptionService>()
+            
+            // I
+            .AddScoped<IInscriptionRepository, InscriptionRepository>()
             
             // J
             .AddScoped<IJwtGenerator, JwtGenerator>()
@@ -207,6 +211,7 @@ public class Startup
             .AddScoped<IMemberRepository, MemberRepository>()
             
             // P
+            .AddScoped<IPaymentMethodRepository, PaymentMethodRepository>()
             .AddScoped<IProgramRepository, ProgramRepository>()
             .AddScoped<IProductFeature, ProductFeature>()
             .AddScoped<IProductRepository, ProductRepository>()

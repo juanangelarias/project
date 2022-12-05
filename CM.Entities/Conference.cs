@@ -19,6 +19,8 @@ public class Conference : BaseEntity, IBaseEntity
     public Club? HostClub { get; set; }
     public Currency? PrimaryCurrency { get; set; }
     public Currency? SecondaryCurrency { get; set; }
+    
+    public List<ConferencePaymentMethod> PaymentMethods { get; set; }
     public List<Product>? Products { get; set; }
     public List<Program> Programs { get; set; }
     public List<Inscription> Inscriptions { get; set; }
@@ -62,6 +64,11 @@ public class Conference : BaseEntity, IBaseEntity
             e.HasOne(o => o.SecondaryCurrency)
                 .WithMany()
                 .HasForeignKey(k => k.SecondaryCurrencyId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            e.HasMany(x => x.PaymentMethods)
+                .WithOne(o => o.Conference)
+                .HasForeignKey(k => k.ConferenceId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             e.HasMany(x => x.Products)

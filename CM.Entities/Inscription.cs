@@ -56,6 +56,7 @@ public class Inscription: BaseEntity, IBaseEntity
                 .HasMaxLength(500);
 
             e.Property(p => p.GrandTotal)
+                .HasPrecision(10,2)
                 .IsRequired();
 
             e.HasOne(o => o.Currency)

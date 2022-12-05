@@ -9,7 +9,7 @@ public class Member: BaseEntity, IBaseEntity
     public string? Name { get; set; }
     public string? Alias { get; set; }
     public long? ClubId { get; set; }
-    public bool IsActive { get; set; }
+    public bool? IsActive { get; set; }
 
     public Club? Club { get; set; }
     
@@ -34,7 +34,7 @@ public class Member: BaseEntity, IBaseEntity
                 .IsRequired();
 
             e.Property(p => p.IsActive)
-                .IsRequired()
+                .IsRequired(false)
                 .HasDefaultValue(true);
 
             e.HasIndex(i => new {i.ClubId, i.Name});

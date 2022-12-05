@@ -38,6 +38,7 @@ public class InscriptionDetail: BaseEntity, IBaseEntity
                 .HasMaxLength(100);
 
             e.Property(p => p.Amount)
+                .HasPrecision(10,2)
                 .IsRequired();
 
             e.HasOne(o => o.Product)

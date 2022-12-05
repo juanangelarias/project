@@ -23,6 +23,7 @@ public class CmDbContext : DbContext
     public DbSet<Member> Members { get; set; } = null!;
 
     // P
+    public DbSet<PaymentMethod> PaymentMethods { get; set; }
     public DbSet<Product> Products { get; set; } = null!;
     public DbSet<ProductCombo> ProductCombos { get; set; } = null!;
     public DbSet<Program> Programs { get; set; }
