@@ -72,4 +72,16 @@ public class ProductRepository : BaseRepository<Product, ProductDto>, IProductRe
 
         return _mapper.Map<List<ProductDto>>(list);
     }
+
+    public async Task<IEnumerable<ProductDto>> GetByConference(long conferenceId)
+    {
+        var list = await GetQuery()
+            .Include(i=>i.ProductType)
+            .Where(r => r.ConferenceId == conferenceId)
+            .OrderBy(r => r.ConferenceId)
+            .ThenBy(r => r.Name)
+            .ToListAsync();
+
+        return _mapper.Map<List<ProductDto>>(list);
+    }
 }

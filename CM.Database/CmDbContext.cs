@@ -16,6 +16,7 @@ public class CmDbContext : DbContext
     public DbSet<Club> Clubs { get; set; } = null!;
     public DbSet<ClubType> ClubTypes { get; set; } = null!;
     public DbSet<Conference> Conferences { get; set; } = null!;
+    public DbSet<ConferencePaymentMethod> ConferencePaymentMethods { get; set; }
     public DbSet<Country> Countries { get; set; } = null!;
     public DbSet<Currency> Currencies { get; set; } = null!;
 

@@ -5,12 +5,13 @@ namespace CM.Features;
 
 public interface IConferenceFeature
 {
-    Task<PagedResponse<InscriptionDto>> GetInscriptionsByConference(long conferenceId);
+    Task<PagedResponse<InscriptionDto>> GetInscriptionsByConference(InscriptionQueryParams parameters);
     Task<IEnumerable<ProductDto>> GetProductsByConference(long conferenceId);
-    Task<IEnumerable<ProductDto>> SetProductsByConference(long conferenceId, List<ProductDto> products);
     Task<IEnumerable<ProgramDto>> GetProgramsByConference(long conferenceId);
-    Task<IEnumerable<ProgramDto>> SetProgramsByConference(long conferenceId, List<ProgramDto> programs);
-    Task<IEnumerable<ProgramDto>> GetPaymentMethodsByConference(long conferenceId);
-    Task<IEnumerable<ProgramDto>> SetPaymentMethodsByConference(long conferenceId, List<PaymentMethodDto> paymentMethods);
+    Task<ProgramDto> CreateProgramAsync(ProgramDto program);
+    Task<ProgramDto?> UpdateProgramAsync(ProgramDto program);
+    Task DeleteProgramAsync(long programId);
+    Task<IEnumerable<ConferencePaymentMethodDto>> GetPaymentMethodsByConference(long conferenceId);
+    Task<IEnumerable<ConferencePaymentMethodDto>> SetPaymentMethodsByConference(List<ConferencePaymentMethodDto> conferencePaymentMethods);
     Task<ConferenceDto> CreateAsync(ConferenceDto conference);
 }

@@ -11,6 +11,7 @@ public class SqlMappingProfile : AutoMapper.Profile
         CreateMap<Club, ClubDto>().ReverseMap();
         CreateMap<ClubType, ClubTypeDto>().ReverseMap();
         CreateMap<Conference, ConferenceDto>().ReverseMap();
+        CreateMap<ConferencePaymentMethod, ConferencePaymentMethodDto>().ReverseMap();
         CreateMap<Country, CountryDto>().ReverseMap();
         CreateMap<Currency, CurrencyDto>().ReverseMap();
 

@@ -9,7 +9,10 @@ namespace CM.Repositories;
 
 public class PaymentMethodRepository: BaseRepository<PaymentMethod, PaymentMethodDto>, IPaymentMethodRepository
 {
+    private readonly IMapper _mapper;
+
     public PaymentMethodRepository(IMapper mapper, CmDbContext db) : base(mapper, db)
     {
+        _mapper = mapper;
     }
 }

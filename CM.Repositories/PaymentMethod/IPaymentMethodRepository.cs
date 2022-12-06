@@ -6,5 +6,4 @@ namespace CM.Repositories;
 
 public interface IPaymentMethodRepository: IBaseRepository<PaymentMethod, PaymentMethodDto>
 {
-    
 }

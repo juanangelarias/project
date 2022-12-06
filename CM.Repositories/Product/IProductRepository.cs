@@ -10,4 +10,5 @@ public interface IProductRepository: IBaseRepository<Product, ProductDto>
     Task<IEnumerable<ProductDto>> GetAllAsync();
     Task<PagedResponse<ProductDto>> GetPageAsync(QueryParams parameters);
     Task<IEnumerable<ProductDto>> Autocomplete(AutoCompleteParams parameters);
+    Task<IEnumerable<ProductDto>> GetByConference(long conferenceId);
 }

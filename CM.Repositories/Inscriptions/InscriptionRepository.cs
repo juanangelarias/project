@@ -34,18 +34,32 @@ public class InscriptionRepository: BaseRepository<Inscription, InscriptionDto>,
         {
             var filter = parameters.Filter.ToLower();
 
-            qry = qry.Where(r => r.Name.ToLower().Contains(filter));
+            qry = qry.Where(r => r.Name!.ToLower().Contains(filter) ||
+                                 r.Notes!.ToLower().Contains(filter));
         }
 
-        throw new NotImplementedException();
+        qry = sort switch
+        {
+            InscriptionSort.Name
+                => parameters.Descending
+                    ? qry.OrderByDescending(o => o.Name)
+                    : qry.OrderBy(o => o.Name),
+            _
+                => parameters.Descending
+                    ? qry.OrderByDescending(o => o.Date)
+                    : qry.OrderBy(o => o.Date)
+        };
 
-        /*var list = await GetQuery()
-            .Where(r => r.ConferenceId == conferenceId)
-            .OrderBy(o => o.ConferenceId)
-            .ThenBy(t => t.Date)
-            .ThenBy(t => t.Name)
-            .ToListAsync();
+        var queryable = GetPaginatedQueryable(parameters, qry);
 
-        return _mapper.Map<List<InscriptionDto>>(list);*/
+        var result = queryable.query != null
+            ? await queryable.query.ToListAsync()
+            : null;
+
+        var mappedResult = _mapper.Map<List<InscriptionDto>>(result);
+
+        var response = new PagedResponse<InscriptionDto>(mappedResult, queryable.rowCount);
+
+        return response;
     }
 }

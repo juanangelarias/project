@@ -20,7 +20,7 @@ public class Conference : BaseEntity, IBaseEntity
     public Currency? PrimaryCurrency { get; set; }
     public Currency? SecondaryCurrency { get; set; }
     
-    public List<ConferencePaymentMethod> PaymentMethods { get; set; }
+    public List<ConferencePaymentMethod> ConferencePaymentMethods { get; set; }
     public List<Product>? Products { get; set; }
     public List<Program> Programs { get; set; }
     public List<Inscription> Inscriptions { get; set; }
@@ -66,7 +66,7 @@ public class Conference : BaseEntity, IBaseEntity
                 .HasForeignKey(k => k.SecondaryCurrencyId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            e.HasMany(x => x.PaymentMethods)
+            e.HasMany(x => x.ConferencePaymentMethods)
                 .WithOne(o => o.Conference)
                 .HasForeignKey(k => k.ConferenceId)
                 .OnDelete(DeleteBehavior.Restrict);
